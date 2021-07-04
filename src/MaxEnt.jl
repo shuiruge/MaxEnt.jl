@@ -26,13 +26,9 @@ abstract type EnergyBasedModel end
 # ╔═╡ 62b71d25-2326-4dd0-87b1-24bd4c50710b
 """
 Expectation along the first array dimension.
-
-CAUTION:
-	It will "keep dimension", i.e., the first array dimension
-	will not be automatically squeezed.
 """
 function expect(xs::AbstractArray)
-	mean(xs, dims=1)
+	dropdims(mean(xs, dims=1); dims=1)
 end
 
 # ╔═╡ 6734347d-db99-4f96-b340-e06b50f21e56
@@ -90,7 +86,7 @@ end
 Counts how many nodes in the model.
 """
 function Base.size(model::BoltzmannMachine)
-	last(size(model.bias))
+	size(model.bias)[1]
 end
 
 # ╔═╡ e65fc571-a88a-4dc5-9d76-d3d3c58fe34f
@@ -141,15 +137,17 @@ of the energy-based model $p(x; θ)$, where
 A tuple of gradients, one-to-one correspondent to the parameters
 obtained by calling `getparams(model)`.
 """
-function gradients(model::EnergyBasedModel,
-		           real::AbstractArray,
-		           fantasy::AbstractArray)
-	result = []
-  	for f in getops(model)
-		gradient = expect(f(fantasy)) - expect(f(real))
-		push!(result, gradient)
+function gradients(
+		model::EnergyBasedModel,
+		real::AbstractArray{T, N},
+		fantasy::AbstractArray{T, N},
+		) where {T, N}
+	
+	function gradient(f)
+		expect(f(fantasy)) - expect(f(real))
 	end
-	result
+
+	[gradient(f) for f in getops(model)]
 end
 
 # ╔═╡ c8ccc8e8-94a1-44f0-af35-635b99085006
@@ -227,11 +225,13 @@ Returns the μ and the final step.
 """
 function getlatent(model::BoltzmannMachine, ambient,
 			       maxstep::Integer, tolerance::Real)
-	# Abbreviations
 	v = ambient
 	W = ambient_latent_kernel(model)
 	J = latent_latent_kernel(model)
 	b = latent_bias(model)
+	
+	# Add dimension for convienent broadcasting
+	b = reshape(b, 1, size(b)...)
 
 	# Initialize μ
 	batchsize = first(size(ambient))
@@ -292,8 +292,8 @@ function initialize_boltzmann(topology::Set{Connection}, data)
 
 	# Initialize bias
 	ambientbias = hinton_initialize(data)
-	latentbias = zeros(dtype, 1, latentsize)
-	bias = cat(ambientbias, latentbias, dims=2)
+	latentbias = zeros(dtype, latentsize)
+	bias = cat(ambientbias, latentbias, dims=1)
 
 	BoltzmannMachine(kernel, bias, ambientsize)
 end
@@ -306,7 +306,12 @@ $$p(x_α = 1 | x_{-α}), ∀ α.$$
 
 """
 function activate(model::BoltzmannMachine, x)
+	# Abbreviations
 	W, b = model.kernel, model.bias
+
+	# Add dimension for convienent broadcasting
+	b = reshape(b, 1, size(b)...)
+
 	Flux.σ.(x * W .+ b)
 end
 
