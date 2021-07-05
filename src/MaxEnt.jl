@@ -25,10 +25,11 @@ abstract type EnergyBasedModel end
 
 # ╔═╡ 62b71d25-2326-4dd0-87b1-24bd4c50710b
 """
-Expectation along the first array dimension.
+Expectation along the last array dimension.
 """
 function expect(xs::AbstractArray)
-	dropdims(mean(xs, dims=1); dims=1)
+	n = ndims(xs)
+	dropdims(mean(xs, dims=n); dims=n)
 end
 
 # ╔═╡ 6734347d-db99-4f96-b340-e06b50f21e56
@@ -36,8 +37,8 @@ end
 Outer-product of two arrays.
 """
 function outer(x::AbstractArray, y::AbstractArray)
-	x2 = reshape(x, first(size(x), ndims(x)-1)..., 1, last(size(x)))
-	y2 = reshape(y, size(y)..., 1)
+	x2 = reshape(x, 1, size(x)...)
+	y2 = reshape(y, size(y, 1), 1, size(y)[2:end]...)
 	x2 .* y2
 end
 
@@ -65,6 +66,16 @@ function collectnodes(topology::Set{Connection})::Set{Integer}
 	nodes
 end
 
+# ╔═╡ c18df662-e0f6-46cd-9589-56d055bc777f
+"""
+Hinton's initialization strategy for the ambient bias of Boltzmann machine.
+"""
+function hinton_initialize(data)
+	p = expect(data)
+	ϵ = eps(eltype(data))
+	@. log(p + ϵ) - log(1 - p + ϵ)
+end
+
 # ╔═╡ 9d52124e-1897-41f2-b7f6-8a9de28dc319
 """
 # Arguments
@@ -79,6 +90,28 @@ mutable struct BoltzmannMachine <: EnergyBasedModel
 	kernel
 	bias
 	ambientsize
+
+	function BoltzmannMachine(topology::Set{Connection}, data)
+		N = length(collectnodes(topology))
+		dtype = eltype(data)
+
+		# Initialize kernel
+		kernel = spzeros(dtype, N, N)
+
+		# Compute latent size
+		ambientsize = first(size(data))
+		latentsize = N - ambientsize
+		if latentsize < 0
+			error("Latent size shall be non-negative.")
+		end
+
+		# Initialize bias
+		ambientbias = hinton_initialize(data)
+		latentbias = zeros(dtype, latentsize)
+		bias = cat(ambientbias, latentbias, dims=1)
+
+		new(kernel, bias, ambientsize)
+	end
 end
 
 # ╔═╡ 7a704319-7652-464f-b5f3-da172da889a5
@@ -217,6 +250,11 @@ function meanabs(x)
 	mean(abs(x))
 end
 
+# ╔═╡ c31b0a74-1a68-48d3-95d1-6d2e7ece9d1b
+function batchsize(x)
+	last(size(x))
+end
+
 # ╔═╡ 25dbd0ab-fab8-47d5-9f58-4c2e8268dd6a
 """
 Calculate latent nodes by mean-field approximation.
@@ -234,8 +272,7 @@ function getlatent(model::BoltzmannMachine, ambient,
 	b = reshape(b, 1, size(b)...)
 
 	# Initialize μ
-	batchsize = first(size(ambient))
-	μ = rand(eltype(ambient), batchsize, latentsize(model))
+	μ = rand(eltype(ambient), latentsize(model), batchsize(ambient))
 
 	step = 0
 	for _ = 1:maxstep
@@ -243,7 +280,7 @@ function getlatent(model::BoltzmannMachine, ambient,
 		step += 1
 
 		# Compute the next iteration for μ
-		μ2 = Flux.σ.(v * W .+ μ * J .+ b)
+		μ2 = Flux.σ.(W * v .+ J * μ .+ b)
 
 		# Stop condition
 		if meanabs(μ2 .- μ) < tolerance
@@ -268,36 +305,6 @@ function getlatent(model::BoltzmannMachine, ambient)
 	μ
 end
 
-# ╔═╡ c18df662-e0f6-46cd-9589-56d055bc777f
-"""
-Hinton's initialization strategy for the ambient bias of Boltzmann machine.
-"""
-function hinton_initialize(data)
-	p = expect(data)
-	ϵ = eps(eltype(data))
-	@. log(p + ϵ) - log(1 - p + ϵ)
-end
-
-# ╔═╡ 2bbf883e-c78b-4c02-bad3-8392c0b13685
-function initialize_boltzmann(topology::Set{Connection}, data)
-	N = length(collectnodes(topology))
-	dtype = eltype(data)
-
-	# Initialize kernel
-	kernel = spzeros(dtype, N, N)
-
-	# Compute latent size
-	ambientsize = last(size(data))
-	latentsize = N - ambientsize
-
-	# Initialize bias
-	ambientbias = hinton_initialize(data)
-	latentbias = zeros(dtype, latentsize)
-	bias = cat(ambientbias, latentbias, dims=1)
-
-	BoltzmannMachine(kernel, bias, ambientsize)
-end
-
 # ╔═╡ c5c0b140-9a9f-4b99-9497-4a6467a1632c
 @doc raw"""
 Activity rule of Boltzmann machine. That is,
@@ -310,9 +317,9 @@ function activate(model::BoltzmannMachine, x)
 	W, b = model.kernel, model.bias
 
 	# Add dimension for convienent broadcasting
-	b = reshape(b, 1, size(b)...)
+	b = reshape(b, size(b)..., 1)
 
-	Flux.σ.(x * W .+ b)
+	Flux.σ.(W * x .+ b)
 end
 
 # ╔═╡ a0cc06a4-6627-4d1f-8be5-7d3bf36c8390
@@ -346,13 +353,13 @@ end
 topology = Set([Connection(1, 2), Connection(2, 3)])
 
 # ╔═╡ 03aa03f3-8028-46ca-8be4-9c3b67f3ef62
-data = rand(Float64, (5, 2))
+data = rand(Float64, (2, 5))
 
 # ╔═╡ a80696d2-2ab1-4369-b5a8-cd9abc2e02c2
-model = initialize_boltzmann(topology, data)
+model = BoltzmannMachine(topology, data)
 
 # ╔═╡ 8b13cdbf-51c4-40b4-8a8b-2da878b60c4c
-state = cat(data, rand(eltype(data), first(size(data)), latentsize(model)), dims=2)
+state = cat(data, rand(eltype(data), latentsize(model), batchsize(data)), dims=1)
 
 # ╔═╡ fdc470e0-c6a8-4daf-a99d-c02d0bc0c3b3
 activate(model, state)
@@ -370,6 +377,7 @@ gradients(model, state, state)
 # ╠═75b123cc-7232-4d45-a475-90798b2d8cdd
 # ╠═eae1a7b8-0473-4136-9dff-17e2136ab06e
 # ╠═aad77e21-c8a6-4b63-8191-8029d2c32cdc
+# ╠═c18df662-e0f6-46cd-9589-56d055bc777f
 # ╠═9d52124e-1897-41f2-b7f6-8a9de28dc319
 # ╠═7a704319-7652-464f-b5f3-da172da889a5
 # ╠═e65fc571-a88a-4dc5-9d76-d3d3c58fe34f
@@ -384,10 +392,9 @@ gradients(model, state, state)
 # ╠═867a468e-7876-4b48-b0ab-023202b57792
 # ╠═fdb76bc3-6d9e-408c-bc1e-fc1e1d710f65
 # ╠═fae512b2-004e-4174-9948-f82d07d1e334
+# ╠═c31b0a74-1a68-48d3-95d1-6d2e7ece9d1b
 # ╠═25dbd0ab-fab8-47d5-9f58-4c2e8268dd6a
 # ╠═9b2db7fe-15ab-41f8-a1ee-4986688df64b
-# ╠═c18df662-e0f6-46cd-9589-56d055bc777f
-# ╠═2bbf883e-c78b-4c02-bad3-8392c0b13685
 # ╠═c5c0b140-9a9f-4b99-9497-4a6467a1632c
 # ╠═a0cc06a4-6627-4d1f-8be5-7d3bf36c8390
 # ╠═1e9f6ef7-5727-4601-9c44-16430de22631
