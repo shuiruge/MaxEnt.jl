@@ -4,9 +4,15 @@ using MLDatasets: MNIST
 using Statistics: mean
 
 
+# Global parameters
+const LATENT_SIZE = 64
+const BATCH_SIZE = 128
+const DTYPE = Float64
+
+
 function preprocess_mnist(x)
     x = reshape(x, 28 * 28, size(x)[end])
-    binarize(x)::Float64 = x > 0.5 ? 1 : 0
+    binarize(x)::DTYPE = x > 0.5 ? 1 : 0
     @. binarize(x)
 end
 
@@ -29,31 +35,27 @@ function reconstruction_error(model::BoltzmannMachine, real::AbstractArray{T, 2}
 end
 
 
-function test_mnist()
-    latentsize = 64
-    batchsize = 128
+# Load training data
+train_x, _ = MNIST.traindata()
+train_x = preprocess_mnist(train_x)
+data = Flux.Data.DataLoader(train_x, batchsize=BATCH_SIZE, shuffle=true)
 
-    train_x, _ = MNIST.traindata()
-    train_x = preprocess_mnist(train_x)
-    @show train_x[:, 1]
-    data = Flux.Data.DataLoader(train_x, batchsize=batchsize)
-
-    topology = Connection[]
-    for i = 1:size(train_x, 1)
-        for j = 1:latentsize
-            push!(topology, Connection(i, j+size(train_x, 1)))
-        end
+# Construct topology
+topology = Connection[]
+for i = 1:size(train_x, 1)
+    for j = 1:LATENT_SIZE
+        push!(topology, Connection(i, j+size(train_x, 1)))
     end
-    topology = Set(topology)
-
-    model = create_boltzmann(topology, train_x)
-    fantasy::Array{Float64, 2} = initialize_fantasy(model, batchsize)
-    cb = (_, real, _, _) -> @show reconstruction_error(model, real)
-    fantasy, early_stopped = train!(model, fantasy, data, 1E-3, 1E-3; cb=cb)
-    @show mean(fantasy)
-    @show mean(fantasy[ambientsize(model)+1:end, :])
-    @show early_stopped
 end
+topology = Set(topology)
 
+model = create_boltzmann(topology, train_x)
+fantasy = DTYPE.(initialize_fantasy(model, BATCH_SIZE))
+opt = Flux.Optimise.ADAM()
+cb = (_, real, _, _) -> @show reconstruction_error(model, real)
 
-test_mnist()
+fantasy, early_stopped = train!(model, fantasy, data, opt, 1E-3; cb=cb)
+
+@show mean(fantasy)
+@show mean(fantasy[ambientsize(model)+1:end, :])
+@show early_stopped

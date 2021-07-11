@@ -1,6 +1,9 @@
 using Statistics: mean, max
-using SparseArrays: spzeros, AbstractSparseMatrix
+using SparseArrays: spzeros
 using Flux
+
+
+# ------------------ Utils ------------------
 
 
 """
@@ -25,6 +28,9 @@ end
 function maxabs(x)
     max(abs.(x)...)
 end
+
+
+# ------------------ Energy-based Model ------------------
 
 
 @doc raw"""
@@ -67,6 +73,9 @@ function gradients(model::EnergyBasedModel, real, fantasy)
 end
 
 
+# ------------------ Boltzmann Machine ------------------
+
+
 """
 A connection between the `i`-th node and the `j`-th node.
 
@@ -102,8 +111,9 @@ end
 
 
 """
-Arguments
----------
+Parameters
+----------
+* `topology` represents the connections of the network.
 * `kernel` is a sparse N×N matrix, where N is the total number of nodes.
 * `bias` is a dense 1×N matrix.
 * `ambientsize` ≤ N.
@@ -253,7 +263,7 @@ function getlatent(model::BoltzmannMachine{T}, ambient::AbstractArray{T, 2},
         step += 1
 
         # Compute the next iteration for μ
-        μ2 = Flux.σ.(W' * v .+ J' * μ .+ b)  # XXX
+        μ2 = Flux.σ.(W' * v .+ J' * μ .+ b)
 
         # Stop condition
         if maxabs(μ2 .- μ) < tolerance
@@ -322,8 +332,12 @@ function initialize_fantasy(model::BoltzmannMachine{T}, batchsize::Integer)::Abs
 end
 
 
-function train!(model::BoltzmannMachine{T}, fantasy::AbstractArray{T, 2}, batched_data, η, ϵ; cb=nothing) where T<:Real
-    early_stopped = false  # initialize.
+# Self-defined RMSProp optimizer.
+function train!(model::BoltzmannMachine{T}, fantasy::AbstractArray{T, 2}, batched_data, η, δ, ϵ=1E-8; cb=nothing) where T<:Real
+    # Initialize
+    kernel_acc = spzeros(size(model.kernel)...)
+    bias_acc = zeros(size(model.bias)...)
+    early_stopped = false
 
     for (step, real_ambient) in enumerate(batched_data)
         # Compute real state (particles)
@@ -333,13 +347,19 @@ function train!(model::BoltzmannMachine{T}, fantasy::AbstractArray{T, 2}, batche
         # Compute gradients
         grads = gradients(model, real, fantasy)
 
-        # Optimize by gradient descent
-        Δkernel = -η .* grads[1]
-        for conn in model.topology
-            model.kernel[conn.i, conn.j] += Δkernel[conn.i, conn.j]
+        # Update kernel
+        grad_kernel = grads[1]
+        for c in model.topology
+            g = grad_kernel[c.i, c.j]
+            E = 0.9 * kernel_acc[c.i, c.j] + 0.1 * g^2
+            kernel_acc[c.i, c.j] = E
+            model.kernel[c.i, c.j] -= η * g / √(E + ϵ)
         end
-        Δbias = - η .* grads[2]
-        model.bias .+= Δbias
+
+        # Update bias
+        grad_bias = grads[2]
+        bias_acc = 0.9 .* bias_acc + 0.1 .* grad_bias.^2
+        @. model.bias -= η * grad_bias / √(bias_acc + ϵ)
 
         # Update fantasy state (particles)
         fantasy = contrastive_divergence(model, fantasy)
@@ -350,7 +370,43 @@ function train!(model::BoltzmannMachine{T}, fantasy::AbstractArray{T, 2}, batche
         end
 
         # If early stop
-        if step > 1 && max(map(maxabs, grads)...) < ϵ
+        if step > 1 && max(map(maxabs, grads)...) < δ
+            early_stopped = true
+            break
+        end
+    end
+
+    fantasy, early_stopped
+end
+
+
+function train!(model::BoltzmannMachine{T}, fantasy::AbstractArray{T, 2}, data, opt, tolerance; cb=nothing) where T<:Real
+    params = getparams(model)
+    early_stopped = false  # initialize.
+
+    for (step, real_ambient) in enumerate(data)
+        # Compute real state (particles)
+        real_latent = bernoulli_argmax.(getlatent(model, real_ambient))
+        real = cat(real_ambient, real_latent; dims=1)
+
+        # Compute gradients
+        grads = gradients(model, real, fantasy)
+
+        # Optimize
+        for (p, g) in zip(params, grads)
+            Flux.update!(opt, p, g)
+        end
+
+        # Update fantasy state (particles)
+        fantasy = contrastive_divergence(model, fantasy)
+
+        # Callback
+        if cb !== nothing
+            cb(step, real, fantasy, grads)
+        end
+
+        # If early stop
+        if step > 1 && max(map(maxabs, grads)...) < tolerance
             early_stopped = true
             break
         end
