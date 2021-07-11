@@ -173,8 +173,8 @@ end
 """
 Reutrns a tuple of
 
-1. x → ∂E/∂W(x), where W is the kernel;
-1. x → ∂E/∂b(x), where b is the bias.
+1. x → -∂E/∂W(x), where W is the kernel;
+1. x → -∂E/∂b(x), where b is the bias.
 """
 function getops(model::BoltzmannMachine)
     kernel_op = x -> outer(x, x)
