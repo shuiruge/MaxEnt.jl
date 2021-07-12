@@ -37,7 +37,8 @@ end
 An energy-based model shall implements the following methods:
 
 1. `getparams(model)`: returns the parameters of the model.
-1. `getops(model)`: returns the operators {x → -∂E/∂θ(x) | θ ∈ params}.
+1. `getops(model)`: returns the operators {x → E[-∂E/∂θ(x)] | θ ∈ params},
+   where E is the batch-expectation.
 1. `activate(model, x)`: the activity rule, i.e. $p(x_α | x_{-α})$ for ∀ α.
 """
 abstract type EnergyBasedModel end
@@ -68,7 +69,7 @@ A tuple of gradients, one-to-one correspondent to the parameters
 obtained by calling `getparams(model)`.
 """
 function gradients(model::EnergyBasedModel, real, fantasy)
-    gradient(f) = expect(f(fantasy)) - expect(f(real))
+    gradient(f) = f(fantasy) .- f(real)
     [gradient(f) for f in getops(model)]
 end
 
@@ -173,12 +174,24 @@ end
 """
 Reutrns a tuple of
 
-1. x → -∂E/∂W(x), where W is the kernel;
-1. x → -∂E/∂b(x), where b is the bias.
+1. x → E[-∂E/∂W(x)], where W is the kernel;
+1. x → E[-∂E/∂b(x)], where b is the bias.
 """
 function getops(model::BoltzmannMachine)
-    kernel_op = x -> outer(x, x)
-    bias_op = x -> x
+    function kernel_op(x)
+        n = size(x, 1)
+        y = spzeros(eltype(x), n, n)
+        for c in model.topology
+            y[c.i, c.j] = mean(x[c.i, :] .* x[c.j, :])
+            y[c.j, c.i] = mean(x[c.j, :] .* x[c.i, :])
+        end
+        y
+    end
+
+    function bias_op(x)
+        y = expect(x)
+    end
+
     (kernel_op, bias_op)
 end
 

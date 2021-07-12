@@ -54,7 +54,7 @@ fantasy = DTYPE.(initialize_fantasy(model, BATCH_SIZE))
 opt = Flux.Optimise.ADAM()
 cb = (_, real, _, _) -> @show reconstruction_error(model, real)
 
-fantasy, early_stopped = train!(model, fantasy, data, opt, 1E-3; cb=cb)
+fantasy, early_stopped = train!(model, fantasy, data, opt, 0; cb=cb)
 
 @show mean(fantasy)
 @show mean(fantasy[ambientsize(model)+1:end, :])
