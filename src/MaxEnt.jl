@@ -104,7 +104,7 @@ end
 """
 Hinton's initialization strategy for the ambient bias of Boltzmann machine.
 """
-function hinton_initialize(data)
+function hinton_initialize(data::AbstractArray{T, 2})::AbstractVector{T} where T<:Real
     p = expect(data)
     ϵ = eps(eltype(data))
     @. log(p + ϵ) - log(1 - p + ϵ)
@@ -131,7 +131,19 @@ mutable struct BoltzmannMachine{T<:Real} <: EnergyBasedModel
 end
 
 
+function symmetrize(topology::Set{Connection})
+    symmetrized = Connection[]
+    for c in topology
+        push!(symmetrized, Connection(c.i, c.j))
+        push!(symmetrized, Connection(c.j, c.i))
+    end
+    Set(symmetrized)
+end
+
+
 function create_boltzmann(topology::Set{Connection}, data::AbstractArray{T, 2})::BoltzmannMachine{T} where T<:Real
+    topology = symmetrize(topology)
+
     N = length(collectnodes(topology))
     dtype = eltype(data)
 
@@ -178,18 +190,18 @@ Reutrns a tuple of
 1. x → E[-∂E/∂b(x)], where b is the bias.
 """
 function getops(model::BoltzmannMachine)
+
     function kernel_op(x)
         n = size(x, 1)
         y = spzeros(eltype(x), n, n)
         for c in model.topology
-            y[c.i, c.j] = mean(x[c.i, :] .* x[c.j, :])
-            y[c.j, c.i] = mean(x[c.j, :] .* x[c.i, :])
+            @inbounds y[c.i, c.j] = mean(x[c.i, :] .* x[c.j, :])
         end
         y
     end
 
     function bias_op(x)
-        y = expect(x)
+        expect(x)
     end
 
     (kernel_op, bias_op)
@@ -206,9 +218,9 @@ Returns 0 or 1 based on Bernoulli probability `p`.
 """
 function bernoulli_sample(p::Number)
     if rand(typeof(p)) < p
-        x = 1.
+        x = one(p)
     else
-        x = 0.
+        x = zero(p)
     end
     x
 end
@@ -219,31 +231,35 @@ Returns the value that maximizes the Bernoulli probability P(x).
 """
 function bernoulli_argmax(p::Number)
     if p > 0.5
-        x = 1.
+        x = one(p)
     else
-        x = 0.
+        x = zero(p)
     end
     x
 end
 
 
+function ambient_ambient_kernel(model::BoltzmannMachine{T})::AbstractMatrix{T} where T<:Real
+    m = ambientsize(model)
+    model.kernel[1:m, 1:m]
+end
+
+
 function ambient_latent_kernel(model::BoltzmannMachine{T})::AbstractMatrix{T} where T<:Real
     m = ambientsize(model)
-    n = size(model)
-    model.kernel[1:m, (m+1):n]
+    model.kernel[1:m, (m+1):end]
 end
 
 
 function latent_latent_kernel(model::BoltzmannMachine{T})::AbstractMatrix{T} where T<:Real
     m = ambientsize(model)
-    n = size(model)
-    model.kernel[(m+1):n, (m+1):n]
+    model.kernel[(m+1):end, (m+1):end]
 end
 
 
 function latent_bias(model::BoltzmannMachine{T})::AbstractVector{T} where T<:Real
-    n = ambientsize(model)
-    model.bias[(n+1):size(model)]
+    m = ambientsize(model)
+    model.bias[(m+1):end]
 end
 
 
@@ -276,15 +292,15 @@ function getlatent(model::BoltzmannMachine{T}, ambient::AbstractArray{T, 2},
         step += 1
 
         # Compute the next iteration for μ
-        μ2 = Flux.σ.(W' * v .+ J' * μ .+ b)
+        μ̂ = Flux.σ.(W' * v .+ J' * μ .+ b)
 
         # Stop condition
-        if maxabs(μ2 .- μ) < tolerance
+        if maxabs(μ̂ .- μ) < tolerance
             break
         end
         
         # Update μ by the new one.
-        μ = μ2
+        μ = μ̂
     end
 
     μ, step
@@ -310,7 +326,8 @@ $$p(x_α = 1 | x_{-α}), ∀ α.$$
 """
 function activate(model::BoltzmannMachine{T}, x::AbstractArray{T, 2})::AbstractArray{T, 2} where T<:Real
     # Abbreviations
-    W, b = model.kernel, model.bias
+    W = model.kernel
+    b = model.bias
 
     # Add dimension for convienent broadcasting
     b = reshape(b, size(b)..., 1)
@@ -324,7 +341,7 @@ One-step contrastive divergence.
 """
 function contrastive_divergence(model::BoltzmannMachine{T}, x::AbstractArray{T, 2})::AbstractArray{T, 2} where T<:Real
     p = activate(model, x)
-    bernoulli_sample.(p)
+    @. bernoulli_sample(p)
 end
 
 
@@ -340,56 +357,11 @@ end
 
 
 function initialize_fantasy(model::BoltzmannMachine{T}, batchsize::Integer)::AbstractArray{T, 2} where T<:Real
-    x = bernoulli_sample.(0.5 .* ones(size(model), batchsize))
-    bernoulli_sample.(activate(model, x))
-end
+    p = 0.5 .* ones(size(model), batchsize)
+    x = @. bernoulli_sample(p)
 
-
-# Self-defined RMSProp optimizer.
-function train!(model::BoltzmannMachine{T}, fantasy::AbstractArray{T, 2}, batched_data, η, δ, ϵ=1E-8; cb=nothing) where T<:Real
-    # Initialize
-    kernel_acc = spzeros(size(model.kernel)...)
-    bias_acc = zeros(size(model.bias)...)
-    early_stopped = false
-
-    for (step, real_ambient) in enumerate(batched_data)
-        # Compute real state (particles)
-        real_latent = bernoulli_argmax.(getlatent(model, real_ambient))
-        real = cat(real_ambient, real_latent; dims=1)
-
-        # Compute gradients
-        grads = gradients(model, real, fantasy)
-
-        # Update kernel
-        grad_kernel = grads[1]
-        for c in model.topology
-            g = grad_kernel[c.i, c.j]
-            E = 0.9 * kernel_acc[c.i, c.j] + 0.1 * g^2
-            kernel_acc[c.i, c.j] = E
-            model.kernel[c.i, c.j] -= η * g / √(E + ϵ)
-        end
-
-        # Update bias
-        grad_bias = grads[2]
-        bias_acc = 0.9 .* bias_acc + 0.1 .* grad_bias.^2
-        @. model.bias -= η * grad_bias / √(bias_acc + ϵ)
-
-        # Update fantasy state (particles)
-        fantasy = contrastive_divergence(model, fantasy)
-
-        # Callback
-        if cb !== nothing
-            cb(step, real, fantasy, grads)
-        end
-
-        # If early stop
-        if step > 1 && max(map(maxabs, grads)...) < δ
-            early_stopped = true
-            break
-        end
-    end
-
-    fantasy, early_stopped
+    p̂ = activate(model, x)
+    @. bernoulli_argmax(p̂)
 end
 
 
@@ -399,7 +371,8 @@ function train!(model::BoltzmannMachine{T}, fantasy::AbstractArray{T, 2}, data, 
 
     for (step, real_ambient) in enumerate(data)
         # Compute real state (particles)
-        real_latent = bernoulli_argmax.(getlatent(model, real_ambient))
+        μ = getlatent(model, real_ambient)
+        real_latent = @. bernoulli_argmax(μ)
         real = cat(real_ambient, real_latent; dims=1)
 
         # Compute gradients
