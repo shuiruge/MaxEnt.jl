@@ -1,6 +1,6 @@
-using Statistics: mean, max
-using SparseArrays: spzeros
 using Flux
+using SparseArrays: spzeros
+using Statistics: std
 
 
 # ------------------ Utils ------------------
@@ -257,6 +257,12 @@ function latent_latent_kernel(model::BoltzmannMachine{T})::AbstractMatrix{T} whe
 end
 
 
+function ambient_bias(model::BoltzmannMachine{T})::AbstractVector{T} where T<:Real
+    m = ambientsize(model)
+    model.bias[1:m]
+end
+
+
 function latent_bias(model::BoltzmannMachine{T})::AbstractVector{T} where T<:Real
     m = ambientsize(model)
     model.bias[(m+1):end]
@@ -361,7 +367,7 @@ function initialize_fantasy(model::BoltzmannMachine{T}, batchsize::Integer)::Abs
     x = @. bernoulli_sample(p)
 
     p̂ = activate(model, x)
-    @. bernoulli_argmax(p̂)
+    @. bernoulli_sample(p̂)
 end
 
 
@@ -372,7 +378,7 @@ function train!(model::BoltzmannMachine{T}, fantasy::AbstractArray{T, 2}, data, 
     for (step, real_ambient) in enumerate(data)
         # Compute real state (particles)
         μ = getlatent(model, real_ambient)
-        real_latent = @. bernoulli_argmax(μ)
+        real_latent = @. bernoulli_sample(μ)
         real = cat(real_ambient, real_latent; dims=1)
 
         # Compute gradients
@@ -399,4 +405,52 @@ function train!(model::BoltzmannMachine{T}, fantasy::AbstractArray{T, 2}, data, 
     end
 
     fantasy, early_stopped
+end
+
+
+mutable struct Logger
+    model::BoltzmannMachine
+    logstep::Integer
+    verbose::Bool
+    logs::Dict{Integer, Any}  # step => anything to log.
+
+    Logger(model::BoltzmannMachine, logstep::Integer; verbose=false) = new(model, logstep, verbose, Dict())
+end
+
+
+function (logger::Logger)(step, real, fantasy, grads)
+    if step % logger.logstep != 0
+        return
+    end
+
+    m = ambientsize(logger.model)
+    real_ambient = real[1:m, :]
+    real_latent = real[(m+1):end, :]
+    fantasy_ambient = fantasy[1:m, :]
+    fantasy_latent = fantasy[(m+1):end, :]
+    stats(x) = Dict("mean" => mean(x), "std" => std(x))
+
+    recon = bernoulli_argmax.(activate(model, real))
+    recon_ambient = recon[1:m, :]
+    recon_err = mean((x -> x != 0 ? 1 : 0).(real_ambient .- recon_ambient))
+
+    log = [
+        ("real_ambient", stats(real_ambient)),
+        ("real_latent", stats(real_latent)),
+        ("fantasy_ambient", stats(fantasy_ambient)),
+        ("fantasy_latent", stats(fantasy_latent)),
+        ("kernel_grad", stats(grads[1])),
+        ("bias_grad", stats(grads[2])),
+        ("recon_err", stats(recon_err)),
+    ]
+    logger.logs[step] = log
+
+    if logger.verbose
+        println("step => $step")
+        for (k, v) in log
+            v1 = v["mean"]
+            v2 = v["std"]
+            println("$k => $v1 ⨦ $v2")
+        end
+    end
 end

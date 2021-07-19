@@ -2,6 +2,7 @@ include("../src/MaxEnt.jl")
 
 using MLDatasets: MNIST
 using Statistics: mean
+using Random: shuffle
 
 
 # Global parameters
@@ -13,7 +14,8 @@ const DTYPE = Float64
 function preprocess_mnist(x)
     x = reshape(x, 28 * 28, size(x)[end])
     binarize(x)::DTYPE = x > 0.5 ? 1 : 0
-    @. binarize(x)
+    x = @. binarize(x)
+    x = x[:, shuffle(1:end)]
 end
 
 
@@ -35,24 +37,42 @@ function reconstruction_error(model::BoltzmannMachine, real::AbstractArray{T, 2}
 end
 
 
+function stats(x)
+    mean(x), std(x)
+end
+
+
 # Load training data
 train_x, _ = MNIST.traindata()
 train_x = preprocess_mnist(train_x)
-data = Flux.Data.DataLoader(train_x, batchsize=BATCH_SIZE, shuffle=true)
+data = Flux.Data.DataLoader(train_x, batchsize=BATCH_SIZE, shuffle=false)
 m = size(train_x, 1)
 
 # Construct topology
+# 1. connect ambient and latent units
 topology = Connection[]
 for i = 1:m
     for j = 1:LATENT_SIZE
         push!(topology, Connection(i, m+j))
     end
 end
+# 2. connect latent and latent units
+# for i = 1:LATENT_SIZE
+#     for j = 1:LATENT_SIZE
+#         push!(topology, Connection(m+i, m+j))
+#     end
+# end
+# 3. connect ambient and ambient units
+# for i = 1:m
+#     for j = 1:m
+#         push!(topology, Connection(i, j))
+#     end
+# end
 topology = Set(topology)
 
 model = create_boltzmann(topology, train_x)
 fantasy = DTYPE.(initialize_fantasy(model, BATCH_SIZE))
-opt = Flux.Optimise.ADAM()
+opt = Flux.Optimise.RMSProp()
 
 function cb(step, real, fantasy, grads)
     m = ambientsize(model)
@@ -62,10 +82,19 @@ function cb(step, real, fantasy, grads)
     fantasy_latent = fantasy[(m+1):end, :]
 
     @show step
-    @show reconstruction_error(model, real)
-    @show mean(real_ambient), mean(real_latent)
-    @show mean(fantasy_ambient), mean(fantasy_latent)
+    @show stats(reconstruction_error(model, real))
+    @show stats((real_ambient))
+    @show stats(mean(real_latent))
+    @show stats(mean(fantasy_ambient))
+    @show stats(mean(fantasy_latent))
+    @show stats(mean(grads[1]))
+    @show stats(mean(grads[2]))
+    @show stats(mean(model.kernel))
+    @show stats(mean(model.bias))
 end
 
-fantasy, early_stopped = train!(model, fantasy, data, opt, 0; cb=cb)
+
+logger = Logger(model, 10; verbose=true)
+
+fantasy, early_stopped = train!(model, fantasy, data, opt, 0; cb=logger)
 @show early_stopped
