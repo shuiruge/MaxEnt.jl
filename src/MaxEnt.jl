@@ -91,7 +91,7 @@ end
 """
 Collects all the node indices appeared in the network topology.
 """
-function collectnodes(topology::Set{Connection})::Set{Integer}
+function collectnodes(topology::Vector{Connection})::Set{Integer}
     nodes = Set()
     for conn in topology
         push!(nodes, conn.i)
@@ -104,9 +104,8 @@ end
 """
 Hinton's initialization strategy for the ambient bias of Boltzmann machine.
 """
-function hinton_initialize(data::AbstractArray{T, 2})::AbstractVector{T} where T<:Real
+function hinton_initialize(data::AbstractArray{T, 2}; ϵ)::AbstractVector{T} where T<:Real
     p = expect(data)
-    ϵ = eps(eltype(data))
     @. log(p + ϵ) - log(1 - p + ϵ)
 end
 
@@ -124,24 +123,24 @@ Convention
 * The node index starts from ambient nodes, and ends with latent nodes.
 """
 mutable struct BoltzmannMachine{T<:Real} <: EnergyBasedModel
-    topology::Set{Connection}
+    topology::Vector{Connection}
     kernel::AbstractMatrix{T}
     bias::AbstractVector{T}
     ambientsize::Integer
 end
 
 
-function symmetrize(topology::Set{Connection})
+function symmetrize(topology::Vector{Connection})
     symmetrized = Connection[]
     for c in topology
         push!(symmetrized, Connection(c.i, c.j))
         push!(symmetrized, Connection(c.j, c.i))
     end
-    Set(symmetrized)
+    collect(Set(symmetrized))
 end
 
 
-function create_boltzmann(topology::Set{Connection}, data::AbstractArray{T, 2})::BoltzmannMachine{T} where T<:Real
+function create_boltzmann(topology::Array{Connection}, data::AbstractArray{T, 2}; ϵ=1E-8)::BoltzmannMachine{T} where T<:Real
     topology = symmetrize(topology)
 
     N = length(collectnodes(topology))
@@ -158,7 +157,7 @@ function create_boltzmann(topology::Set{Connection}, data::AbstractArray{T, 2}):
     end
 
     # Initialize bias
-    ambientbias = hinton_initialize(data)
+    ambientbias = hinton_initialize(data; ϵ)
     latentbias = zeros(dtype, latentsize)
     bias = cat(ambientbias, latentbias, dims=1)
 
@@ -194,8 +193,8 @@ function getops(model::BoltzmannMachine)
     function kernel_op(x)
         n = size(x, 1)
         y = spzeros(eltype(x), n, n)
-        for c in model.topology
-            @inbounds y[c.i, c.j] = mean(x[c.i, :] .* x[c.j, :])
+        @simd for c in model.topology
+            @fastmath @inbounds y[c.i, c.j] = mean(x[c.i, :] .* x[c.j, :])
         end
         y
     end
