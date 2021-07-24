@@ -1,5 +1,6 @@
 using Flux
-using SparseArrays: spzeros
+using Random
+using SparseArrays
 using Statistics: std
 
 
@@ -93,9 +94,9 @@ Collects all the node indices appeared in the network topology.
 """
 function collectnodes(topology::Vector{Connection})::Set{Integer}
     nodes = Set()
-    for conn in topology
-        push!(nodes, conn.i)
-        push!(nodes, conn.j)
+    for c = topology
+        push!(nodes, c.i)
+        push!(nodes, c.j)
     end
     nodes
 end
@@ -130,9 +131,34 @@ mutable struct BoltzmannMachine{T<:Real} <: EnergyBasedModel
 end
 
 
+function topology(model::BoltzmannMachine{T}) where T<:Real
+    model.topology
+end
+
+
+function kernel(model::BoltzmannMachine{T}) where T<:Real
+    model.kernel
+end
+
+
+function bias(model::BoltzmannMachine{T}) where T<:Real
+    model.bias
+end
+
+
+function ambientsize(model::BoltzmannMachine{T}) where T<:Real
+    model.ambientsize
+end
+
+
+function Base.eltype(model::BoltzmannMachine{T}) where T<:Real
+    eltype(bias(model))
+end
+
+
 function symmetrize(topology::Vector{Connection})
     symmetrized = Connection[]
-    for c in topology
+    for c = topology
         push!(symmetrized, Connection(c.i, c.j))
         push!(symmetrized, Connection(c.j, c.i))
     end
@@ -141,13 +167,24 @@ end
 
 
 function create_boltzmann(topology::Array{Connection}, data::AbstractArray{T, 2}; ϵ=1E-8)::BoltzmannMachine{T} where T<:Real
-    topology = symmetrize(topology)
-
     N = length(collectnodes(topology))
     dtype = eltype(data)
 
+    # Process topology
+    sort_topology(topo) = sort(topo, by=(c -> c.i * N + c.j))
+    deduplicate(xs) = collect(Set(xs))
+    symmetrize(c::Connection) = [Connection(c.i, c.j), Connection(c.j, c.i)]
+    symmetrize(topology::Vector{Connection}) = vcat(map(symmetrize, topology)...)
+    topology = topology |> symmetrize |> deduplicate |> sort_topology
+
     # Initialize kernel
-    kernel = spzeros(dtype, N, N)
+    Is, Js, Vs = [], [], dtype[]
+    for c = topology
+        push!(Is, c.i)
+        push!(Js, c.j)
+        push!(Vs, 0)
+    end
+    kernel = sparse(Is, Js, Vs)
 
     # Compute latent size
     ambientsize = first(size(data))
@@ -169,7 +206,7 @@ end
 Counts how many nodes in the model.
 """
 function Base.size(model::BoltzmannMachine)
-    size(model.bias)[1]
+    size(bias(model), 1)
 end
 
 
@@ -189,14 +226,16 @@ Reutrns a tuple of
 1. x → E[-∂E/∂b(x)], where b is the bias.
 """
 function getops(model::BoltzmannMachine)
+    topo = topology(model)
+    N = length(topo)
 
     function kernel_op(x)
-        n = size(x, 1)
-        y = spzeros(eltype(x), n, n)
-        @simd for c in model.topology
-            @fastmath @inbounds y[c.i, c.j] = mean(x[c.i, :] .* x[c.j, :])
+        nzval = zeros(eltype(model), N)
+        @fastmath @inbounds @simd for n = 1:N
+            c = topo[n]
+            nzval[n] = mean(x[c.i, :] .* x[c.j, :])
         end
-        y
+        nzval
     end
 
     function bias_op(x)
@@ -208,14 +247,14 @@ end
 
 
 function getparams(model::BoltzmannMachine)
-    (model.kernel, model.bias)
+    (kernel(model).nzval, bias(model))
 end
 
 
 """
 Returns 0 or 1 based on Bernoulli probability `p`.
 """
-function bernoulli_sample(p::Number)
+function bernoulli_sample(p::Real)
     if rand(typeof(p)) < p
         x = one(p)
     else
@@ -228,7 +267,7 @@ end
 """
 Returns the value that maximizes the Bernoulli probability P(x).
 """
-function bernoulli_argmax(p::Number)
+function bernoulli_argmax(p::Real)
     if p > 0.5
         x = one(p)
     else
@@ -240,31 +279,31 @@ end
 
 function ambient_ambient_kernel(model::BoltzmannMachine{T})::AbstractMatrix{T} where T<:Real
     m = ambientsize(model)
-    model.kernel[1:m, 1:m]
+    kernel(model)[1:m, 1:m]
 end
 
 
 function ambient_latent_kernel(model::BoltzmannMachine{T})::AbstractMatrix{T} where T<:Real
     m = ambientsize(model)
-    model.kernel[1:m, (m+1):end]
+    kernel(model)[1:m, (m+1):end]
 end
 
 
 function latent_latent_kernel(model::BoltzmannMachine{T})::AbstractMatrix{T} where T<:Real
     m = ambientsize(model)
-    model.kernel[(m+1):end, (m+1):end]
+    kernel(model)[(m+1):end, (m+1):end]
 end
 
 
 function ambient_bias(model::BoltzmannMachine{T})::AbstractVector{T} where T<:Real
     m = ambientsize(model)
-    model.bias[1:m]
+    bias(model)[1:m]
 end
 
 
 function latent_bias(model::BoltzmannMachine{T})::AbstractVector{T} where T<:Real
     m = ambientsize(model)
-    model.bias[(m+1):end]
+    bias(model)[(m+1):end]
 end
 
 
@@ -292,7 +331,7 @@ function getlatent(model::BoltzmannMachine{T}, ambient::AbstractArray{T, 2},
     μ = rand(eltype(ambient), latentsize(model), batchsize(ambient))
 
     step = 0
-    for _ = 1:maxstep
+    @fastmath @inbounds for _ = 1:maxstep
         # Starts a new step
         step += 1
 
@@ -303,7 +342,7 @@ function getlatent(model::BoltzmannMachine{T}, ambient::AbstractArray{T, 2},
         if maxabs(μ̂ .- μ) < tolerance
             break
         end
-        
+
         # Update μ by the new one.
         μ = μ̂
     end
@@ -318,7 +357,7 @@ Short version of `getlatent(model, ambient, maxstep, tolerance)`.
 Returns the μ only.
 """
 function getlatent(model::BoltzmannMachine{T}, ambient::AbstractArray{T, 2})::AbstractArray{T, 2} where T<:Real
-    (μ, _) = getlatent(model::BoltzmannMachine, ambient, 10, 1E-3)
+    (μ, _) = getlatent(model, ambient, 10, 1E-1)
     μ
 end
 
@@ -331,13 +370,13 @@ $$p(x_α = 1 | x_{-α}), ∀ α.$$
 """
 function activate(model::BoltzmannMachine{T}, x::AbstractArray{T, 2})::AbstractArray{T, 2} where T<:Real
     # Abbreviations
-    W = model.kernel
-    b = model.bias
+    W = kernel(model)
+    b = bias(model)
 
     # Add dimension for convienent broadcasting
     b = reshape(b, size(b)..., 1)
 
-    Flux.σ.(W * x .+ b)
+    @fastmath @inbounds Flux.σ.(W * x .+ b)
 end
 
 
@@ -362,7 +401,7 @@ end
 
 
 function initialize_fantasy(model::BoltzmannMachine{T}, batchsize::Integer)::AbstractArray{T, 2} where T<:Real
-    p = 0.5 .* ones(size(model), batchsize)
+    p = 0.5 .* ones(size(model), batchsize) .|> eltype(model)
     x = @. bernoulli_sample(p)
 
     p̂ = activate(model, x)
@@ -418,7 +457,7 @@ end
 
 
 function (logger::Logger)(step, real, fantasy, grads)
-    if step % logger.logstep != 0
+    if (step == 1) || (step % logger.logstep != 0)
         return
     end
 
