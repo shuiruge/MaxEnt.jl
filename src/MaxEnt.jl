@@ -60,12 +60,14 @@ of the energy-based model $p(x; θ)$, where
 
 ```
 
-# Arguments
-* `real` is the real world data, obeying the $q(x)$ distribution.
-* `fantasy` is the data imagined by the model, obeying the $p(x;θ)$
+Parameters
+----------
+- `real` is the real world data, obeying the $q(x)$ distribution.
+- `fantasy` is the data imagined by the model, obeying the $p(x;θ)$
   distribution.
 
-# Returns
+Returns
+-------
 A tuple of gradients, one-to-one correspondent to the parameters
 obtained by calling `getparams(model)`.
 """
@@ -114,14 +116,14 @@ end
 """
 Parameters
 ----------
-* `topology` represents the connections of the network.
-* `kernel` is a sparse N×N matrix, where N is the total number of nodes.
-* `bias` is a dense 1×N matrix.
-* `ambientsize` ≤ N.
+- `topology` represents the connections of the network.
+- `kernel` is a sparse N×N matrix, where N is the total number of nodes.
+- `bias` is a dense 1×N matrix.
+- `ambientsize` ≤ N.
 
 Convention
 ----------
-* The node index starts from ambient nodes, and ends with latent nodes.
+- The node index starts from ambient nodes, and ends with latent nodes.
 """
 mutable struct BoltzmannMachine{T<:Real} <: EnergyBasedModel
     topology::Vector{Connection}
@@ -171,7 +173,7 @@ function create_boltzmann(topology::Array{Connection}, data::AbstractArray{T, 2}
     dtype = eltype(data)
 
     # Process topology
-    sort_topology(topo) = sort(topo, by=(c -> c.i * N + c.j))
+    sort_topology(topology) = sort(topology, by=(c -> c.i * N + c.j))
     deduplicate(xs) = collect(Set(xs))
     symmetrize(c::Connection) = [Connection(c.i, c.j), Connection(c.j, c.i)]
     symmetrize(topology::Vector{Connection}) = vcat(map(symmetrize, topology)...)
@@ -221,9 +223,8 @@ end
 
 """
 Reutrns a tuple of
-
-1. x → E[-∂E/∂W(x)], where W is the kernel;
-1. x → E[-∂E/∂b(x)], where b is the bias.
+    - x → E[-∂E/∂W(x)], where W is the kernel;
+    - x → E[-∂E/∂b(x)], where b is the bias.
 """
 function getops(model::BoltzmannMachine)
     topo = topology(model)
@@ -446,6 +447,9 @@ function train!(model::BoltzmannMachine{T}, fantasy::AbstractArray{T, 2}, data, 
 end
 
 
+"""
+A callback for logging the training process.
+"""
 mutable struct Logger
     model::BoltzmannMachine
     logstep::Integer
