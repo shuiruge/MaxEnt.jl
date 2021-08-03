@@ -130,31 +130,13 @@ mutable struct BoltzmannMachine{T<:Real} <: EnergyBasedModel
     kernel::AbstractMatrix{T}
     bias::AbstractVector{T}
     ambientsize::Integer
-end
-
-
-function topology(model::BoltzmannMachine{T}) where T<:Real
-    model.topology
-end
-
-
-function kernel(model::BoltzmannMachine{T}) where T<:Real
-    model.kernel
-end
-
-
-function bias(model::BoltzmannMachine{T}) where T<:Real
-    model.bias
-end
-
-
-function ambientsize(model::BoltzmannMachine{T}) where T<:Real
-    model.ambientsize
+    minval::T
+    maxval::T
 end
 
 
 function Base.eltype(model::BoltzmannMachine{T}) where T<:Real
-    eltype(bias(model))
+    eltype(model.bias)
 end
 
 
@@ -168,9 +150,11 @@ function symmetrize(topology::Vector{Connection})
 end
 
 
-function create_boltzmann(topology::Array{Connection}, data::AbstractArray{T, 2}; ϵ=1E-8)::BoltzmannMachine{T} where T<:Real
-    N = length(collectnodes(topology))
+function create_boltzmann(topology::Array{Connection}, data::AbstractArray{T, 2}; ϵ=1E-8, minval=0, maxval=1)::BoltzmannMachine{T} where T<:Real
     dtype = eltype(data)
+    minval = dtype(minval)
+    maxval = dtype(maxval)
+    N = length(collectnodes(topology))
 
     # Process topology
     sort_topology(topology) = sort(topology, by=(c -> c.i * N + c.j))
@@ -200,7 +184,7 @@ function create_boltzmann(topology::Array{Connection}, data::AbstractArray{T, 2}
     latentbias = zeros(dtype, latentsize)
     bias = cat(ambientbias, latentbias, dims=1)
 
-    BoltzmannMachine(topology, kernel, bias, ambientsize)
+    BoltzmannMachine(topology, kernel, bias, ambientsize, minval, maxval)
 end
 
 
@@ -208,16 +192,12 @@ end
 Counts how many nodes in the model.
 """
 function Base.size(model::BoltzmannMachine)
-    size(bias(model), 1)
+    size(model.bias, 1)
 end
 
-
-function ambientsize(model::BoltzmannMachine)
-    model.ambientsize
-end
 
 function latentsize(model::BoltzmannMachine)
-    size(model) - ambientsize(model)
+    size(model) - model.ambientsize
 end
 
 
@@ -227,7 +207,7 @@ Reutrns a tuple of
     - x → E[-∂E/∂b(x)], where b is the bias.
 """
 function getops(model::BoltzmannMachine)
-    topo = topology(model)
+    topo = model.topology
     N = length(topo)
 
     function kernel_op(x)
@@ -248,63 +228,64 @@ end
 
 
 function getparams(model::BoltzmannMachine)
-    (kernel(model).nzval, bias(model))
+    (model.kernel.nzval, model.bias)
 end
 
 
 """
-Returns 0 or 1 based on Bernoulli probability `p`.
+Returns `minval` or `maxval` based on Bernoulli probability `p`.
 """
-function bernoulli_sample(p::Real)
-    if rand(typeof(p)) < p
-        x = one(p)
-    else
-        x = zero(p)
-    end
-    x
+function bernoulli_sample(p::AbstractArray, minval::T, maxval::T)::AbstractArray{T} where T<:Real
+    f(p) = rand(typeof(p)) < p ? maxval : minval
+    f.(p)
+end
+
+
+function bernoulli_sample(model::BoltzmannMachine{T}, p) where T<:Real
+    bernoulli_sample(p, model.minval, model.maxval)
 end
 
 
 """
 Returns the value that maximizes the Bernoulli probability P(x).
 """
-function bernoulli_argmax(p::Real)
-    if p > 0.5
-        x = one(p)
-    else
-        x = zero(p)
-    end
-    x
+function bernoulli_argmax(p::AbstractArray, minval::T, maxval::T)::AbstractArray{T} where T<:Real
+    f(p) = p > 0.5 ? maxval : minval
+    f.(p)
+end
+
+function bernoulli_argmax(model::BoltzmannMachine{T}, p::AbstractArray)::AbstractArray{T} where T<:Real
+    bernoulli_argmax(p, model.minval, model.maxval)
 end
 
 
 function ambient_ambient_kernel(model::BoltzmannMachine{T})::AbstractMatrix{T} where T<:Real
-    m = ambientsize(model)
-    kernel(model)[1:m, 1:m]
+    m = model.ambientsize
+    model.kernel[1:m, 1:m]
 end
 
 
 function ambient_latent_kernel(model::BoltzmannMachine{T})::AbstractMatrix{T} where T<:Real
-    m = ambientsize(model)
-    kernel(model)[1:m, (m+1):end]
+    m = model.ambientsize
+    model.kernel[1:m, (m+1):end]
 end
 
 
 function latent_latent_kernel(model::BoltzmannMachine{T})::AbstractMatrix{T} where T<:Real
-    m = ambientsize(model)
-    kernel(model)[(m+1):end, (m+1):end]
+    m = model.ambientsize
+    model.kernel[(m+1):end, (m+1):end]
 end
 
 
 function ambient_bias(model::BoltzmannMachine{T})::AbstractVector{T} where T<:Real
-    m = ambientsize(model)
-    bias(model)[1:m]
+    m = model.ambientsize
+    model.bias[1:m]
 end
 
 
 function latent_bias(model::BoltzmannMachine{T})::AbstractVector{T} where T<:Real
-    m = ambientsize(model)
-    bias(model)[(m+1):end]
+    m = model.ambientsize
+    model.bias[(m+1):end]
 end
 
 
@@ -371,8 +352,8 @@ $$p(x_α = 1 | x_{-α}), ∀ α.$$
 """
 function activate(model::BoltzmannMachine{T}, x::AbstractArray{T, 2})::AbstractArray{T, 2} where T<:Real
     # Abbreviations
-    W = kernel(model)
-    b = bias(model)
+    W = model.kernel
+    b = model.bias
 
     # Add dimension for convienent broadcasting
     b = reshape(b, size(b)..., 1)
@@ -386,7 +367,7 @@ One-step contrastive divergence.
 """
 function contrastive_divergence(model::BoltzmannMachine{T}, x::AbstractArray{T, 2})::AbstractArray{T, 2} where T<:Real
     p = activate(model, x)
-    @. bernoulli_sample(p)
+    bernoulli_sample(model, p)
 end
 
 
@@ -403,10 +384,10 @@ end
 
 function initialize_fantasy(model::BoltzmannMachine{T}, batchsize::Integer)::AbstractArray{T, 2} where T<:Real
     p = 0.5 .* ones(size(model), batchsize) .|> eltype(model)
-    x = @. bernoulli_sample(p)
+    x = bernoulli_sample(model, p)
 
     p̂ = activate(model, x)
-    @. bernoulli_sample(p̂)
+    bernoulli_sample(model, p̂)
 end
 
 
@@ -417,7 +398,7 @@ function train!(model::BoltzmannMachine{T}, fantasy::AbstractArray{T, 2}, data, 
     for (step, real_ambient) in enumerate(data)
         # Compute real state (particles)
         μ = getlatent(model, real_ambient)
-        real_latent = @. bernoulli_sample(μ)
+        real_latent = bernoulli_sample(model, μ)
         real = cat(real_ambient, real_latent; dims=1)
 
         # Compute gradients
@@ -461,38 +442,36 @@ end
 
 
 function (logger::Logger)(step, real, fantasy, grads)
-    if (step == 1) || (step % logger.logstep != 0)
-        return
-    end
+    if (step == 1) || (step % logger.logstep == 0)
+        m = logger.model.ambientsize
+        real_ambient = real[1:m, :]
+        real_latent = real[(m+1):end, :]
+        fantasy_ambient = fantasy[1:m, :]
+        fantasy_latent = fantasy[(m+1):end, :]
+        stats(x) = Dict("mean" => mean(x), "std" => std(x))
 
-    m = ambientsize(logger.model)
-    real_ambient = real[1:m, :]
-    real_latent = real[(m+1):end, :]
-    fantasy_ambient = fantasy[1:m, :]
-    fantasy_latent = fantasy[(m+1):end, :]
-    stats(x) = Dict("mean" => mean(x), "std" => std(x))
+        recon = bernoulli_argmax(model, activate(model, real))
+        recon_ambient = recon[1:m, :]
+        recon_err = mean((x -> x != 0 ? 1 : 0).(real_ambient .- recon_ambient))
 
-    recon = bernoulli_argmax.(activate(model, real))
-    recon_ambient = recon[1:m, :]
-    recon_err = mean((x -> x != 0 ? 1 : 0).(real_ambient .- recon_ambient))
+        log = [
+            ("real_ambient", stats(real_ambient)),
+            ("real_latent", stats(real_latent)),
+            ("fantasy_ambient", stats(fantasy_ambient)),
+            ("fantasy_latent", stats(fantasy_latent)),
+            ("kernel_grad", stats(grads[1])),
+            ("bias_grad", stats(grads[2])),
+            ("recon_err", stats(recon_err)),
+        ]
+        logger.logs[step] = log
 
-    log = [
-        ("real_ambient", stats(real_ambient)),
-        ("real_latent", stats(real_latent)),
-        ("fantasy_ambient", stats(fantasy_ambient)),
-        ("fantasy_latent", stats(fantasy_latent)),
-        ("kernel_grad", stats(grads[1])),
-        ("bias_grad", stats(grads[2])),
-        ("recon_err", stats(recon_err)),
-    ]
-    logger.logs[step] = log
-
-    if logger.verbose
-        println("step => $step")
-        for (k, v) in log
-            v1 = v["mean"]
-            v2 = v["std"]
-            println("$k => $v1 ⨦ $v2")
+        if logger.verbose
+            println("step => $step")
+            for (k, v) in log
+                v1 = v["mean"]
+                v2 = v["std"]
+                println("$k => $v1 ⨦ $v2")
+            end
         end
     end
 end
