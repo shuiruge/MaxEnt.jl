@@ -484,7 +484,7 @@
   </theorem>
 
   <\lemma>
-    Up to the 1st-order of <math|W>,<\footnote>
+    Up to the 1st-order of <math|W>, for <math|\<forall\>\<gamma\>>,<\footnote>
       Directly,
 
       <\align>
@@ -496,7 +496,7 @@
       <big|sum><rsub|x>p<rsub|E><around*|(|x|)>x<rsup|\<gamma\>>=V<rsup|\<gamma\>>+<frac|1|2><around*|(|1-2V<rsup|\<gamma\>>|)>W<rsub|\<alpha\>\<gamma\>>V<rsup|\<alpha\>\<gamma\>>.
     </equation>
 
-    And<\footnote>
+    And, for <math|\<forall\><around*|(|\<mu\>,\<nu\>|)>>,<\footnote>
       Directly,
 
       <\align>
@@ -521,11 +521,99 @@
     </equation>
   </lemma>
 
-  <\equation*>
-    \;
-  </equation*>
+  <\theorem>
+    Define <math|<wide|\<sigma\>|^><rsup|\<alpha\>>\<assign\><big|sum><rsub|x>p<rsub|D><around*|(|x|)>x<rsup|\<alpha\>>>
+    and <math|<wide|W|^><rsup|\<mu\>\<nu\>>\<assign\><big|sum><rsub|x>p<rsub|D><around*|(|x|)><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-<wide|x|^><rsup|\<nu\>>|)>>.
+    Let <math|W<rsub|\<mu\>\<nu\>>> symmetric. By
 
-  \;
+    <\equation>
+      <wide|\<sigma\>|^><rsup|\<alpha\>>=<big|sum><rsub|x>p<rsub|E><around*|(|x|)>x<rsup|\<alpha\>>,
+    </equation>
+
+    <\equation>
+      <wide|W|^><rsup|\<mu\>\<nu\>>=<big|sum><rsub|x>p<rsub|E><around*|(|x|)><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-<wide|x|^><rsup|\<nu\>>|)>,
+    </equation>
+
+    we get<\footnote>
+      When <math|\<mu\>\<neq\>\<nu\>>, we have
+
+      <\align>
+        <tformat|<table|<row|<cell|<wide|W|^><rsup|\<mu\>\<nu\>>=>|<cell|<big|sum><rsub|x>p<rsub|E><around*|(|x|)><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-<wide|x|^><rsup|\<nu\>>|)>>>|<row|<cell|<around*|{|V<rsup|\<mu\>\<nu\>>\<propto\>\<delta\><rsup|\<mu\>\<nu\>>|}>=>|<cell|W<rsub|<around*|(|\<alpha\>\<beta\>|)>>
+        V<rsup|\<alpha\>\<mu\>> V<rsup|\<beta\>\<nu\>>>>|<row|<cell|<around*|{|<text|<math|W<rsub|\<mu\>\<nu\>>>
+        symmetric>|}>=>|<cell|W<rsub|\<alpha\>\<beta\>>
+        V<rsup|\<alpha\>\<mu\>> V<rsup|\<beta\>\<nu\>>>>|<row|<cell|<around*|{|V<rsup|\<alpha\><rsub|1>\<alpha\><rsub|2>>=\<delta\><rsup|\<alpha\><rsub|1>\<alpha\><rsub|2>>\<sigma\><rsup|a<rsub|1>><around*|(|1-\<sigma\><rsup|\<alpha\><rsub|1>>|)>|}>=>|<cell|W<rsub|\<mu\>\<nu\>>
+        \<sigma\><rsup|\<mu\>><around*|(|1-\<sigma\><rsup|\<mu\>>|)>
+        \<sigma\><rsup|\<nu\>><around*|(|1-\<sigma\><rsup|\<nu\>>|)>>>|<row|<cell|<around*|{|up
+        to <with|math-font|cal|O><around*|(|W|)>|}>=>|<cell|W<rsub|\<mu\>\<nu\>>
+        <wide|\<sigma\>|^><rsup|\<mu\>><around*|(|1-<wide|\<sigma\>|^><rsup|\<mu\>>|)>
+        <wide|\<sigma\>|^><rsup|\<nu\>><around*|(|1-<wide|\<sigma\>|^><rsup|\<nu\>>|)>>>>>
+      </align>
+
+      thus, for <math|\<forall\>\<mu\>\<neq\>\<nu\>>,
+
+      <\equation*>
+        W<rsub|\<mu\>\<nu\>>=<frac|<wide|W|^><rsup|\<mu\>\<nu\>>|<wide|\<sigma\>|^><rsup|\<mu\>><around*|(|1-<wide|\<sigma\>|^><rsup|\<mu\>>|)>
+        <wide|\<sigma\>|^><rsup|\<nu\>><around*|(|1-<wide|\<sigma\>|^><rsup|\<nu\>>|)>>.
+      </equation*>
+
+      And for <math|\<mu\>=\<nu\>>,
+
+      \;
+
+      <\align>
+        <tformat|<table|<row|<cell|<wide|W|^><rsup|\<mu\>\<mu\>>=>|<cell|<big|sum><rsub|x>p<rsub|E><around*|(|x|)><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)>>>|<row|<cell|<around*|{|<text|<math|W<rsub|\<mu\>\<nu\>>>
+        symmetric>|}>=>|<cell|V<rsup|\<mu\>\<mu\>>+W<rsub|\<alpha\>\<beta\>>
+        V<rsup|\<alpha\>\<mu\>> V<rsup|\<beta\>\<mu\>>+<frac|1|2><around*|[|6
+        <around*|(|V<rsup|\<mu\>>|)><rsup|2>-6
+        V<rsup|\<mu\>>+1|]>W<rsub|\<mu\>\<mu\>>V<rsup|\<mu\>\<mu\>>>>|<row|<cell|=>|<cell|\<sigma\><rsup|\<mu\>><around*|(|1-\<sigma\><rsup|\<mu\>>|)>+W<rsub|\<alpha\>\<beta\>>\<delta\><rsup|\<alpha\>\<beta\>\<mu\>><around*|[|\<sigma\><rsup|\<mu\>><around*|(|1-\<sigma\><rsup|\<mu\>>|)>|]><rsup|2>+<frac|1|2><around*|[|6
+        <around*|(|V<rsup|\<mu\>>|)><rsup|2>-6
+        V<rsup|\<mu\>>+1|]>W<rsub|\<mu\>\<mu\>>\<sigma\><rsup|\<mu\>><around*|(|1-\<sigma\><rsup|\<mu\>>|)>>>|<row|<cell|=>|<cell|\<sigma\><rsup|\<mu\>><around*|(|1-\<sigma\><rsup|\<mu\>>|)>+W<rsub|\<mu\>\<mu\>><around*|[|\<sigma\><rsup|\<mu\>><around*|(|1-\<sigma\><rsup|\<mu\>>|)>|]><rsup|2>+<frac|1|2><around*|[|6
+        <around*|(|V<rsup|\<mu\>>|)><rsup|2>-6
+        V<rsup|\<mu\>>+1|]>W<rsub|\<mu\>\<mu\>>\<sigma\><rsup|\<mu\>><around*|(|1-\<sigma\><rsup|\<mu\>>|)>>>|<row|<cell|=>|<cell|\<sigma\><rsup|\<mu\>><around*|(|1-\<sigma\><rsup|\<mu\>>|)><around*|{|1+<around*|[|\<sigma\><rsup|\<mu\>>-<around*|(|\<sigma\><rsup|\<mu\>>|)><rsup|2>+<frac|1|2><around*|[|6
+        <around*|(|\<sigma\><rsup|\<mu\>>|)><rsup|2>-6
+        \<sigma\><rsup|\<mu\>>+1|]>|]>W<rsub|\<mu\>\<mu\>>|}>>>|<row|<cell|=>|<cell|\<sigma\><rsup|\<mu\>><around*|(|1-\<sigma\><rsup|\<mu\>>|)><around*|{|1+<around*|[|2<around*|(|\<sigma\><rsup|\<mu\>>|)><rsup|2>-2\<sigma\><rsup|\<mu\>>+<frac|1|2>|]>W<rsub|\<mu\>\<mu\>>|}>>>|<row|<cell|<around*|{|\<sigma\><rsup|\<mu\>>=<wide|\<sigma\>|^><rsup|\<mu\>>+\<cdots\>|}>=>|<cell|<around*|{|<wide|\<sigma\>|^><rsup|\<mu\>>-<frac|1|2><wide|\<sigma\>|^><rsup|\<mu\>><around*|(|1-<wide|\<sigma\>|^><rsup|\<mu\>>|)><around*|(|1-2<wide|\<sigma\>|^><rsup|\<mu\>>|)>W<rsub|\<mu\>\<mu\>>|}>>>|<row|<cell|>|<cell|\<times\><around*|{|1-<wide|\<sigma\>|^><rsup|\<mu\>>+<frac|1|2><wide|\<sigma\>|^><rsup|\<mu\>><around*|(|1-<wide|\<sigma\>|^><rsup|\<mu\>>|)><around*|(|1-2<wide|\<sigma\>|^><rsup|\<mu\>>|)>W<rsub|\<mu\>\<mu\>>|}>>>|<row|<cell|>|<cell|\<times\><around*|{|1+<around*|[|2<around*|(|\<sigma\><rsup|\<mu\>>|)><rsup|2>-2\<sigma\><rsup|\<mu\>>+<frac|1|2>|]>W<rsub|\<mu\>\<mu\>>|}>>>|<row|<cell|=>|<cell|\<sigma\><rsup|\<mu\>>
+        <around*|(|1-\<sigma\><rsup|\<mu\>>|)>+<with|math-font|cal|O><around*|(|W<rsup|2>|)>,>>>>
+      </align>
+
+      where we have employed
+
+      <\align>
+        <tformat|<table|<row|<cell|<wide|\<sigma\>|^><rsup|\<gamma\>>=>|<cell|\<sigma\><rsup|\<gamma\>>+<frac|1|2><around*|(|1-2\<sigma\><rsup|\<gamma\>>|)>W<rsub|\<alpha\>\<gamma\>>\<delta\><rsup|\<alpha\>\<gamma\>>\<sigma\><rsup|\<gamma\>><around*|(|1-\<sigma\><rsup|\<gamma\>>|)>>>|<row|<cell|=>|<cell|\<sigma\><rsup|\<gamma\>>+<frac|1|2>\<sigma\><rsup|\<gamma\>><around*|(|1-\<sigma\><rsup|\<gamma\>>|)><around*|(|1-2\<sigma\><rsup|\<gamma\>>|)>W<rsub|\<gamma\>\<gamma\>>.>>>>
+      </align>
+
+      Thus
+
+      <\equation*>
+        \<sigma\><rsup|\<mu\>> <around*|(|1-\<sigma\><rsup|\<mu\>>|)>=<wide|W|^><rsup|\<mu\>\<mu\>>.
+      </equation*>
+
+      After solving this equation, we have
+
+      <\align>
+        <tformat|<table|<row|<cell|<wide|\<sigma\>|^><rsup|\<gamma\>>=>|<cell|\<sigma\><rsup|\<gamma\>>+<frac|1|2>W<rsub|\<gamma\>\<gamma\>><around*|[|\<sigma\><rsup|\<gamma\>><around*|(|1-\<sigma\><rsup|\<gamma\>>|)><rsup|2>-\<sigma\><rsup|\<gamma\>2><around*|(|1-\<sigma\><rsup|\<gamma\>>|)>|]>>>|<row|<cell|=>|<cell|\<sigma\><rsup|\<gamma\>>+<frac|1|2>W<rsub|\<gamma\>\<gamma\>><around*|[|\<sigma\><rsup|\<gamma\>><around*|(|1-\<sigma\><rsup|\<gamma\>>|)><rsup|2>-\<sigma\><rsup|\<gamma\>2><around*|(|1-\<sigma\><rsup|\<gamma\>>|)>|]>>>|<row|<cell|=>|<cell|\<sigma\><rsup|\<gamma\>>+<frac|1|2>W<rsub|\<gamma\>\<gamma\>><around*|[|<wide|W|^><rsup|\<gamma\>\<gamma\>><around*|(|1-\<sigma\><rsup|\<gamma\>>|)>-\<sigma\><rsup|\<gamma\>><wide|W|^><rsup|\<gamma\>\<gamma\>>|]>>>|<row|<cell|=>|<cell|\<sigma\><rsup|\<gamma\>>+W<rsub|\<gamma\>\<gamma\>><around*|[|<wide|W|^><rsup|\<gamma\>\<gamma\>><around*|(|<frac|1|2>-\<sigma\><rsup|\<gamma\>>|)>|]>.>>>>
+      </align>
+
+      <\equation*>
+        W<rsub|\<mu\>\<mu\>>=<frac|<wide|\<sigma\>|^><rsup|\<mu\>>-\<sigma\><rsup|\<mu\>>|0.5-\<sigma\><rsup|\<mu\>>><frac|1|<wide|W|^><rsup|\<mu\>\<mu\>>>.
+      </equation*>
+    </footnote>
+
+    <\equation>
+      \<forall\>\<mu\>,\<sigma\><rsup|\<mu\>>
+      <around*|(|1-\<sigma\><rsup|\<mu\>>|)>=<wide|W|^><rsup|\<mu\>\<mu\>>;
+    </equation>
+
+    <\equation*>
+      \<forall\>\<mu\>\<neq\>\<nu\>,W<rsub|\<mu\>\<nu\>>=<frac|<wide|W|^><rsup|\<mu\>\<nu\>>|<wide|\<sigma\>|^><rsup|\<mu\>><around*|(|1-<wide|\<sigma\>|^><rsup|\<mu\>>|)>
+      <wide|\<sigma\>|^><rsup|\<nu\>><around*|(|1-<wide|\<sigma\>|^><rsup|\<nu\>>|)>>;
+    </equation*>
+
+    <\equation*>
+      \<forall\>\<mu\>,W<rsub|\<mu\>\<mu\>>=<frac|<wide|\<sigma\>|^><rsup|\<mu\>>-\<sigma\><rsup|\<mu\>>|0.5-\<sigma\><rsup|\<mu\>>><frac|1|<wide|W|^><rsup|\<mu\>\<mu\>>>.
+    </equation*>
+
+    (Notice that, generally, <math|<wide|W|^><rsup|\<mu\>\<mu\>>=<with|math-font|cal|O><around*|(|1|)>>.)
+  </theorem>
 </body>
 
 <initial|<\collection>
@@ -541,6 +629,7 @@
     <associate|footnote-1|<tuple|1|?>>
     <associate|footnote-10|<tuple|10|?>>
     <associate|footnote-11|<tuple|11|?>>
+    <associate|footnote-12|<tuple|12|?>>
     <associate|footnote-2|<tuple|2|?>>
     <associate|footnote-3|<tuple|3|?>>
     <associate|footnote-4|<tuple|4|?>>
@@ -552,6 +641,7 @@
     <associate|footnr-1|<tuple|1|?>>
     <associate|footnr-10|<tuple|10|?>>
     <associate|footnr-11|<tuple|11|?>>
+    <associate|footnr-12|<tuple|12|?>>
     <associate|footnr-2|<tuple|2|?>>
     <associate|footnr-3|<tuple|3|?>>
     <associate|footnr-4|<tuple|4|?>>
