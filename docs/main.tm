@@ -190,10 +190,25 @@
       and <math|c<rsub|\<alpha\>>\<assign\>b<rsub|\<alpha\>>+<around*|(|1/2
       -<wide|x|^><rsup|\<alpha\>>|)>W<rsub|\<alpha\>\<alpha\>>>. This
       relation is held even for arbitrary vector <math|<wide|x|^>>.
+
+      <item>Relating to MaxEnt principle, the observable that the model
+      simulates is
+
+      <\equation>
+        \<forall\><around*|(|\<alpha\>,\<beta\>|)>,\<bbb-E\><rsub|x\<sim\>P<rsub|D>><around*|[|<around*|(|x<rsup|\<alpha\>>-<wide|x|^><rsup|\<alpha\>>|)><around*|(|x<rsup|\<beta\>>-<wide|x|^><rsup|\<beta\>>|)>|]>,
+      </equation>
+
+      for which it shall also simulate
+
+      <\equation>
+        \<forall\>\<alpha\>,\<bbb-E\><rsub|x\<sim\>P<rsub|D>><around*|[|<wide|x|^><rsup|\<alpha\>>|]>.
+      </equation>
     </itemize>
   </example>
 
   <\proof>
+    Here we proof the activity rule.
+
     Directly, for <math|\<forall\>\<gamma\>>,
 
     <\align>
@@ -235,7 +250,7 @@
       <item>Direct calculation gives
 
       <\equation>
-        E<rsub|eff><around*|(|v;W,b,c|)>=<big|sum><rsub|\<alpha\>><around*|(|<big|sum><rsub|\<beta\>>U<rsub|\<alpha\>\<beta\>>
+        E<rsub|eff><around*|(|v;U,b,c|)>=<big|sum><rsub|\<alpha\>><around*|(|<big|sum><rsub|\<beta\>>U<rsub|\<alpha\>\<beta\>>
         v<rsup|\<alpha\>><wide|h|^><rsup|\<beta\>>-b<rsub|\<alpha\>>|)>-s<rsub|+><around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>\<beta\>>
         <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>+c<rsub|\<beta\>>|)>,
       </equation>
@@ -245,15 +260,25 @@
       <\equation>
         s<around*|(|x|)>\<assign\>ln<around*|(|1+\<mathe\><rsup|x>|)>.
       </equation>
+
+      <item>Relating to Boltzmann machine,
+      <math|x\<rightarrow\><around*|(|v,h|)>>,
+      <math|b\<rightarrow\><around*|(|b,c|)>>, and
+
+      <\equation>
+        W\<rightarrow\><matrix|<tformat|<table|<row|<cell|0>|<cell|U>>|<row|<cell|U<rsup|T>>|<cell|0>>>>>.
+      </equation>
     </itemize>
   </example>
 
   <\proof>
+    Here we proof the expression of <math|E<rsub|eff><around*|(|v;U,b,c|)>>.
+
     Directly,
 
     <\align>
-      <tformat|<table|<row|<cell|>|<cell|E<rsub|eff><around*|(|v|)>>>|<row|<cell|=>|<cell|-ln
-      <big|sum><rsub|h>exp<around*|(|-E<around*|(|v,h|)>|)>>>|<row|<cell|=>|<cell|-ln<big|sum><rsub|h>exp<around*|(|<big|sum><rsub|\<alpha\>,\<beta\>>U<rsub|\<alpha\>\<beta\>>
+      <tformat|<table|<row|<cell|>|<cell|E<rsub|eff><around*|(|v|)>>>|<row|<cell|<text|{Definition}>=>|<cell|-ln
+      <big|sum><rsub|h>exp<around*|(|-E<around*|(|v,h|)>|)>>>|<row|<cell|<text|{Definition}>=>|<cell|-ln<big|sum><rsub|h>exp<around*|(|<big|sum><rsub|\<alpha\>,\<beta\>>U<rsub|\<alpha\>\<beta\>>
       <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|h<rsup|\<beta\>>-<wide|h|^><rsup|\<beta\>>|)>+<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>
       v<rsup|\<alpha\>>+<big|sum><rsub|\<alpha\>>c<rsub|\<alpha\>>
       h<rsup|\<alpha\>>|)>>>|<row|<cell|<text|{Combine}>=>|<cell|-<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>
@@ -286,7 +311,7 @@
     we have
 
     <\align>
-      <tformat|<table|<row|<cell|>|<cell|E<rsub|eff><around*|(|v|)>>>|<row|<cell|=>|<cell|-<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>
+      <tformat|<table|<row|<cell|>|<cell|E<rsub|eff><around*|(|v|)>>>|<row|<cell|<text|{Previous}>=>|<cell|-<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>
       v<rsup|\<alpha\>>-<big|sum><rsub|\<beta\>>ln
       <big|sum><rsub|h<rsup|\<beta\>=0,1>>exp<around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>\<beta\>>
       <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|h<rsup|\<beta\>>-<wide|h|^><rsup|\<beta\>>|)>+c<rsub|\<beta\>>
@@ -474,7 +499,7 @@
 
     <\align>
       <tformat|<table|<row|<cell|<wide|x|^><rsup|\<alpha\>>=>|<cell|<big|sum><rsub|x>p<rsub|E><around*|(|x|)>x<rsup|\<alpha\>>>>|<row|<cell|<around*|{|Tayor
-      expansion|}>=>|<cell|<big|sum><rsub|x>p<rsub|0><around*|(|x|)>x<rsup|\<alpha\>>+<with|math-font|cal|O><around*|(|W|)>>>|<row|<cell|<around*|{|<big|sum><rsub|x>p<rsub|0><around*|(|x|)>x<rsup|\<alpha\>>=\<sigma\><rsup|\<alpha\>>|}>=>|<cell|\<sigma\><rsup|\<alpha\>>+<with|math-font|cal|O><around*|(|W|)>.>>>>
+      expand|}>=>|<cell|<big|sum><rsub|x>p<rsub|0><around*|(|x|)>x<rsup|\<alpha\>>+<with|math-font|cal|O><around*|(|W|)>>>|<row|<cell|<around*|{|<big|sum><rsub|x>p<rsub|0><around*|(|x|)>x<rsup|\<alpha\>>=\<sigma\><rsup|\<alpha\>>|}>=>|<cell|\<sigma\><rsup|\<alpha\>>+<with|math-font|cal|O><around*|(|W|)>.>>>>
     </align>
   </proof>
 
@@ -490,9 +515,10 @@
     Directly,
 
     <\align>
-      <tformat|<table|<row|<cell|p<rsub|E><around*|(|x|)>=>|<cell|<frac|exp<around*|(|b<rsub|\<alpha\>>x<rsup|\<alpha\>>+<frac|1|2>W<rsub|\<alpha\>\<beta\>><around*|(|x<rsup|\<alpha\>>-<wide|x|^><rsup|\<alpha\>>|)><around*|(|x<rsup|\<beta\>>-<wide|x|^><rsup|\<beta\>>|)>|)>|Z>>>|<row|<cell|=>|<cell|<frac|exp<around*|(|b<rsub|\<alpha\>>x<rsup|\<alpha\>>|)>
+      <tformat|<table|<row|<cell|p<rsub|E><around*|(|x|)>=>|<cell|<frac|exp<around*|(|b<rsub|\<alpha\>>x<rsup|\<alpha\>>+<frac|1|2>W<rsub|\<alpha\>\<beta\>><around*|(|x<rsup|\<alpha\>>-<wide|x|^><rsup|\<alpha\>>|)><around*|(|x<rsup|\<beta\>>-<wide|x|^><rsup|\<beta\>>|)>|)>|Z>>>|<row|<cell|<text|{Extract
+      <math|b<rsub|\<alpha\>>x<rsup|\<alpha\>>>}>=>|<cell|<frac|exp<around*|(|b<rsub|\<alpha\>>x<rsup|\<alpha\>>|)>
       exp<around*|(|<frac|1|2>W<rsub|\<alpha\>\<beta\>><around*|(|x<rsup|\<alpha\>>-<wide|x|^><rsup|\<alpha\>>|)><around*|(|x<rsup|\<beta\>>-<wide|x|^><rsup|\<beta\>>|)>|)>|Z>>>|<row|<cell|<text|{Expand
-      to 1st-order}>=>|<cell|<frac|exp<around*|(|b<rsub|\<alpha\>>x<rsup|\<alpha\>>|)><around*|{|1+<frac|1|2>W<rsub|\<alpha\>\<beta\>><around*|(|x<rsup|\<alpha\>>-<wide|x|^><rsup|\<alpha\>>|)><around*|(|x<rsup|\<beta\>>-<wide|x|^><rsup|\<beta\>>|)>+\<cdots\>|}>|Z<rsub|0><around*|(|1+Z<rsub|1>+\<cdots\>|)>>>>|<row|<cell|<around*|{|p<rsub|0><around*|(|x|)>=\<cdots\>|}>=>|<cell|p<rsub|0><around*|(|x|)><frac|<around*|{|1+<frac|1|2>W<rsub|\<alpha\>\<beta\>><around*|(|x<rsup|\<alpha\>>-<wide|x|^><rsup|\<alpha\>>|)><around*|(|x<rsup|\<beta\>>-<wide|x|^><rsup|\<beta\>>|)>+\<cdots\>|}>|1+Z<rsub|1>+\<cdots\>>>>|<row|<cell|<around*|{|<frac|1|1+\<epsilon\>>\<sim\>1-\<epsilon\>|}>=>|<cell|p<rsub|0><around*|(|x|)><around*|{|1+<frac|1|2>W<rsub|\<alpha\>\<beta\>><around*|(|x<rsup|\<alpha\>>-<wide|x|^><rsup|\<alpha\>>|)><around*|(|x<rsup|\<beta\>>-<wide|x|^><rsup|\<beta\>>|)>+\<cdots\>|}><around*|{|1-Z<rsub|1>+\<cdots\>|}>>>|<row|<cell|<text|{Expand}>=>|<cell|p<rsub|0><around*|(|x|)><around*|{|1+<frac|1|2>W<rsub|\<alpha\>\<beta\>><around*|(|x<rsup|\<alpha\>>-<wide|x|^><rsup|\<alpha\>>|)><around*|(|x<rsup|\<beta\>>-<wide|x|^><rsup|\<beta\>>|)>-Z<rsub|1>+\<cdots\>|}>>>|<row|<cell|\<backassign\>>|<cell|p<rsub|0><around*|(|x|)>+p<rsub|1><around*|(|x|)>+\<cdots\>>>>>
+      to <math|<with|math-font|cal|O><around*|(|W|)>>}>=>|<cell|<frac|exp<around*|(|b<rsub|\<alpha\>>x<rsup|\<alpha\>>|)><around*|{|1+<frac|1|2>W<rsub|\<alpha\>\<beta\>><around*|(|x<rsup|\<alpha\>>-<wide|x|^><rsup|\<alpha\>>|)><around*|(|x<rsup|\<beta\>>-<wide|x|^><rsup|\<beta\>>|)>+\<cdots\>|}>|Z<rsub|0><around*|(|1+Z<rsub|1>+\<cdots\>|)>>>>|<row|<cell|<around*|{|p<rsub|0><around*|(|x|)>=\<cdots\>|}>=>|<cell|p<rsub|0><around*|(|x|)><frac|<around*|{|1+<frac|1|2>W<rsub|\<alpha\>\<beta\>><around*|(|x<rsup|\<alpha\>>-<wide|x|^><rsup|\<alpha\>>|)><around*|(|x<rsup|\<beta\>>-<wide|x|^><rsup|\<beta\>>|)>+\<cdots\>|}>|1+Z<rsub|1>+\<cdots\>>>>|<row|<cell|<around*|{|<frac|1|1+\<epsilon\>>\<sim\>1-\<epsilon\>|}>=>|<cell|p<rsub|0><around*|(|x|)><around*|{|1+<frac|1|2>W<rsub|\<alpha\>\<beta\>><around*|(|x<rsup|\<alpha\>>-<wide|x|^><rsup|\<alpha\>>|)><around*|(|x<rsup|\<beta\>>-<wide|x|^><rsup|\<beta\>>|)>+\<cdots\>|}><around*|{|1-Z<rsub|1>+\<cdots\>|}>>>|<row|<cell|<text|{Expand}>=>|<cell|p<rsub|0><around*|(|x|)><around*|{|1+<frac|1|2>W<rsub|\<alpha\>\<beta\>><around*|(|x<rsup|\<alpha\>>-<wide|x|^><rsup|\<alpha\>>|)><around*|(|x<rsup|\<beta\>>-<wide|x|^><rsup|\<beta\>>|)>-Z<rsub|1>+\<cdots\>|}>>>|<row|<cell|\<backassign\>>|<cell|p<rsub|0><around*|(|x|)>+p<rsub|1><around*|(|x|)>+\<cdots\>>>>>
     </align>
 
     Thus
@@ -533,7 +559,7 @@
     Directly,
 
     <\align>
-      <tformat|<table|<row|<cell|<big|sum><rsub|x>p<rsub|E><around*|(|x|)>x<rsup|\<gamma\>>=>|<cell|<big|sum><rsub|x>p<rsub|0><around*|(|x|)>x<rsup|\<gamma\>>+<big|sum><rsub|x>p<rsub|1><around*|(|x|)>x<rsup|\<gamma\>>>>|<row|<cell|<around*|{|p<rsub|1><around*|(|x|)>=\<cdots\>|}>=>|<cell|<big|sum><rsub|x>p<rsub|0><around*|(|x|)>x<rsup|\<gamma\>>+<big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|[|<frac|1|2>W<rsub|\<alpha\>\<beta\>><around*|(|x<rsup|\<alpha\>>-\<sigma\><rsup|\<alpha\>>|)><around*|(|x<rsup|\<beta\>>-\<sigma\><rsup|\<beta\>>|)>-<frac|1|2>W<rsub|\<alpha\>\<alpha\>>\<sigma\><rsup|\<alpha\>><around*|(|1-\<sigma\><rsup|\<alpha\>>|)>|]>x<rsup|\<gamma\>>>>|<row|<cell|=>|<cell|<big|sum><rsub|x>p<rsub|0><around*|(|x|)>x<rsup|\<gamma\>>>>|<row|<cell|>|<cell|+<frac|1|2>W<rsub|\<alpha\>\<beta\>><big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|(|x<rsup|\<alpha\>>-\<sigma\><rsup|\<alpha\>>|)><around*|(|x<rsup|\<beta\>>-\<sigma\><rsup|\<beta\>>|)>x<rsup|\<gamma\>>>>|<row|<cell|>|<cell|-<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>><big|sum><rsub|x>p<rsub|0><around*|(|x|)>x<rsup|\<gamma\>>>>|<row|<cell|=>|<cell|<big|sum><rsub|x>p<rsub|0><around*|(|x|)>x<rsup|\<gamma\>>>>|<row|<cell|<text|{Combine}>>|<cell|+<frac|1|2>W<rsub|\<alpha\>\<beta\>><big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|(|x<rsup|\<alpha\>>-\<sigma\><rsup|\<alpha\>>|)><around*|(|x<rsup|\<beta\>>-\<sigma\><rsup|\<beta\>>|)><around*|(|x<rsup|\<gamma\>>-\<sigma\><rsup|\<gamma\>>|)>+<frac|1|2>W<rsub|\<alpha\>\<beta\>><big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|(|x<rsup|\<alpha\>>-\<sigma\><rsup|\<alpha\>>|)><around*|(|x<rsup|\<beta\>>-\<sigma\><rsup|\<beta\>>|)>\<sigma\><rsup|\<gamma\>>>>|<row|<cell|>|<cell|-<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>><big|sum><rsub|x>p<rsub|0><around*|(|x|)>x<rsup|\<gamma\>>>>|<row|<cell|=>|<cell|V<rsup|\<gamma\>>>>|<row|<cell|<around*|{|V<rsup|\<alpha\>\<beta\>>=\<cdots\>|}>>|<cell|+<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>\<gamma\>>+<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>>\<sigma\><rsup|\<gamma\>>>>|<row|<cell|>|<cell|-<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>>\<sigma\><rsup|\<gamma\>>>>|<row|<cell|=>|<cell|V<rsup|\<gamma\>>+<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>\<gamma\>>.>>>>
+      <tformat|<table|<row|<cell|<big|sum><rsub|x>p<rsub|E><around*|(|x|)>x<rsup|\<gamma\>>=>|<cell|<big|sum><rsub|x>p<rsub|0><around*|(|x|)>x<rsup|\<gamma\>>+<big|sum><rsub|x>p<rsub|1><around*|(|x|)>x<rsup|\<gamma\>>>>|<row|<cell|<around*|{|p<rsub|1><around*|(|x|)>=\<cdots\>|}>=>|<cell|<big|sum><rsub|x>p<rsub|0><around*|(|x|)>x<rsup|\<gamma\>>+<big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|[|<frac|1|2>W<rsub|\<alpha\>\<beta\>><around*|(|x<rsup|\<alpha\>>-\<sigma\><rsup|\<alpha\>>|)><around*|(|x<rsup|\<beta\>>-\<sigma\><rsup|\<beta\>>|)>-<frac|1|2>W<rsub|\<alpha\>\<alpha\>>\<sigma\><rsup|\<alpha\>><around*|(|1-\<sigma\><rsup|\<alpha\>>|)>|]>x<rsup|\<gamma\>>>>|<row|<cell|<text|{Expand}>=>|<cell|<big|sum><rsub|x>p<rsub|0><around*|(|x|)>x<rsup|\<gamma\>>>>|<row|<cell|>|<cell|+<frac|1|2>W<rsub|\<alpha\>\<beta\>><big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|(|x<rsup|\<alpha\>>-\<sigma\><rsup|\<alpha\>>|)><around*|(|x<rsup|\<beta\>>-\<sigma\><rsup|\<beta\>>|)>x<rsup|\<gamma\>>>>|<row|<cell|>|<cell|-<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>><big|sum><rsub|x>p<rsub|0><around*|(|x|)>x<rsup|\<gamma\>>>>|<row|<cell|=>|<cell|<big|sum><rsub|x>p<rsub|0><around*|(|x|)>x<rsup|\<gamma\>>>>|<row|<cell|<text|{Combine}>>|<cell|+<frac|1|2>W<rsub|\<alpha\>\<beta\>><big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|(|x<rsup|\<alpha\>>-\<sigma\><rsup|\<alpha\>>|)><around*|(|x<rsup|\<beta\>>-\<sigma\><rsup|\<beta\>>|)><around*|(|x<rsup|\<gamma\>>-\<sigma\><rsup|\<gamma\>>|)>+<frac|1|2>W<rsub|\<alpha\>\<beta\>><big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|(|x<rsup|\<alpha\>>-\<sigma\><rsup|\<alpha\>>|)><around*|(|x<rsup|\<beta\>>-\<sigma\><rsup|\<beta\>>|)>\<sigma\><rsup|\<gamma\>>>>|<row|<cell|>|<cell|-<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>><big|sum><rsub|x>p<rsub|0><around*|(|x|)>x<rsup|\<gamma\>>>>|<row|<cell|=>|<cell|V<rsup|\<gamma\>>>>|<row|<cell|<around*|{|V<rsup|\<alpha\>\<beta\>>=\<cdots\>|}>>|<cell|+<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>\<gamma\>>+<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>>\<sigma\><rsup|\<gamma\>>>>|<row|<cell|>|<cell|-<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>>\<sigma\><rsup|\<gamma\>>>>|<row|<cell|=>|<cell|V<rsup|\<gamma\>>+<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>\<gamma\>>.>>>>
     </align>
   </proof>
 
@@ -550,7 +576,7 @@
     Directly,
 
     <\align>
-      <tformat|<table|<row|<cell|>|<cell|<big|sum><rsub|x>p<rsub|E><around*|(|x|)><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-<wide|x|^><rsup|\<nu\>>|)>>>|<row|<cell|=>|<cell|<big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-<wide|x|^><rsup|\<nu\>>|)>+<big|sum><rsub|x>p<rsub|1><around*|(|x|)><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-<wide|x|^><rsup|\<nu\>>|)>>>|<row|<cell|=>|<cell|<big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-<wide|x|^><rsup|\<nu\>>|)>>>|<row|<cell|<around*|{|p<rsub|1><around*|(|x|)>=\<cdots\>|}>>|<cell|+<big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|[|<frac|1|2>W<rsub|\<alpha\>\<beta\>><around*|(|x<rsup|\<alpha\>>-\<sigma\><rsup|\<alpha\>>|)><around*|(|x<rsup|\<beta\>>-\<sigma\><rsup|\<beta\>>|)>-<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>>|]><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-<wide|x|^><rsup|\<nu\>>|)>>>|<row|<cell|=>|<cell|<big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-<wide|x|^><rsup|\<nu\>>|)>>>|<row|<cell|<text|{Expand}>>|<cell|+<frac|1|2>W<rsub|\<alpha\>\<beta\>><big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|(|x<rsup|\<alpha\>>-\<sigma\><rsup|\<alpha\>>|)><around*|(|x<rsup|\<beta\>>-\<sigma\><rsup|\<beta\>>|)><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-<wide|x|^><rsup|\<nu\>>|)>>>|<row|<cell|>|<cell|-<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>><big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-<wide|x|^><rsup|\<nu\>>|)>>>|<row|<cell|<around*|{|<wide|x|^>=\<cdots\>|}>=>|<cell|<big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|(|x<rsup|\<mu\>>-\<sigma\><rsup|\<mu\>>-<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>\<mu\>>|)><around*|(|x<rsup|\<nu\>>-\<sigma\><rsup|\<nu\>>-<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>\<nu\>>|)>>>|<row|<cell|<around*|{|<wide|x|^><rsup|\<alpha\>>=\<sigma\><rsup|\<alpha\>>+<with|math-font|cal|O><around*|(|W|)>|}>>|<cell|+<frac|1|2>W<rsub|\<alpha\>\<beta\>><big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|(|x<rsup|\<alpha\>>-\<sigma\><rsup|\<alpha\>>|)><around*|(|x<rsup|\<beta\>>-\<sigma\><rsup|\<beta\>>|)><around*|(|x<rsup|\<mu\>>-\<sigma\><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-\<sigma\><rsup|\<nu\>>|)>>>|<row|<cell|<around*|{|<wide|x|^><rsup|\<alpha\>>=\<sigma\><rsup|\<alpha\>>+<with|math-font|cal|O><around*|(|W|)>|}>>|<cell|-<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>><big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|(|x<rsup|\<mu\>>-\<sigma\><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-\<sigma\><rsup|\<nu\>>|)>>>|<row|<cell|<text|{Expand}>=>|<cell|<big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|(|x<rsup|\<mu\>>-\<sigma\><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-\<sigma\><rsup|\<nu\>>|)>>>|<row|<cell|>|<cell|-<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>\<nu\>><big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|(|x<rsup|\<mu\>>-\<sigma\><rsup|\<mu\>>|)>>>|<row|<cell|>|<cell|-<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>\<mu\>><big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|(|x<rsup|\<nu\>>-\<sigma\><rsup|\<nu\>>|)>>>|<row|<cell|+>|<cell|<frac|1|2>W<rsub|\<alpha\>\<beta\>><big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|(|x<rsup|\<alpha\>>-\<sigma\><rsup|\<alpha\>>|)><around*|(|x<rsup|\<beta\>>-\<sigma\><rsup|\<beta\>>|)><around*|(|x<rsup|\<mu\>>-\<sigma\><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-\<sigma\><rsup|\<nu\>>|)>>>|<row|<cell|->|<cell|<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>><big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|(|x<rsup|\<mu\>>-\<sigma\><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-\<sigma\><rsup|\<nu\>>|)>>>|<row|<cell|<around*|{|V<rsup|\<mu\>\<nu\>>=\<cdots\>|}>=>|<cell|V<rsup|\<mu\>\<nu\>>>>|<row|<cell|<around*|{|\<sigma\><rsup|\<mu\>>=V<rsup|\<mu\>>=\<cdots\>|}>>|<cell|-0>>|<row|<cell|<around*|{|\<sigma\><rsup|\<nu\>>=V<rsup|\<nu\>>=\<cdots\>|}>>|<cell|-0>>|<row|<cell|<around*|{|V<rsup|\<alpha\>\<beta\>\<mu\>\<nu\>>=\<cdots\>|}>>|<cell|+<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>\<mu\>\<nu\>>>>|<row|<cell|<around*|{|V<rsup|\<mu\>\<nu\>>=\<cdots\>|}>>|<cell|-<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>>V<rsup|\<mu\>\<nu\>>>>|<row|<cell|=>|<cell|V<rsup|\<mu\>\<nu\>>>>|<row|<cell|<around*|{|V<rsup|\<alpha\>\<beta\>\<mu\>\<nu\>>=V<rsub|c><rsup|\<alpha\>\<beta\>\<mu\>\<nu\>>+\<cdots\>|}>>|<cell|+<frac|1|2>W<rsub|\<alpha\>\<beta\>><around*|(|V<rsub|c><rsup|\<alpha\>\<beta\>\<mu\>\<nu\>>+V<rsup|\<alpha\>\<beta\>>V<rsup|\<mu\>\<nu\>>+V<rsup|\<alpha\>\<mu\>>V<rsup|\<beta\>\<nu\>>+V<rsup|\<alpha\>\<nu\>>V<rsup|\<beta\>\<mu\>>|)>>>|<row|<cell|>|<cell|-<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>>V<rsup|\<mu\>\<nu\>>>>|<row|<cell|=>|<cell|V<rsup|\<mu\>\<nu\>>+<frac|1|2>W<rsub|\<alpha\>\<beta\>><around*|(|V<rsub|c><rsup|\<alpha\>\<beta\>\<mu\>\<nu\>>+V<rsup|\<alpha\>\<mu\>>V<rsup|\<beta\>\<nu\>>+V<rsup|\<alpha\>\<nu\>>V<rsup|\<beta\>\<mu\>>|)>>>|<row|<cell|<text|{Combine}>=>|<cell|V<rsup|\<mu\>\<nu\>>+W<rsub|<around*|(|\<alpha\>\<beta\>|)>>V<rsup|\<alpha\>\<mu\>>V<rsup|\<beta\>\<nu\>>+<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsub|c><rsup|\<alpha\>\<beta\>\<mu\>\<nu\>>.>>>>
+      <tformat|<table|<row|<cell|>|<cell|<big|sum><rsub|x>p<rsub|E><around*|(|x|)><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-<wide|x|^><rsup|\<nu\>>|)>>>|<row|<cell|<around*|{|p<rsub|E>=p<rsub|0>+p<rsub|1>|}>=>|<cell|<big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-<wide|x|^><rsup|\<nu\>>|)>+<big|sum><rsub|x>p<rsub|1><around*|(|x|)><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-<wide|x|^><rsup|\<nu\>>|)>>>|<row|<cell|=>|<cell|<big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-<wide|x|^><rsup|\<nu\>>|)>>>|<row|<cell|<around*|{|p<rsub|1><around*|(|x|)>=\<cdots\>|}>>|<cell|+<big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|[|<frac|1|2>W<rsub|\<alpha\>\<beta\>><around*|(|x<rsup|\<alpha\>>-\<sigma\><rsup|\<alpha\>>|)><around*|(|x<rsup|\<beta\>>-\<sigma\><rsup|\<beta\>>|)>-<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>>|]><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-<wide|x|^><rsup|\<nu\>>|)>>>|<row|<cell|=>|<cell|<big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-<wide|x|^><rsup|\<nu\>>|)>>>|<row|<cell|<text|{Expand}>>|<cell|+<frac|1|2>W<rsub|\<alpha\>\<beta\>><big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|(|x<rsup|\<alpha\>>-\<sigma\><rsup|\<alpha\>>|)><around*|(|x<rsup|\<beta\>>-\<sigma\><rsup|\<beta\>>|)><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-<wide|x|^><rsup|\<nu\>>|)>>>|<row|<cell|>|<cell|-<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>><big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-<wide|x|^><rsup|\<nu\>>|)>>>|<row|<cell|<around*|{|<wide|x|^>=\<cdots\>|}>=>|<cell|<big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|(|x<rsup|\<mu\>>-\<sigma\><rsup|\<mu\>>-<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>\<mu\>>|)><around*|(|x<rsup|\<nu\>>-\<sigma\><rsup|\<nu\>>-<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>\<nu\>>|)>>>|<row|<cell|<around*|{|<wide|x|^><rsup|\<alpha\>>=\<sigma\><rsup|\<alpha\>>+<with|math-font|cal|O><around*|(|W|)>|}>>|<cell|+<frac|1|2>W<rsub|\<alpha\>\<beta\>><big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|(|x<rsup|\<alpha\>>-\<sigma\><rsup|\<alpha\>>|)><around*|(|x<rsup|\<beta\>>-\<sigma\><rsup|\<beta\>>|)><around*|(|x<rsup|\<mu\>>-\<sigma\><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-\<sigma\><rsup|\<nu\>>|)>>>|<row|<cell|<around*|{|<wide|x|^><rsup|\<alpha\>>=\<sigma\><rsup|\<alpha\>>+<with|math-font|cal|O><around*|(|W|)>|}>>|<cell|-<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>><big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|(|x<rsup|\<mu\>>-\<sigma\><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-\<sigma\><rsup|\<nu\>>|)>>>|<row|<cell|<text|{Expand}>=>|<cell|<big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|(|x<rsup|\<mu\>>-\<sigma\><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-\<sigma\><rsup|\<nu\>>|)>>>|<row|<cell|>|<cell|-<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>\<nu\>><big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|(|x<rsup|\<mu\>>-\<sigma\><rsup|\<mu\>>|)>>>|<row|<cell|>|<cell|-<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>\<mu\>><big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|(|x<rsup|\<nu\>>-\<sigma\><rsup|\<nu\>>|)>>>|<row|<cell|+>|<cell|<frac|1|2>W<rsub|\<alpha\>\<beta\>><big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|(|x<rsup|\<alpha\>>-\<sigma\><rsup|\<alpha\>>|)><around*|(|x<rsup|\<beta\>>-\<sigma\><rsup|\<beta\>>|)><around*|(|x<rsup|\<mu\>>-\<sigma\><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-\<sigma\><rsup|\<nu\>>|)>>>|<row|<cell|->|<cell|<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>><big|sum><rsub|x>p<rsub|0><around*|(|x|)><around*|(|x<rsup|\<mu\>>-\<sigma\><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-\<sigma\><rsup|\<nu\>>|)>>>|<row|<cell|<around*|{|V<rsup|\<mu\>\<nu\>>=\<cdots\>|}>=>|<cell|V<rsup|\<mu\>\<nu\>>>>|<row|<cell|<around*|{|\<sigma\><rsup|\<mu\>>=V<rsup|\<mu\>>=\<cdots\>|}>>|<cell|-0>>|<row|<cell|<around*|{|\<sigma\><rsup|\<nu\>>=V<rsup|\<nu\>>=\<cdots\>|}>>|<cell|-0>>|<row|<cell|<around*|{|V<rsup|\<alpha\>\<beta\>\<mu\>\<nu\>>=\<cdots\>|}>>|<cell|+<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>\<mu\>\<nu\>>>>|<row|<cell|<around*|{|V<rsup|\<mu\>\<nu\>>=\<cdots\>|}>>|<cell|-<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>>V<rsup|\<mu\>\<nu\>>>>|<row|<cell|=>|<cell|V<rsup|\<mu\>\<nu\>>>>|<row|<cell|<around*|{|V<rsup|\<alpha\>\<beta\>\<mu\>\<nu\>>=V<rsub|c><rsup|\<alpha\>\<beta\>\<mu\>\<nu\>>+\<cdots\>|}>>|<cell|+<frac|1|2>W<rsub|\<alpha\>\<beta\>><around*|(|V<rsub|c><rsup|\<alpha\>\<beta\>\<mu\>\<nu\>>+V<rsup|\<alpha\>\<beta\>>V<rsup|\<mu\>\<nu\>>+V<rsup|\<alpha\>\<mu\>>V<rsup|\<beta\>\<nu\>>+V<rsup|\<alpha\>\<nu\>>V<rsup|\<beta\>\<mu\>>|)>>>|<row|<cell|>|<cell|-<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>>V<rsup|\<mu\>\<nu\>>>>|<row|<cell|=>|<cell|V<rsup|\<mu\>\<nu\>>+<frac|1|2>W<rsub|\<alpha\>\<beta\>><around*|(|V<rsub|c><rsup|\<alpha\>\<beta\>\<mu\>\<nu\>>+V<rsup|\<alpha\>\<mu\>>V<rsup|\<beta\>\<nu\>>+V<rsup|\<alpha\>\<nu\>>V<rsup|\<beta\>\<mu\>>|)>>>|<row|<cell|<text|{Combine}>=>|<cell|V<rsup|\<mu\>\<nu\>>+W<rsub|<around*|(|\<alpha\>\<beta\>|)>>V<rsup|\<alpha\>\<mu\>>V<rsup|\<beta\>\<nu\>>+<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsub|c><rsup|\<alpha\>\<beta\>\<mu\>\<nu\>>.>>>>
     </align>
   </proof>
 
@@ -596,8 +622,7 @@
       symmetric>|}>=>|<cell|W<rsub|\<alpha\>\<beta\>> V<rsup|\<alpha\>\<mu\>>
       V<rsup|\<beta\>\<nu\>>>>|<row|<cell|<around*|{|V<rsup|\<alpha\><rsub|1>\<alpha\><rsub|2>>=\<delta\><rsup|\<alpha\><rsub|1>\<alpha\><rsub|2>>\<sigma\><rsup|a<rsub|1>><around*|(|1-\<sigma\><rsup|\<alpha\><rsub|1>>|)>|}>=>|<cell|W<rsub|\<mu\>\<nu\>>
       \<sigma\><rsup|\<mu\>><around*|(|1-\<sigma\><rsup|\<mu\>>|)>
-      \<sigma\><rsup|\<nu\>><around*|(|1-\<sigma\><rsup|\<nu\>>|)>>>|<row|<cell|<around*|{|up
-      to <with|math-font|cal|O><around*|(|W|)>|}>=>|<cell|W<rsub|\<mu\>\<nu\>>
+      \<sigma\><rsup|\<nu\>><around*|(|1-\<sigma\><rsup|\<nu\>>|)>>>|<row|<cell|<around*|{|<wide|x|^><rsup|\<alpha\>>=\<sigma\><rsup|\<alpha\>>+<with|math-font|cal|O><around*|(|W|)>|}>=>|<cell|W<rsub|\<mu\>\<nu\>>
       <wide|x|^><rsup|\<mu\>><around*|(|1-<wide|\<sigma\>|^><rsup|\<mu\>>|)>
       <wide|x|^><rsup|\<nu\>><around*|(|1-<wide|x|^><rsup|\<nu\>>|)>>>>>
     </align>
@@ -659,28 +684,6 @@
     <associate|auto-5|<tuple|4.1|?>>
     <associate|auto-6|<tuple|4.1.1|?>>
     <associate|auto-7|<tuple|4.1.2|?>>
-    <associate|footnote-1|<tuple|1|?>>
-    <associate|footnote-10|<tuple|10|?>>
-    <associate|footnote-11|<tuple|11|?>>
-    <associate|footnote-2|<tuple|2|?>>
-    <associate|footnote-3|<tuple|3|?>>
-    <associate|footnote-4|<tuple|4|?>>
-    <associate|footnote-5|<tuple|5|?>>
-    <associate|footnote-6|<tuple|6|?>>
-    <associate|footnote-7|<tuple|7|?>>
-    <associate|footnote-8|<tuple|8|?>>
-    <associate|footnote-9|<tuple|9|?>>
-    <associate|footnr-1|<tuple|1|?>>
-    <associate|footnr-10|<tuple|10|?>>
-    <associate|footnr-11|<tuple|11|?>>
-    <associate|footnr-2|<tuple|2|?>>
-    <associate|footnr-3|<tuple|3|?>>
-    <associate|footnr-4|<tuple|4|?>>
-    <associate|footnr-5|<tuple|5|?>>
-    <associate|footnr-6|<tuple|6|?>>
-    <associate|footnr-7|<tuple|7|?>>
-    <associate|footnr-8|<tuple|8|?>>
-    <associate|footnr-9|<tuple|9|?>>
   </collection>
 </references>
 
@@ -706,6 +709,14 @@
       <with|par-left|<quote|1tab>|4.1<space|2spc>Perturbation of Boltzmann
       Machine <datoms|<macro|x|<repeat|<arg|x>|<with|font-series|medium|<with|font-size|1|<space|0.2fn>.<space|0.2fn>>>>>|<htab|5mm>>
       <no-break><pageref|auto-5>>
+
+      <with|par-left|<quote|2tab>|4.1.1<space|2spc>0th-order
+      <datoms|<macro|x|<repeat|<arg|x>|<with|font-series|medium|<with|font-size|1|<space|0.2fn>.<space|0.2fn>>>>>|<htab|5mm>>
+      <no-break><pageref|auto-6>>
+
+      <with|par-left|<quote|2tab>|4.1.2<space|2spc>1st-order
+      <datoms|<macro|x|<repeat|<arg|x>|<with|font-series|medium|<with|font-size|1|<space|0.2fn>.<space|0.2fn>>>>>|<htab|5mm>>
+      <no-break><pageref|auto-7>>
     </associate>
   </collection>
 </auxiliary>
