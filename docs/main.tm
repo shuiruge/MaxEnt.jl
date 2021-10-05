@@ -598,11 +598,11 @@
     \;
 
     <\equation>
-      <wide|C|^><rsup|\<mu\>\<nu\>>=<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>+<with|math-font|cal|O><around*|(|W<rsup|2>|)>,
+      <wide|C|^><rsup|\<mu\>\<mu\>>=<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>+<with|math-font|cal|O><around*|(|W<rsup|2>|)>,
     </equation>
 
     <\equation>
-      \<sigma\><rsup|\<gamma\>>=<wide|x|^><rsup|\<gamma\>>-W<rsub|\<gamma\>\<gamma\>><wide|x|^><rsup|\<gamma\>><around*|(|1-<wide|x|^><rsup|\<gamma\>>|)><around*|(|<frac|1|2>-<wide|x|^><rsup|\<gamma\>>|)>;
+      \<sigma\><rsup|\<mu\>>=<wide|x|^><rsup|\<mu\>>-W<rsub|\<mu\>\<mu\>><wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)><around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>;
     </equation>
 
     and for <math|\<forall\>\<mu\>,\<nu\>> with <math|\<mu\>\<neq\>\<nu\>>,
@@ -661,13 +661,13 @@
     Finally, we have
 
     <\align>
-      <tformat|<table|<row|<cell|<wide|x|^><rsup|\<gamma\>>=>|<cell|V<rsup|\<gamma\>>+<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>\<gamma\>>>>|<row|<cell|=>|<cell|\<sigma\><rsup|\<gamma\>>+<frac|1|2>W<rsub|\<alpha\>\<beta\>>\<delta\><rsup|\<alpha\>\<beta\>\<gamma\>>\<sigma\><rsup|\<alpha\>><around*|(|1-\<sigma\><rsup|\<alpha\>>|)><around*|(|1-2\<sigma\><rsup|\<alpha\>>|)>>>|<row|<cell|=>|<cell|\<sigma\><rsup|\<gamma\>>+W<rsub|\<gamma\>\<gamma\>>\<sigma\><rsup|\<gamma\>><around*|(|1-\<sigma\><rsup|\<gamma\>>|)><around*|(|<frac|1|2>-\<sigma\><rsup|\<gamma\>>|)>.>>|<row|<cell|<around*|{|<wide|x|^><rsup|\<alpha\>>=\<sigma\><rsup|\<alpha\>>+<with|math-font|cal|O><around*|(|W|)>|}>=>|<cell|\<sigma\><rsup|\<gamma\>>+W<rsub|\<gamma\>\<gamma\>><wide|x|^><rsup|\<gamma\>><around*|(|1-<wide|x|^><rsup|\<gamma\>>|)><around*|(|<frac|1|2>-<wide|x|^><rsup|\<gamma\>>|)>>>>>
+      <tformat|<table|<row|<cell|<wide|x|^><rsup|\<mu\>>=>|<cell|V<rsup|\<mu\>>+<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>\<mu\>>>>|<row|<cell|=>|<cell|\<sigma\><rsup|\<mu\>>+<frac|1|2>W<rsub|\<alpha\>\<beta\>>\<delta\><rsup|\<alpha\>\<beta\>\<mu\>>\<sigma\><rsup|\<alpha\>><around*|(|1-\<sigma\><rsup|\<alpha\>>|)><around*|(|1-2\<sigma\><rsup|\<alpha\>>|)>>>|<row|<cell|=>|<cell|\<sigma\><rsup|\<mu\>>+W<rsub|\<mu\>\<mu\>>\<sigma\><rsup|\<mu\>><around*|(|1-\<sigma\><rsup|\<mu\>>|)><around*|(|<frac|1|2>-\<sigma\><rsup|\<mu\>>|)>.>>|<row|<cell|<around*|{|<wide|x|^><rsup|\<alpha\>>=\<sigma\><rsup|\<alpha\>>+<with|math-font|cal|O><around*|(|W|)>|}>=>|<cell|\<sigma\><rsup|\<mu\>>+W<rsub|\<mu\>\<mu\>><wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)><around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>>>>>
     </align>
 
     Thus
 
     <\equation*>
-      \<sigma\><rsup|\<gamma\>>=<wide|x|^><rsup|\<gamma\>>-W<rsub|\<gamma\>\<gamma\>><wide|x|^><rsup|\<gamma\>><around*|(|1-<wide|x|^><rsup|\<gamma\>>|)><around*|(|<frac|1|2>-<wide|x|^><rsup|\<gamma\>>|)>.
+      \<sigma\><rsup|\<mu\>>=<wide|x|^><rsup|\<mu\>>-W<rsub|\<mu\>\<mu\>><wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)><around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>.
     </equation*>
   </proof>
 </body>
