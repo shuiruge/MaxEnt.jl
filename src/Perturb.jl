@@ -5,31 +5,30 @@ include("data/Mnist.jl")
 struct PerturbedBoltzmannMachine
     σ
     W
-
-    function PerturbedBoltzmannMachine(
-        x̂::AbstractVector{T},
-        Ĉ::AbstractMatrix{T},
-        W_diag::AbstractVector{T}
-    ) where T<:Real
-        σ = @. x̂ - W_diag * x̂ * (1 - x̂) * (1/2 - x̂)
-
-        W = zeros(eltype(Ĉ), size(Ĉ))
-        for i = 1:size(Ĉ, 1)
-            for j = 1:size(Ĉ, 2)
-                if i == j
-                    W[i, j] = W_diag[i]
-                else
-                    W[i, j] = Ĉ[i, j] / x̂[i] / ( 1 -x̂[i]) / x̂[j] / (1 - x̂[j])
-                end
-            end
-        end
-
-        new(σ, W)
-    end
 end
 
-
 const PBM = PerturbedBoltzmannMachine
+
+
+function create_pbm(x̂::AbstractVector{T},
+                    Ĉ::AbstractMatrix{T},
+                    σ::AbstractVector{T}
+                    ) where T<:Real
+    W_diag = @. (x̂ - σ) / x̂ / (1 - x̂) / (1/2 - x̂)
+
+    W = zeros(eltype(Ĉ), size(Ĉ))
+    for i = 1:size(Ĉ, 1)
+        for j = 1:size(Ĉ, 2)
+            if i == j
+                W[i, j] = W_diag[i]
+            else
+                W[i, j] = Ĉ[i, j] / x̂[i] / ( 1 -x̂[i]) / x̂[j] / (1 - x̂[j])
+            end
+        end
+    end
+
+    PBM(σ, W)
+end
 
 
 function getx̂(m::PBM)

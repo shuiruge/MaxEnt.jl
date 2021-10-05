@@ -238,21 +238,22 @@
       <math|<with|math-font|cal|M>=<with|math-font|cal|V>\<times\><with|math-font|cal|H>>.
       Let <math|U\<in\>\<bbb-R\><rsup|<around*|(|n\<times\>m|)>>>,
       <math|b\<in\>\<bbb-R\><rsup|n>>, <math|c\<in\>\<bbb-R\><rsup|m>>. Then
-      a restricted Boltzmann machine is defined by energy function
+      a restricted Boltzmann machine is defined by energy function<\footnote>
+        We use latin letters for latent variables.
+      </footnote>
 
       <\equation>
-        E<around*|(|v,h;U,b,c|)>\<assign\>-<big|sum><rsub|\<alpha\>,\<beta\>>U<rsub|\<alpha\>\<beta\>>
-        <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|h<rsup|\<beta\>>-<wide|h|^><rsup|\<beta\>>|)>-<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>
-        v<rsup|\<alpha\>>-<big|sum><rsub|\<alpha\>>c<rsub|\<alpha\>>
-        h<rsup|\<alpha\>>.
+        E<around*|(|v,h;U,b,c|)>\<assign\>-<big|sum><rsub|\<alpha\>,i>U<rsub|\<alpha\>i>
+        <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|h<rsup|i>-<wide|h|^><rsup|i>|)>-<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>
+        v<rsup|\<alpha\>>-<big|sum><rsub|i>c<rsub|i> h<rsup|i>.
       </equation>
 
       <item>Direct calculation gives
 
       <\equation>
-        E<rsub|eff><around*|(|v;U,b,c|)>=<big|sum><rsub|\<alpha\>><around*|(|<big|sum><rsub|\<beta\>>U<rsub|\<alpha\>\<beta\>>
-        v<rsup|\<alpha\>><wide|h|^><rsup|\<beta\>>-b<rsub|\<alpha\>>|)>-s<rsub|+><around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>\<beta\>>
-        <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>+c<rsub|\<beta\>>|)>,
+        E<rsub|eff><around*|(|v;U,b,c|)>=<big|sum><rsub|\<alpha\>><around*|(|<big|sum><rsub|i>U<rsub|\<alpha\>i>
+        v<rsup|\<alpha\>><wide|h|^><rsup|i>-b<rsub|\<alpha\>>v<rsup|\<alpha\>>|)>-<big|sum><rsub|i>s<rsub|+><around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>i>
+        <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>+c<rsub|i>|)>,
       </equation>
 
       where soft-plus <math|s> is defined as
@@ -278,57 +279,63 @@
 
     <\align>
       <tformat|<table|<row|<cell|>|<cell|E<rsub|eff><around*|(|v|)>>>|<row|<cell|<text|{Definition}>=>|<cell|-ln
-      <big|sum><rsub|h>exp<around*|(|-E<around*|(|v,h|)>|)>>>|<row|<cell|<text|{Definition}>=>|<cell|-ln<big|sum><rsub|h>exp<around*|(|<big|sum><rsub|\<alpha\>,\<beta\>>U<rsub|\<alpha\>\<beta\>>
-      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|h<rsup|\<beta\>>-<wide|h|^><rsup|\<beta\>>|)>+<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>
-      v<rsup|\<alpha\>>+<big|sum><rsub|\<alpha\>>c<rsub|\<alpha\>>
-      h<rsup|\<alpha\>>|)>>>|<row|<cell|<text|{Combine}>=>|<cell|-<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>
-      v<rsup|\<alpha\>>-ln<big|sum><rsub|h>exp<around*|[|<big|sum><rsub|\<beta\>><around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>\<beta\>>
-      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>|)><around*|(|h<rsup|\<beta\>>-<wide|h|^><rsup|\<beta\>>|)>+<big|sum><rsub|\<beta\>>c<rsub|\<beta\>>
-      h<rsup|\<beta\>>|]>>>|<row|<cell|<around*|{|exp<big|sum>=<big|prod>exp|}>=>|<cell|-<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>
-      v<rsup|\<alpha\>>-ln <big|prod><rsub|\<beta\>>
-      <big|sum><rsub|h<rsup|\<beta\>=0,1>>exp<around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>\<beta\>>
-      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|h<rsup|\<beta\>>-<wide|h|^><rsup|\<beta\>>|)>+c<rsub|\<beta\>>
-      h<rsup|\<beta\>>|)>>>|<row|<cell|<around*|{|ln<big|prod>=<big|sum>ln|}>=>|<cell|-<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>
-      v<rsup|\<alpha\>>-<big|sum><rsub|\<beta\>>ln
-      <big|sum><rsub|h<rsup|\<beta\>=0,1>>exp<around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>\<beta\>>
-      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|h<rsup|\<beta\>>-<wide|h|^><rsup|\<beta\>>|)>+c<rsub|\<beta\>>
-      h<rsup|\<beta\>>|)>.>>>>
+      <big|sum><rsub|h>exp<around*|(|-E<around*|(|v,h|)>|)>>>|<row|<cell|<text|{Definition}>=>|<cell|-ln<big|sum><rsub|h>exp<around*|(|<big|sum><rsub|\<alpha\>,i>U<rsub|\<alpha\>\<beta\>>
+      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|h<rsup|i>-<wide|h|^><rsup|i>|)>+<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>
+      v<rsup|\<alpha\>>+<big|sum><rsub|i>c<rsub|i>
+      h<rsup|i>|)>>>|<row|<cell|<text|{Extract <math|b
+      v>}>=>|<cell|-<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>
+      v<rsup|\<alpha\>>-ln<big|sum><rsub|h>exp<around*|[|<big|sum><rsub|\<alpha\>,i>U<rsub|\<alpha\>\<beta\>>
+      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|h<rsup|i>-<wide|h|^><rsup|i>|)>+<big|sum><rsub|i>c<rsub|i>
+      h<rsup|i>|]>>>|<row|<cell|<text|{Combine}>=>|<cell|-<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>
+      v<rsup|\<alpha\>>-ln<big|sum><rsub|h>exp<around*|[|<big|sum><rsub|i><around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>i>
+      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>|)><around*|(|h<rsup|i>-<wide|h|^><rsup|i>|)>+<big|sum><rsub|i>c<rsub|i>
+      h<rsup|i>|]>>>|<row|<cell|<around*|{|exp<big|sum>=<big|prod>exp|}>=>|<cell|-<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>
+      v<rsup|\<alpha\>>-ln <big|prod><rsub|i>
+      <big|sum><rsub|h<rsup|i>=0,1>exp<around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>i>
+      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|h<rsup|i>-<wide|h|^><rsup|i>|)>+c<rsub|i>
+      h<rsup|i>|)>>>|<row|<cell|<around*|{|ln<big|prod>=<big|sum>ln|}>=>|<cell|-<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>
+      v<rsup|\<alpha\>>-<big|sum><rsub|i>ln
+      <big|sum><rsub|h<rsup|i>=0,1>exp<around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>i>
+      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|h<rsup|i>-<wide|h|^><rsup|i>|)>+c<rsub|i>
+      h<rsup|i>|)>.>>>>
     </align>
 
     Since
 
     <\align>
       <tformat|<table|<row|<cell|>|<cell|
-      <big|sum><rsub|h<rsup|\<beta\>=0,1>>exp<around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>\<beta\>>
-      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|h<rsup|\<beta\>>-<wide|h|^><rsup|\<beta\>>|)>+c<rsub|\<beta\>>
-      h<rsup|\<beta\>>|)>>>|<row|<cell|=>|<cell|exp<around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>\<beta\>>
-      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|1-<wide|h|^><rsup|\<beta\>>|)>+c<rsub|\<beta\>>|)>+exp<around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>\<beta\>>
-      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|-<wide|h|^><rsup|\<beta\>>|)>|)>>>|<row|<cell|<text|{Extract}>=>|<cell|exp<around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>\<beta\>>
-      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|-<wide|h|^><rsup|\<beta\>>|)>|)><around*|[|exp<around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>\<beta\>>
-      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>+c<rsub|\<beta\>>|)>+1|]>,>>>>
+      <big|sum><rsub|h<rsup|i>=0,1>exp<around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>i>
+      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|h<rsup|i>-<wide|h|^><rsup|i>|)>+c<rsub|i>
+      h<rsup|i>|)>>>|<row|<cell|=>|<cell|exp<around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>i>
+      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|1-<wide|h|^><rsup|i>|)>+c<rsub|i>|)>+exp<around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>i>
+      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|-<wide|h|^><rsup|i>|)>|)>>>|<row|<cell|<text|{Extract}>=>|<cell|exp<around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>i>
+      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|-<wide|h|^><rsup|i>|)>|)><around*|[|exp<around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>i>
+      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>+c<rsub|i>|)>+1|]>,>>>>
     </align>
 
     we have
 
     <\align>
       <tformat|<table|<row|<cell|>|<cell|E<rsub|eff><around*|(|v|)>>>|<row|<cell|<text|{Previous}>=>|<cell|-<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>
-      v<rsup|\<alpha\>>-<big|sum><rsub|\<beta\>>ln
-      <big|sum><rsub|h<rsup|\<beta\>=0,1>>exp<around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>\<beta\>>
-      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|h<rsup|\<beta\>>-<wide|h|^><rsup|\<beta\>>|)>+c<rsub|\<beta\>>
-      h<rsup|\<beta\>>|)>>>|<row|<cell|<text|{Plugin}>=>|<cell|-<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>
-      v<rsup|\<alpha\>>+<big|sum><rsub|\<beta\>><big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>\<beta\>>
-      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><wide|h|^><rsup|\<beta\>>>>|<row|<cell|>|<cell|-<big|sum><rsub|\<beta\>>ln<around*|[|exp<around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>\<beta\>>
-      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>+c<rsub|\<beta\>>|)>+1|]>>>|<row|<cell|<around*|{|s<around*|(|x|)>\<assign\>\<cdots\>|}>=>|<cell|-<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>
-      v<rsup|\<alpha\>>+<big|sum><rsub|\<alpha\>,\<beta\>>U<rsub|\<alpha\>\<beta\>>
-      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><wide|h|^><rsup|\<beta\>>-s<around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>\<beta\>>
-      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>+c<rsub|\<beta\>>|)>>>|<row|<cell|<text|{Extract
+      v<rsup|\<alpha\>>-<big|sum><rsub|i>ln
+      <big|sum><rsub|h<rsup|i>=0,1>exp<around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>i>
+      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|h<rsup|i>-<wide|h|^><rsup|i>|)>+c<rsub|i>
+      h<rsup|i>|)>>>|<row|<cell|<text|{Plugin}>=>|<cell|-<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>
+      v<rsup|\<alpha\>>+<big|sum><rsub|i><big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>i>
+      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><wide|h|^><rsup|i>>>|<row|<cell|>|<cell|-<big|sum><rsub|i>ln<around*|[|exp<around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>i>
+      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>+c<rsub|i>|)>+1|]>>>|<row|<cell|<around*|{|s<around*|(|x|)>\<assign\>\<cdots\>|}>=>|<cell|-<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>
+      v<rsup|\<alpha\>>+<big|sum><rsub|\<alpha\>,i>U<rsub|\<alpha\>i>
+      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><wide|h|^><rsup|i>-<big|sum><rsub|i>s<around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>i>
+      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>+c<rsub|i>|)>>>|<row|<cell|<text|{Extract
       <math|Const>}>=>|<cell|-<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>
-      v<rsup|\<alpha\>>+<big|sum><rsub|\<alpha\>,\<beta\>>U<rsub|\<alpha\>\<beta\>>
-      v<rsup|\<alpha\>><wide|h|^><rsup|\<beta\>>-s<around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>\<beta\>>
-      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>+c<rsub|\<beta\>>|)>+Const>>|<row|<cell|<text|{Combine}>=>|<cell|<big|sum><rsub|\<alpha\>><around*|(|<big|sum><rsub|\<beta\>>U<rsub|\<alpha\>\<beta\>>
-      v<rsup|\<alpha\>><wide|h|^><rsup|\<beta\>>-b<rsub|\<alpha\>>|)>-s<around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>\<beta\>>
-      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>+c<rsub|\<beta\>>|)>+Const.>>>>
+      v<rsup|\<alpha\>>+<big|sum><rsub|\<alpha\>,i>U<rsub|\<alpha\>i>
+      v<rsup|\<alpha\>><wide|h|^><rsup|i>-<big|sum><rsub|i>s<around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>i>
+      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>+c<rsub|i>|)>+Const>>|<row|<cell|<text|{Combine}>=>|<cell|<big|sum><rsub|\<alpha\>><around*|(|<big|sum><rsub|i>U<rsub|\<alpha\>i>
+      v<rsup|\<alpha\>><wide|h|^><rsup|i>-b<rsub|\<alpha\>>v<rsup|\<alpha\>>|)>-<big|sum><rsub|i>s<around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>i>
+      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>+c<rsub|i>|)>+Const.>>>>
     </align>
+
+    \ The constant, which will be eliminated by <math|Z>, can be omitted.
   </proof>
 
   <section|Perturbation Theory>
@@ -670,6 +677,98 @@
       \<sigma\><rsup|\<mu\>>=<wide|x|^><rsup|\<mu\>>-W<rsub|\<mu\>\<mu\>><wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)><around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>.
     </equation*>
   </proof>
+
+  <subsection|Perturbation of Restricted Boltzmann Machine>
+
+  <\theorem>
+    For <math|\<forall\>i>, let <math|<wide|h|^><rsup|i>\<equiv\>1/2> and
+    <math|c<rsub|i>\<equiv\>0>, then we have
+
+    <\equation>
+      E<rsub|eff><around*|(|v;U,b,c|)>=-<frac|1|2>W<rsup|eff><rsub|\<alpha\>\<beta\>><around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|v<rsup|\<beta\>>-<wide|v|^><rsup|\<beta\>>|)>-b<rsup|eff><rsub|\<alpha\>>v<rsup|\<alpha\>>+<with|math-font|cal|O><around*|(|U<rsup|3>|)>,
+    </equation>
+
+    where
+
+    <\equation>
+      b<rsup|eff><rsub|\<alpha\>>\<assign\>b<rsub|\<alpha\>>,
+    </equation>
+
+    and
+
+    <\equation>
+      W<rsup|eff><rsub|\<alpha\>\<beta\>>\<assign\><frac|1|4><big|sum><rsub|i>U<rsub|\<alpha\>i>
+      U<rsub|\<beta\>i>.
+    </equation>
+
+    That is, restricted Boltzmann machine reduces to a Boltzmann machine.
+  </theorem>
+
+  <\proof>
+    Recall that
+
+    <\equation>
+      E<rsub|eff><around*|(|v;U,b,c|)>=<big|sum><rsub|\<alpha\>><around*|(|<big|sum><rsub|i>U<rsub|\<alpha\>i>
+      v<rsup|\<alpha\>><wide|h|^><rsup|i>-b<rsub|\<alpha\>>v<rsup|\<alpha\>>|)>-<big|sum><rsub|i>s<rsub|+><around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>i>
+      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>+c<rsub|i>|)>,
+    </equation>
+
+    where soft-plus <math|s> is defined as
+
+    <\equation>
+      s<around*|(|x|)>\<assign\>ln<around*|(|1+\<mathe\><rsup|x>|)>.
+    </equation>
+
+    Taylor expansion of soft-plus is
+
+    <\equation*>
+      s<around*|(|x|)>=0+<frac|x|2>+<frac|x<rsup|2>|8>+<with|math-font|cal|O><around*|(|x<rsup|3>|)>.
+    </equation*>
+
+    Thus
+
+    <\align>
+      <tformat|<table|<row|<cell|E<rsub|eff><around*|(|v|)>=>|<cell|<big|sum><rsub|\<alpha\>><around*|(|<big|sum><rsub|i>U<rsub|\<alpha\>i>
+      v<rsup|\<alpha\>><wide|h|^><rsup|i>-b<rsub|\<alpha\>>v<rsup|\<alpha\>>|)>>>|<row|<cell|<text|{Taylor
+      expand}>->|<cell|<frac|1|2><big|sum><rsub|i><around*|[|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>i>
+      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>+c<rsub|i>|]>-<frac|1|8><big|sum><rsub|i><around*|[|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>i>
+      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>+c<rsub|i>|]><rsup|2>>>|<row|<cell|>|<cell|+<with|math-font|cal|O><around*|(|U<rsup|3>+c<rsup|3>|)>>>|<row|<cell|<text|{Expand}>=>|<cell|<big|sum><rsub|\<alpha\>,i>U<rsub|\<alpha\>i>
+      v<rsup|\<alpha\>><wide|h|^><rsup|i>-<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>v<rsup|\<alpha\>>>>|<row|<cell|>|<cell|-<frac|1|2><big|sum><rsub|\<alpha\>,i>U<rsub|\<alpha\>i>
+      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>-<frac|1|2><big|sum><rsub|i>c<rsub|i>>>|<row|<cell|>|<cell|-<frac|1|8><big|sum><rsub|\<alpha\>,\<beta\>><around*|(|<big|sum><rsub|i>U<rsub|\<alpha\>i>
+      U<rsub|\<beta\>i>|)><around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|v<rsup|\<beta\>>-<wide|v|^><rsup|\<beta\>>|)>-<frac|1|4><big|sum><rsub|\<alpha\>,i>U<rsub|\<alpha\>i>
+      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>c<rsub|i>-<frac|1|8><big|sum><rsub|i>c<rsub|i><rsup|2>>>|<row|<cell|>|<cell|+<with|math-font|cal|O><around*|(|U<rsup|3>+c<rsup|3>|)>>>|<row|<cell|<around*|[|\<propto\><big|sum><rsub|\<alpha\>,i>U<rsub|\<alpha\>i>
+      v<rsup|\<alpha\>>|]>=>|<cell|<big|sum><rsub|\<alpha\>,i>U<rsub|\<alpha\>i>v<rsup|\<alpha\>><around*|(|<wide|h|^><rsup|i>-<frac|1|2>-<frac|c<rsub|i>|4>|)>>>|<row|<cell|>|<cell|-<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>v<rsup|\<alpha\>>>>|<row|<cell|>|<cell|-<frac|1|8><big|sum><rsub|\<alpha\>,\<beta\>><around*|(|<big|sum><rsub|i>U<rsub|\<alpha\>i>
+      U<rsub|\<beta\>i>|)><around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|v<rsup|\<beta\>>-<wide|v|^><rsup|\<beta\>>|)>>>|<row|<cell|<text|[Without
+      <math|v>]>>|<cell|+Const>>|<row|<cell|>|<cell|+<with|math-font|cal|O><around*|(|U<rsup|3>+c<rsup|3>|)>>>>>
+    </align>
+
+    Let <math|<wide|h|^><rsup|i>\<equiv\>1/2> and <math|c<rsub|i>\<equiv\>0>,
+    we have
+
+    <\align>
+      <tformat|<table|<row|<cell|E<rsub|eff><around*|(|v|)>=>|<cell|-<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>v<rsup|\<alpha\>>>>|<row|<cell|>|<cell|-<frac|1|8><big|sum><rsub|\<alpha\>,\<beta\>><around*|(|<big|sum><rsub|i>U<rsub|\<alpha\>i>
+      U<rsub|\<beta\>i>|)><around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|v<rsup|\<beta\>>-<wide|v|^><rsup|\<beta\>>|)>>>|<row|<cell|>|<cell|+Const>>|<row|<cell|>|<cell|+<with|math-font|cal|O><around*|(|U<rsup|3>|)>.>>>>
+    </align>
+
+    That is, omitting the constant, which will be eliminated by <math|Z>,
+
+    <\equation>
+      E<rsub|eff><around*|(|v|)>=-<frac|1|2>W<rsup|eff><rsub|\<alpha\>\<beta\>><around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|v<rsup|\<beta\>>-<wide|v|^><rsup|\<beta\>>|)>-b<rsup|eff><rsub|\<alpha\>>v<rsup|\<alpha\>>+<with|math-font|cal|O><around*|(|U<rsup|3>|)>,
+    </equation>
+
+    where
+
+    <\equation*>
+      b<rsup|eff><rsub|\<alpha\>>\<assign\>b<rsub|\<alpha\>>,
+    </equation*>
+
+    and
+
+    <\equation>
+      W<rsup|eff><rsub|\<alpha\>\<beta\>>\<assign\><frac|1|4><big|sum><rsub|i>U<rsub|\<alpha\>i>
+      U<rsub|\<beta\>i>.
+    </equation>
+  </proof>
 </body>
 
 <initial|<\collection>
@@ -684,6 +783,9 @@
     <associate|auto-5|<tuple|4.1|?>>
     <associate|auto-6|<tuple|4.1.1|?>>
     <associate|auto-7|<tuple|4.1.2|?>>
+    <associate|auto-8|<tuple|4.2|?>>
+    <associate|footnote-1|<tuple|1|?>>
+    <associate|footnr-1|<tuple|1|?>>
   </collection>
 </references>
 
