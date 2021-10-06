@@ -59,3 +59,22 @@ end
 function L∞(x)
     max(abs.(x)...)
 end
+
+
+"""
+Iteratively run x = f(x) until `maxstep` steps or reaching fixed point.
+"""
+function recur(maxstep::Integer, f, init)
+    final_step = 1
+    x = init
+    for step = 1:maxstep
+        next_x = f(x)
+        if next_x == x
+            break
+        else
+            x = next_x
+        end
+        final_step += 1
+    end
+    x, final_step
+end

@@ -1,51 +1,59 @@
 include("Utils.jl")
 include("data/Mnist.jl")
 
+using LinearAlgebra
+
 
 struct PerturbedBoltzmannMachine
-    σ
+    x̂
+    b
     W
 end
 
+
+"""
+Abbreviation.
+"""
 const PBM = PerturbedBoltzmannMachine
 
 
-function create_pbm(x̂::AbstractVector{T},
-                    Ĉ::AbstractMatrix{T},
-                    σ::AbstractVector{T}
-                    ) where T<:Real
-    W_diag = @. (x̂ - σ) / x̂ / (1 - x̂) / (1/2 - x̂)
+"""
+Creates PBM from real world data.
+"""
+function getPBM(x̂::AbstractVector{T},
+                Ĉ::AbstractMatrix{T},
+                σ::AbstractVector{T}
+                ) where T<:Real
+
+    # Computes W[i, i]
+    function getdiag(x̂, σ)
+        if (x̂ == 0.5) && (σ == 0.5)
+            one(σ)
+        else
+            (x̂ - σ) / x̂ / (1 - x̂) / (1/2 - x̂)
+        end
+    end
 
     W = zeros(eltype(Ĉ), size(Ĉ))
     for i = 1:size(Ĉ, 1)
         for j = 1:size(Ĉ, 2)
             if i == j
-                W[i, j] = W_diag[i]
+                W[i, j] = getdiag(x̂[i], σ[i])
             else
-                W[i, j] = Ĉ[i, j] / x̂[i] / ( 1 -x̂[i]) / x̂[j] / (1 - x̂[j])
+                W[i, j] = Ĉ[i, j] / x̂[i] / ( 1 - x̂[i]) / x̂[j] / (1 - x̂[j])
             end
         end
     end
 
-    PBM(σ, W)
-end
-
-
-function getx̂(m::PBM)
-    σ, W = m.σ, m.W
-    W_diag = diag(W)
-
-    @. σ + W_diag * σ * (1 - σ) * (1/2 - σ)
+    PBM(x̂, invσ.(σ), W)
 end
 
 
 function activate(m::PBM, x::Datum; deterministic=true)
-    b = @. invσ(m.σ)
-    x̂ = getx̂(m)
     W_diag = diag(m.W)
-    c = @. b + (1/2 - x̂) * W_diag
+    c = @. m.b + (1/2 - m.x̂) * W_diag
 
-    nodes = 1:size(m.σ, 1)
+    nodes = 1:size(m.b, 1)
 
     # Order of node for activation
     indices = (deterministic) ? nodes : shuffle(nodes)
@@ -56,7 +64,7 @@ function activate(m::PBM, x::Datum; deterministic=true)
         a = c[i]
         for j = nodes
             if i != j
-                a += m.W[i, j] * (x[j] - x̂[j])
+                a += m.W[i, j] * (x[j] - m.x̂[j])
             end
         end
         x[i] = (a > 0) ? one(x[i]) : zero(x[i])
@@ -65,22 +73,88 @@ function activate(m::PBM, x::Datum; deterministic=true)
 end
 
 
-function activate(m::PBM; deterministic=true)
-    x -> activate(m, x; deterministic=deterministic)
+struct PerturbedRestrictedBoltzmannMachine
+    x̂
+    b
+    U
 end
 
 
-function recur(maxstep::Integer, fn, init)
-    final_step = 1
-    x = init
-    for step = 1:maxstep
-        next_x = fn(x)
-        if next_x == x
-            break
-        else
-            x = next_x
+"""
+Abbreviation.
+"""
+const PRBM = PerturbedRestrictedBoltzmannMachine
+
+
+"""
+Creates PRBM from PBM. The δ is for clipping the eigen-values.
+"""
+function getPRBM(m::PBM, δ)
+    λ, V = eigen(m.W)
+    λᵣ = @. real(λ)
+    Vᵣ = @. real(V)
+
+    indices = filter(i -> λᵣ[i] > δ, 1:size(λᵣ, 1))
+    n = length(indices)
+    N = size(Vᵣ, 1)
+
+    U = zeros(eltype(Vᵣ), N, n)
+    for i = 1:N
+        for j = 1:n
+            k = indices[j]
+            U[i, j] = Vᵣ[i, k] * (2 * √λᵣ[k])
         end
-        final_step += 1
     end
-    x, final_step
+
+    PRBM(m.x̂, m.b, U)
+end
+
+
+function activate(m::PBM, x::Datum; deterministic=true)
+    W_diag = diag(m.W)
+    c = @. m.b + (1/2 - m.x̂) * W_diag
+
+    nodes = 1:size(m.b, 1)
+
+    # Order of node for activation
+    indices = (deterministic) ? nodes : shuffle(nodes)
+
+    # Activate
+    x = copy(x)
+    @inbounds for i = indices
+        a = c[i]
+        for j = nodes
+            if i != j
+                a += m.W[i, j] * (x[j] - m.x̂[j])
+            end
+        end
+        x[i] = (a > 0) ? one(x[i]) : zero(x[i])
+    end
+    x
+end
+
+
+"""
+Creates PBM from PRBM.
+"""
+function getPBM(m::PRBM)
+    W = m.U * transpose(m.U) ./ 4
+    PBM(m.x̂, m.b, W)
+end
+
+
+function getlatent(m::PRBM, x::Datum)
+    f(x) = (x > 0) ? one(x) : zero(x)
+    f.(transpose(m.U) * x)
+end
+
+
+function getambient(m::PRBM, z::Datum)
+    f(x) = (x > 0) ? one(x) : zero(x)
+    f.(m.U * z .+ m.b)
+end
+
+
+function activate(m::PRBM, x::Datum)
+    getambient(m, getlatent(m, x))
 end

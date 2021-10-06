@@ -60,3 +60,9 @@ function addnoise(binary::Datum, bits::Integer)
 
     map(flip, indices)
 end
+
+
+function filter_by_labels(X, y, labels)
+    indices = filter(i -> y[i] ∈ labels, 1:size(y, 1))
+    cat([X[:, :, i] for i in indices]...; dims=3)
+end
