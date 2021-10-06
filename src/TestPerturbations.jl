@@ -1,4 +1,4 @@
-include("Perturb.jl")
+include("Perturbations.jl")
 
 using MLDatasets: MNIST
 using Statistics: cov, mean, std
