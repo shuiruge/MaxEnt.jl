@@ -1,5 +1,5 @@
 include("Utils.jl")
-include("data/Mnist.jl")
+include("Data/Mnist.jl")
 
 using LinearAlgebra
 

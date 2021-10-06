@@ -5,7 +5,6 @@ using Statistics: cov, mean, std
 using LinearAlgebra
 using Plots
 using TSne
-using Distances: hamming
 
 # Data
 X₀, y₀ = MNIST.traindata()
@@ -46,22 +45,31 @@ y2, final_step = recur(100, x -> activate(m̃, x), x̃)
 denoised_error_1 = sum(Int.(y1 .!= x))
 denoised_error_2 = sum(Int.(y2 .!= x))
 
-# Latent space
+"""
+Auxillary function for t-SNE.
+"""
+function rescale(A; dims=1)
+    (A .- mean(A, dims=dims)) ./ max.(std(A, dims=dims), eps())
+end
+
+# For better quality of visualization, we prefer less labels
 X₂, y₂ = filter_by_labels(X₀, y₀[1:3000], [1, 5, 0])
 X₂ = preprocess(X₂, (32, 32))
-cat_(xs) = cat(xs...; dims=2)
-Zi = [getlatent(rm, X₂[:, i]) for i = 1:size(X₂, 2)] |> cat_
-Zf = [getlatent(rm, recur(100, x -> activate(rm, x), X₂[:, i])[1]) for i = 1:size(X₂, 2)] |> cat_
 
-# Visulize the latent
-rescale(A; dims=1) = (A .- mean(A, dims=dims)) ./ max.(std(A, dims=dims), eps())
-Zi2d = tsne(rescale(Zi)', 2)
-Zf2d = tsne(rescale(Zf)', 2)
-scatter(Zi2d[:, 1], Zi2d[:, 2], color=Int.(y₂), title="t-SNE of latent", legends=false, alpha=0.65)
-scatter(Zf2d[:, 1], Zf2d[:, 2], color=Int.(y₂), title="t-SNE of latent", legends=false, alpha=0.65)
+# Latent encoding
+Z = nothing
+for step = 1:10
+    if Z === nothing
+        Z = [getlatent(rm, X₂[:, i]) for i = 1:size(X₂, 2)]
+    else
+        Z = [getlatent(rm, getambient(rm, z)) for z in Z]
+    end
 
-function instance(i, j)
-    hamming = sum(Int.(Zf[:, i] .!= Zf[:, j]))
-    println("y: $(y₂[i]) - $(y₂[j])\nhamming: $hamming")
+    # Projection to 2D
+    Z2d = tsne(rescale(cat(Z...; dims=2))', 2)
+
+    # Plots and save the plot
+    fig = scatter(Z2d[:, 1], Z2d[:, 2], color=Int.(y₂), title="t-SNE of latent", legends=false, alpha=0.65)
+    output_file = "../data/plots/tsne_at_step_$(step).png"
+    savefig(fig, output_file)
 end
-instance(2, 102)
