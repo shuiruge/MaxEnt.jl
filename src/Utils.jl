@@ -51,6 +51,15 @@ function invσ(x)
 end
 
 
+function hardσ(x)
+    if x > 0
+        one(x)
+    else
+        zero(x)
+    end
+end
+
+
 function flatten(x)
     reshape(x, prod(size(x)))
 end

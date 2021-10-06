@@ -67,7 +67,7 @@ function activate(m::PBM, x::Datum; deterministic=true)
                 a += m.W[i, j] * (x[j] - m.x̂[j])
             end
         end
-        x[i] = (a > 0) ? one(x[i]) : zero(x[i])
+        x[i] = hardσ(a)
     end
     x
 end
@@ -128,7 +128,7 @@ function activate(m::PBM, x::Datum; deterministic=true)
                 a += m.W[i, j] * (x[j] - m.x̂[j])
             end
         end
-        x[i] = (a > 0) ? one(x[i]) : zero(x[i])
+        x[i] = hardσ(a)
     end
     x
 end
@@ -144,14 +144,12 @@ end
 
 
 function getlatent(m::PRBM, x::Datum)
-    f(x) = (x > 0) ? one(x) : zero(x)
-    f.(transpose(m.U) * x)
+    hardσ.(transpose(m.U) * (x .- m.x̂))
 end
 
 
 function getambient(m::PRBM, z::Datum)
-    f(x) = (x > 0) ? one(x) : zero(x)
-    f.(m.U * z .+ m.b)
+    hardσ.(m.U * (z .- 1/2) .+ m.b)
 end
 
 

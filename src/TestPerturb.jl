@@ -1,10 +1,11 @@
 include("Perturb.jl")
 
 using MLDatasets: MNIST
-using Statistics: cov
+using Statistics: cov, mean, std
 using LinearAlgebra
 using Plots
 using TSne
+using Distances: hamming
 
 # Data
 X₀, y₀ = MNIST.traindata()
@@ -16,7 +17,7 @@ Ĉ = cov(X; dims=2, corrected=false)
 # σ = map(x -> one(x) / 2, x̂)
 σ = x̂
 m = getPBM(x̂, Ĉ, σ)
-histogram(flatten(m.W); bins=100, title="W")
+histogram(flatten(m.W); bins=100, title="W", legends=false)
 
 # Analyze kernel
 λ, V = eigen(m.W)
@@ -24,14 +25,16 @@ Vᵣ = @. real(V)
 Vᵢ = @. imag(V)
 λᵣ = @. real(λ)
 λᵢ = @. imag(λ)
-histogram(λᵣ; bins=100, title="Real part of λ")
+histogram(λᵣ; bins=100, title="Real part of λ", legends=false)
 
 # Construct PRBM
-rm = getPRBM(m, 0.1)
-histogram(flatten(rm.U); bins=100, title="U")
+rm = getPRBM(m, 1.)
+size(rm.U)
+histogram(flatten(rm.U); bins=100, title="U", legends=false)
 
 # Re-construct PBM from PRBM
 m̃ = getPBM(rm)
+histogram(flatten(m.W - m̃.W); bins=100, title="ΔW", legends=false)
 
 # Denoise
 i = 3
@@ -44,13 +47,21 @@ denoised_error_1 = sum(Int.(y1 .!= x))
 denoised_error_2 = sum(Int.(y2 .!= x))
 
 # Latent space
-y₂ = y₀[1:1000]
-X₂ = preprocess(filter_by_labels(X₀, y₂, [1, 2, 3]), (32, 32))
-R = [recur(100, x -> activate(rm, x), X₂[:, i])[1] for i = 1:size(X₂, 2)]
-Z = cat([getlatent(rm, r) for r in R]...; dims=2)
-Z₂ = tsne(Z', 2, 50, 1000, 20.0);
-i, j = 2, 3
-(y₂[i], y₂[j], sum(Int.(Z[:, i] .!= Z[:, i])))
+X₂, y₂ = filter_by_labels(X₀, y₀[1:3000], [1, 5, 0])
+X₂ = preprocess(X₂, (32, 32))
+cat_(xs) = cat(xs...; dims=2)
+Zi = [getlatent(rm, X₂[:, i]) for i = 1:size(X₂, 2)] |> cat_
+Zf = [getlatent(rm, recur(100, x -> activate(rm, x), X₂[:, i])[1]) for i = 1:size(X₂, 2)] |> cat_
 
+# Visulize the latent
+rescale(A; dims=1) = (A .- mean(A, dims=dims)) ./ max.(std(A, dims=dims), eps())
+Zi2d = tsne(rescale(Zi)', 2)
+Zf2d = tsne(rescale(Zf)', 2)
+scatter(Zi2d[:, 1], Zi2d[:, 2], color=Int.(y₂), title="t-SNE of latent", legends=false, alpha=0.65)
+scatter(Zf2d[:, 1], Zf2d[:, 2], color=Int.(y₂), title="t-SNE of latent", legends=false, alpha=0.65)
 
-scatter(Z₂[:, 1], Z₂[:, 2], marker=(2,2,:auto,stroke(0)), color=Int.(y₂); title="t-SNE of latent")
+function instance(i, j)
+    hamming = sum(Int.(Zf[:, i] .!= Zf[:, j]))
+    println("y: $(y₂[i]) - $(y₂[j])\nhamming: $hamming")
+end
+instance(2, 102)

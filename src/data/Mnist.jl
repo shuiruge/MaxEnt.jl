@@ -64,5 +64,7 @@ end
 
 function filter_by_labels(X, y, labels)
     indices = filter(i -> y[i] ∈ labels, 1:size(y, 1))
-    cat([X[:, :, i] for i in indices]...; dims=3)
+    X̃ = cat([X[:, :, i] for i in indices]...; dims=3)
+    ỹ = [y[i] for i in indices]
+    X̃, ỹ
 end

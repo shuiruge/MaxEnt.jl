@@ -161,54 +161,59 @@
 
   <section|Examples>
 
-  <\example>
+  <subsection|Boltzmann Machine>
+
+  <\definition>
     [Boltzmann Machine]
 
-    <\itemize>
-      <item>Let <math|<with|math-font|cal|M>=<around*|{|0,1|}><rsup|n>>,
-      <math|W\<in\>\<bbb-R\><rsup|<around*|(|n\<times\>n|)>>>,
-      <math|b\<in\>\<bbb-R\><rsup|n>>, <math|\<theta\>\<assign\><around*|(|W,b|)>>.
-      Given dataset <math|D\<assign\><around*|{|x<rsub|i>\|x<rsub|i>\<in\><with|math-font|cal|M>,i=1,\<ldots\>,N|}>>,
-      denote expectation as <math|<wide|x|^><rsup|\<alpha\>>>. Then a
-      Boltzmann machine is defined by energy function
+    Let <math|<with|math-font|cal|M>=<around*|{|0,1|}><rsup|n>>,
+    <math|W\<in\>\<bbb-R\><rsup|<around*|(|n\<times\>n|)>>>,
+    <math|b\<in\>\<bbb-R\><rsup|n>>, <math|\<theta\>\<assign\><around*|(|W,b|)>>.
+    Given dataset <math|D\<assign\><around*|{|x<rsub|i>\|x<rsub|i>\<in\><with|math-font|cal|M>,i=1,\<ldots\>,N|}>>,
+    denote expectation as <math|<wide|x|^><rsup|\<alpha\>>>. Then a Boltzmann
+    machine is defined by energy function
 
-      <\equation>
-        E<around*|(|x;W,b|)>\<assign\>-<frac|1|2>
-        <big|sum><rsub|\<alpha\>,\<beta\>>W<rsub|\<alpha\>\<beta\>>
-        <around*|(|x<rsup|\<alpha\>>-<wide|x|^><rsup|\<alpha\>>|)>
-        <around*|(|x<rsup|\<beta\>>-<wide|x|^><rsup|\<beta\>>|)>-<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>
-        x<rsup|\<alpha\>>.
-      </equation>
+    <\equation>
+      E<around*|(|x;W,b|)>\<assign\>-<frac|1|2>
+      <big|sum><rsub|\<alpha\>,\<beta\>>W<rsub|\<alpha\>\<beta\>>
+      <around*|(|x<rsup|\<alpha\>>-<wide|x|^><rsup|\<alpha\>>|)>
+      <around*|(|x<rsup|\<beta\>>-<wide|x|^><rsup|\<beta\>>|)>-<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>
+      x<rsup|\<alpha\>>.
+    </equation>
+  </definition>
 
-      <item>Direct calculation gives, for <math|\<forall\>\<alpha\>>,
+  <\remark>
+    [MaxEnt Principle of BM]
 
-      <\equation>
-        p<around*|(|x<rsub|\<alpha\>>=1\|x<rsub|\\\<alpha\>>|)>=\<sigma\><around*|(|<big|sum><rsub|\<alpha\>\<neq\>\<beta\>>W<rsub|<around*|(|\<alpha\>\<beta\>|)>><around*|(|x<rsup|\<beta\>>-<wide|x|^><rsup|\<beta\>>|)>+c<rsub|\<alpha\>>|)>,
-      </equation>
+    Relating to MaxEnt principle, the observable that the model simulates is
 
-      where <math|W<rsub|<around*|(|\<alpha\>\<beta\>|)>>\<assign\><around*|(|W<rsub|\<alpha\>\<beta\>>+W<rsub|\<beta\>\<alpha\>>|)>/2>
-      and <math|c<rsub|\<alpha\>>\<assign\>b<rsub|\<alpha\>>+<around*|(|1/2
-      -<wide|x|^><rsup|\<alpha\>>|)>W<rsub|\<alpha\>\<alpha\>>>. This
-      relation is held even for arbitrary vector <math|<wide|x|^>>.
+    <\equation>
+      \<forall\><around*|(|\<alpha\>,\<beta\>|)>,\<bbb-E\><rsub|x\<sim\>P<rsub|D>><around*|[|<around*|(|x<rsup|\<alpha\>>-<wide|x|^><rsup|\<alpha\>>|)><around*|(|x<rsup|\<beta\>>-<wide|x|^><rsup|\<beta\>>|)>|]>,
+    </equation>
 
-      <item>Relating to MaxEnt principle, the observable that the model
-      simulates is
+    for which it shall also simulate
 
-      <\equation>
-        \<forall\><around*|(|\<alpha\>,\<beta\>|)>,\<bbb-E\><rsub|x\<sim\>P<rsub|D>><around*|[|<around*|(|x<rsup|\<alpha\>>-<wide|x|^><rsup|\<alpha\>>|)><around*|(|x<rsup|\<beta\>>-<wide|x|^><rsup|\<beta\>>|)>|]>,
-      </equation>
+    <\equation>
+      \<forall\>\<alpha\>,\<bbb-E\><rsub|x\<sim\>P<rsub|D>><around*|[|<wide|x|^><rsup|\<alpha\>>|]>.
+    </equation>
+  </remark>
 
-      for which it shall also simulate
+  <\theorem>
+    [Activity Rule of BM]
 
-      <\equation>
-        \<forall\>\<alpha\>,\<bbb-E\><rsub|x\<sim\>P<rsub|D>><around*|[|<wide|x|^><rsup|\<alpha\>>|]>.
-      </equation>
-    </itemize>
-  </example>
+    For <math|\<forall\>\<alpha\>>,
+
+    <\equation>
+      p<around*|(|x<rsub|\<alpha\>>=1\|x<rsub|\\\<alpha\>>|)>=\<sigma\><around*|(|<big|sum><rsub|\<alpha\>\<neq\>\<beta\>>W<rsub|<around*|(|\<alpha\>\<beta\>|)>><around*|(|x<rsup|\<beta\>>-<wide|x|^><rsup|\<beta\>>|)>+c<rsub|\<alpha\>>|)>,
+    </equation>
+
+    where <math|W<rsub|<around*|(|\<alpha\>\<beta\>|)>>\<assign\><around*|(|W<rsub|\<alpha\>\<beta\>>+W<rsub|\<beta\>\<alpha\>>|)>/2>
+    and <math|c<rsub|\<alpha\>>\<assign\>b<rsub|\<alpha\>>+<around*|(|1/2
+    -<wide|x|^><rsup|\<alpha\>>|)>W<rsub|\<alpha\>\<alpha\>>>. This relation
+    is held for arbitrary replacement of the vector <math|<wide|x|^>>.
+  </theorem>
 
   <\proof>
-    Here we proof the activity rule.
-
     Directly, for <math|\<forall\>\<gamma\>>,
 
     <\align>
@@ -229,52 +234,73 @@
     </equation*>
   </proof>
 
-  <\example>
+  <subsection|Restricted Boltzmann Machine>
+
+  <\definition>
     [Restricted Boltzmann Machine]
 
-    <\itemize>
-      <item>Let <math|<with|math-font|cal|V>=<around*|{|0,1|}><rsup|n>> and
-      <math|<with|math-font|cal|H>=<around*|{|0,1|}><rsup|m>>,
-      <math|<with|math-font|cal|M>=<with|math-font|cal|V>\<times\><with|math-font|cal|H>>.
-      Let <math|U\<in\>\<bbb-R\><rsup|<around*|(|n\<times\>m|)>>>,
-      <math|b\<in\>\<bbb-R\><rsup|n>>, <math|c\<in\>\<bbb-R\><rsup|m>>. Then
-      a restricted Boltzmann machine is defined by energy function<\footnote>
-        We use latin letters for latent variables.
-      </footnote>
+    Let <math|<with|math-font|cal|V>=<around*|{|0,1|}><rsup|n>> and
+    <math|<with|math-font|cal|H>=<around*|{|0,1|}><rsup|m>>,
+    <math|<with|math-font|cal|M>=<with|math-font|cal|V>\<times\><with|math-font|cal|H>>.
+    Let <math|U\<in\>\<bbb-R\><rsup|<around*|(|n\<times\>m|)>>>,
+    <math|b\<in\>\<bbb-R\><rsup|n>>, <math|c\<in\>\<bbb-R\><rsup|m>>. Then a
+    restricted Boltzmann machine is defined by energy function<\footnote>
+      We use latin letters for latent variables.
+    </footnote>
 
-      <\equation>
-        E<around*|(|v,h;U,b,c|)>\<assign\>-<big|sum><rsub|\<alpha\>,i>U<rsub|\<alpha\>i>
-        <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|h<rsup|i>-<wide|h|^><rsup|i>|)>-<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>
-        v<rsup|\<alpha\>>-<big|sum><rsub|i>c<rsub|i> h<rsup|i>.
-      </equation>
+    <\equation>
+      E<around*|(|v,h;U,b,c|)>\<assign\>-<big|sum><rsub|\<alpha\>,i>U<rsub|\<alpha\>i>
+      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|h<rsup|i>-<wide|h|^><rsup|i>|)>-<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>
+      v<rsup|\<alpha\>>-<big|sum><rsub|i>c<rsub|i> h<rsup|i>.
+    </equation>
+  </definition>
 
-      <item>Direct calculation gives
+  <\remark>
+    [Relation with Boltzmann machine]
 
-      <\equation>
-        E<rsub|eff><around*|(|v;U,b,c|)>=<big|sum><rsub|\<alpha\>><around*|(|<big|sum><rsub|i>U<rsub|\<alpha\>i>
-        v<rsup|\<alpha\>><wide|h|^><rsup|i>-b<rsub|\<alpha\>>v<rsup|\<alpha\>>|)>-<big|sum><rsub|i>s<rsub|+><around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>i>
-        <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>+c<rsub|i>|)>,
-      </equation>
+    Relating to Boltzmann machine, <math|x\<rightarrow\><around*|(|v,h|)>>,
+    <math|b\<rightarrow\><around*|(|b,c|)>>, and
 
-      where soft-plus <math|s> is defined as
+    <\equation>
+      W\<rightarrow\><matrix|<tformat|<table|<row|<cell|0>|<cell|U>>|<row|<cell|U<rsup|T>>|<cell|0>>>>>.
+    </equation>
+  </remark>
 
-      <\equation>
-        s<around*|(|x|)>\<assign\>ln<around*|(|1+\<mathe\><rsup|x>|)>.
-      </equation>
+  <\theorem>
+    [Activity Rule of RBM]
 
-      <item>Relating to Boltzmann machine,
-      <math|x\<rightarrow\><around*|(|v,h|)>>,
-      <math|b\<rightarrow\><around*|(|b,c|)>>, and
+    We have
 
-      <\equation>
-        W\<rightarrow\><matrix|<tformat|<table|<row|<cell|0>|<cell|U>>|<row|<cell|U<rsup|T>>|<cell|0>>>>>.
-      </equation>
-    </itemize>
-  </example>
+    <\equation>
+      p<around*|(|v<rsub|\<alpha\>>=1\|v<rsub|\\\<alpha\>>,h<rsub|i>|)>=\<sigma\><around*|(|<big|sum><rsub|i>U<rsub|\<alpha\>i><around*|(|h<rsup|i>-<wide|h|^><rsup|i>|)>+b<rsub|\<alpha\>>|)>,
+    </equation>
+
+    and
+
+    <\equation>
+      p<around*|(|h<rsub|i>=1\|v<rsub|\<alpha\>>,h<rsub|\\i>|)>=\<sigma\><around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>i><around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>+c<rsub|i>|)>.
+    </equation>
+  </theorem>
+
+  <\theorem>
+    [Effective Free Energy of RBM]
+
+    We have
+
+    <\equation>
+      E<rsub|eff><around*|(|v;U,b,c|)>=<big|sum><rsub|\<alpha\>><around*|(|<big|sum><rsub|i>U<rsub|\<alpha\>i>
+      v<rsup|\<alpha\>><wide|h|^><rsup|i>-b<rsub|\<alpha\>>v<rsup|\<alpha\>>|)>-<big|sum><rsub|i>s<rsub|+><around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>i>
+      <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>+c<rsub|i>|)>,
+    </equation>
+
+    where soft-plus <math|s> is defined as
+
+    <\equation>
+      s<around*|(|x|)>\<assign\>ln<around*|(|1+\<mathe\><rsup|x>|)>.
+    </equation>
+  </theorem>
 
   <\proof>
-    Here we proof the expression of <math|E<rsub|eff><around*|(|v;U,b,c|)>>.
-
     Directly,
 
     <\align>
@@ -776,16 +802,18 @@
 
 <\references>
   <\collection>
-    <associate|auto-1|<tuple|1|?>>
-    <associate|auto-2|<tuple|2|?>>
-    <associate|auto-3|<tuple|3|?>>
-    <associate|auto-4|<tuple|4|?>>
-    <associate|auto-5|<tuple|4.1|?>>
-    <associate|auto-6|<tuple|4.1.1|?>>
-    <associate|auto-7|<tuple|4.1.2|?>>
-    <associate|auto-8|<tuple|4.2|?>>
-    <associate|footnote-1|<tuple|1|?>>
-    <associate|footnr-1|<tuple|1|?>>
+    <associate|auto-1|<tuple|1|1>>
+    <associate|auto-10|<tuple|4.2|11>>
+    <associate|auto-2|<tuple|2|1>>
+    <associate|auto-3|<tuple|3|2>>
+    <associate|auto-4|<tuple|3.1|2>>
+    <associate|auto-5|<tuple|3.2|3>>
+    <associate|auto-6|<tuple|4|4>>
+    <associate|auto-7|<tuple|4.1|4>>
+    <associate|auto-8|<tuple|4.1.1|5>>
+    <associate|auto-9|<tuple|4.1.2|6>>
+    <associate|footnote-1|<tuple|1|3>>
+    <associate|footnr-1|<tuple|1|3>>
   </collection>
 </references>
 
@@ -804,21 +832,33 @@
       <datoms|<macro|x|<repeat|<arg|x>|<with|font-series|medium|<with|font-size|1|<space|0.2fn>.<space|0.2fn>>>>>|<htab|5mm>>
       <no-break><pageref|auto-3><vspace|0.5fn>
 
+      <with|par-left|<quote|1tab>|3.1<space|2spc>Boltzmann Machine
+      <datoms|<macro|x|<repeat|<arg|x>|<with|font-series|medium|<with|font-size|1|<space|0.2fn>.<space|0.2fn>>>>>|<htab|5mm>>
+      <no-break><pageref|auto-4>>
+
+      <with|par-left|<quote|1tab>|3.2<space|2spc>Restricted Boltzmann Machine
+      <datoms|<macro|x|<repeat|<arg|x>|<with|font-series|medium|<with|font-size|1|<space|0.2fn>.<space|0.2fn>>>>>|<htab|5mm>>
+      <no-break><pageref|auto-5>>
+
       <vspace*|1fn><with|font-series|<quote|bold>|math-font-series|<quote|bold>|4<space|2spc>Perturbation
       Theory> <datoms|<macro|x|<repeat|<arg|x>|<with|font-series|medium|<with|font-size|1|<space|0.2fn>.<space|0.2fn>>>>>|<htab|5mm>>
-      <no-break><pageref|auto-4><vspace|0.5fn>
+      <no-break><pageref|auto-6><vspace|0.5fn>
 
       <with|par-left|<quote|1tab>|4.1<space|2spc>Perturbation of Boltzmann
       Machine <datoms|<macro|x|<repeat|<arg|x>|<with|font-series|medium|<with|font-size|1|<space|0.2fn>.<space|0.2fn>>>>>|<htab|5mm>>
-      <no-break><pageref|auto-5>>
+      <no-break><pageref|auto-7>>
 
       <with|par-left|<quote|2tab>|4.1.1<space|2spc>0th-order
       <datoms|<macro|x|<repeat|<arg|x>|<with|font-series|medium|<with|font-size|1|<space|0.2fn>.<space|0.2fn>>>>>|<htab|5mm>>
-      <no-break><pageref|auto-6>>
+      <no-break><pageref|auto-8>>
 
       <with|par-left|<quote|2tab>|4.1.2<space|2spc>1st-order
       <datoms|<macro|x|<repeat|<arg|x>|<with|font-series|medium|<with|font-size|1|<space|0.2fn>.<space|0.2fn>>>>>|<htab|5mm>>
-      <no-break><pageref|auto-7>>
+      <no-break><pageref|auto-9>>
+
+      <with|par-left|<quote|1tab>|4.2<space|2spc>Perturbation of Restricted
+      Boltzmann Machine <datoms|<macro|x|<repeat|<arg|x>|<with|font-series|medium|<with|font-size|1|<space|0.2fn>.<space|0.2fn>>>>>|<htab|5mm>>
+      <no-break><pageref|auto-10>>
     </associate>
   </collection>
 </auxiliary>
