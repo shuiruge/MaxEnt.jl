@@ -596,14 +596,14 @@
     </align>
   </proof>
 
-  <\theorem>
+  <\lemma>
     Up to <math|<with|math-font|cal|O><around*|(|W|)>>, for
     <math|\<forall\>\<gamma\>>,
 
     <\equation>
       <big|sum><rsub|x>p<rsub|E><around*|(|x|)>x<rsup|\<gamma\>>=V<rsup|\<gamma\>>+<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsup|\<alpha\>\<beta\>\<gamma\>>.
     </equation>
-  </theorem>
+  </lemma>
 
   <\proof>
     Directly,
@@ -613,14 +613,14 @@
     </align>
   </proof>
 
-  <\theorem>
+  <\lemma>
     Up to <math|<with|math-font|cal|O><around*|(|W|)>>, for
     <math|\<forall\><around*|(|\<mu\>,\<nu\>|)>>,
 
     <\equation>
       <big|sum><rsub|x>p<rsub|E><around*|(|x|)><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-<wide|x|^><rsup|\<nu\>>|)>=V<rsup|\<mu\>\<nu\>>+W<rsub|<around*|(|\<alpha\>\<beta\>|)>>V<rsup|\<alpha\>\<mu\>>V<rsup|\<beta\>\<nu\>>+<frac|1|2>W<rsub|\<alpha\>\<beta\>>V<rsub|c><rsup|\<alpha\>\<beta\>\<mu\>\<nu\>>.
     </equation>
-  </theorem>
+  </lemma>
 
   <\proof>
     Directly,
@@ -631,39 +631,66 @@
   </proof>
 
   <\theorem>
-    Define <math|<wide|C|^><rsup|\<mu\>\<nu\>>\<assign\><big|sum><rsub|x>p<rsub|D><around*|(|x|)><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-<wide|x|^><rsup|\<nu\>>|)>>.
-    Let <math|W> symmetric. By loss gradient, we have
+    [Perturbation Solution of BM]
 
-    <\equation>
-      <wide|x|^><rsup|\<alpha\>>=<big|sum><rsub|x>p<rsub|E><around*|(|x|)>x<rsup|\<alpha\>>;
-    </equation>
+    <\enumerate-numeric>
+      <item>Define <math|<wide|C|^><rsup|\<mu\>\<nu\>>\<assign\><big|sum><rsub|x>p<rsub|D><around*|(|x|)><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-<wide|x|^><rsup|\<nu\>>|)>>.
+      Let <math|W> symmetric. By loss gradient, we have
 
-    <\equation>
-      <wide|C|^><rsup|\<mu\>\<nu\>>=<big|sum><rsub|x>p<rsub|E><around*|(|x|)><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-<wide|x|^><rsup|\<nu\>>|)>.
-    </equation>
+      <\equation>
+        <wide|x|^><rsup|\<alpha\>>=<big|sum><rsub|x>p<rsub|E><around*|(|x|)>x<rsup|\<alpha\>>;
+      </equation>
 
-    From these, we get, up to <math|<with|math-font|cal|O><around*|(|W|)>>,
-    for <math|\<forall\>\<mu\>>,
+      <\equation>
+        <wide|C|^><rsup|\<mu\>\<nu\>>=<big|sum><rsub|x>p<rsub|E><around*|(|x|)><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-<wide|x|^><rsup|\<nu\>>|)>.
+      </equation>
 
-    \;
+      <item>From these, we get, up to <math|<with|math-font|cal|O><around*|(|W|)>>,
+      for <math|\<forall\>\<mu\>>,
 
-    <\equation>
-      <wide|C|^><rsup|\<mu\>\<mu\>>=<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>+<with|math-font|cal|O><around*|(|W<rsup|2>|)>,
-    </equation>
+      \;
 
-    <\equation>
-      \<sigma\><rsup|\<mu\>>=<wide|x|^><rsup|\<mu\>>-W<rsub|\<mu\>\<mu\>><wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)><around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>;
-    </equation>
+      <\equation>
+        <wide|C|^><rsup|\<mu\>\<mu\>>=<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>+<with|math-font|cal|O><around*|(|W<rsup|2>|)>,
+      </equation>
 
-    and for <math|\<forall\>\<mu\>,\<nu\>> with <math|\<mu\>\<neq\>\<nu\>>,
+      <\equation>
+        \<sigma\><rsup|\<mu\>>=<wide|x|^><rsup|\<mu\>>-W<rsub|\<mu\>\<mu\>><wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)><around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>;
+      </equation>
 
-    <\equation>
-      W<rsub|\<mu\>\<nu\>>=<frac|<wide|C|^><rsup|\<mu\>\<nu\>>|<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>
-      <wide|x|^><rsup|\<nu\>><around*|(|1-<wide|x|^><rsup|\<nu\>>|)>>.
-    </equation>
+      and for <math|\<forall\>\<mu\>,\<nu\>> with <math|\<mu\>\<neq\>\<nu\>>,
+
+      <\equation>
+        W<rsub|\<mu\>\<nu\>>=<frac|<wide|C|^><rsup|\<mu\>\<nu\>>|<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>
+        <wide|x|^><rsup|\<nu\>><around*|(|1-<wide|x|^><rsup|\<nu\>>|)>>.
+      </equation>
+
+      <item>This perturbation is valid iff
+
+      <\enumerate-roman>
+        <item>for <math|\<forall\>\<mu\>>,
+        <math|\<exists\>\<delta\>\<gtr\>0>, s.t.
+        <math|<wide|x|^><rsup|\<mu\>>\<in\><around*|(|\<delta\>,1-\<delta\>|)>>;
+
+        <item>for <math|\<forall\>\<mu\>>,
+
+        <\equation>
+          <around*|\||W<rsub|\<mu\>\<mu\>><around*|(|<wide|x|^><rsup|\<mu\>>-<frac|1|2>|)>|\|>\<ll\><frac|1|1-<wide|x|^><rsup|\<mu\>>>\<less\>1;
+        </equation>
+
+        <item>and for <math|\<forall\>\<mu\>,\<nu\>> with
+        <math|\<mu\>\<neq\>\<nu\>>,
+
+        <\equation>
+          <around*|\||<wide|C|^><rsup|\<mu\>\<nu\>>|\|>\<ll\>??.
+        </equation>
+      </enumerate-roman>
+    </enumerate-numeric>
   </theorem>
 
   <\proof>
+    Here we prove the second declaration.
+
     When <math|\<mu\>\<neq\>\<nu\>>, we have
 
     <\align>
@@ -719,56 +746,129 @@
     <\equation*>
       \<sigma\><rsup|\<mu\>>=<wide|x|^><rsup|\<mu\>>-W<rsub|\<mu\>\<mu\>><wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)><around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>.
     </equation*>
+
+    \;
+  </proof>
+
+  <\lemma>
+    Let <math|X<rsup|\<mu\>>>, <math|\<mu\>=1,\<ldots\>,N> random variables.
+    Then we have matrix
+
+    <\equation*>
+      <frac|Cov<around*|(|X<rsup|\<mu\>>,X<rsup|\<nu\>>|)>|Var<around*|(|X<rsup|\<mu\>>|)>Var<around*|(|X<rsup|\<nu\>>|)>>
+    </equation*>
+
+    positive semi-definite.
+  </lemma>
+
+  <\proof>
+    Directly, define <math|Z<rsup|\<mu\>>\<assign\>X<rsup|\<mu\>>/Var<around*|[|X<rsup|\<mu\>>|]>>.
+    Then, we have
+
+    <\equation*>
+      \<bbb-E\><around*|[|Z<rsup|\<mu\>>|]>=<frac|\<bbb-E\><around*|[|X<rsup|\<mu\>>|]>|Var<around*|[|X<rsup|\<mu\>>|]>>.
+    </equation*>
+
+    Then,
+
+    <\align>
+      <tformat|<table|<row|<cell|<frac|Cov<around*|(|X<rsup|\<mu\>>,X<rsup|\<nu\>>|)>|Var<around*|(|X<rsup|\<mu\>>|)>Var<around*|(|X<rsup|\<nu\>>|)>>>|<cell|=<frac|\<bbb-E\><around*|[|<around*|(|X<rsup|\<mu\>>-\<bbb-E\><around*|[|X<rsup|\<mu\>>|]>|)><around*|(|X<rsup|\<nu\>>-\<bbb-E\><around*|[|X<rsup|\<nu\>>|]>|)>|]>|Var<around*|(|X<rsup|\<mu\>>|)>Var<around*|(|X<rsup|\<nu\>>|)>>>>|<row|<cell|>|<cell|=\<bbb-E\><around*|[|<frac|<around*|(|X<rsup|\<mu\>>-\<bbb-E\><around*|[|X<rsup|\<mu\>>|]>|)>|Var<around*|(|X<rsup|\<mu\>>|)>><frac|<around*|(|X<rsup|\<nu\>>-\<bbb-E\><around*|[|X<rsup|\<nu\>>|]>|)>|Var<around*|(|X<rsup|\<nu\>>|)>>|]>>>|<row|<cell|>|<cell|=\<bbb-E\><around*|[|<around*|(|Z<rsup|\<mu\>>-\<bbb-E\><around*|[|Z<rsup|\<mu\>>|]>|)><around*|(|Z<rsup|\<nu\>>-\<bbb-E\><around*|[|Z<rsup|\<nu\>>|]>|)>|]>>>|<row|<cell|>|<cell|=Cov<around*|(|Z<rsup|\<mu\>>,Z<rsup|\<nu\>>|)>,>>>>
+    </align>
+
+    which, as a covariance matrix, is positive semi-definite.
   </proof>
 
   <\theorem>
-    If set, for <math|\<forall\>\<mu\>>,
+    [Positive Semi-definiteness of <math|W>]
 
-    <\equation>
-      W<rsub|\<mu\>\<mu\>>=<frac|1|<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>>,
-    </equation>
+    <\enumerate-numeric>
+      <item>If set, for <math|\<forall\>\<mu\>>,
 
-    then <math|W<rsub|\<mu\>\<nu\>>> is positive semi-defined.
+      <\equation>
+        W<rsub|\<mu\>\<mu\>>=<frac|1|<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>>,
+      </equation>
 
-    In this case, we find, for <math|\<forall\>\<mu\>>,
+      then <math|W<rsub|\<mu\>\<nu\>>> is positive semi-defined.
 
-    <\equation>
-      \<sigma\><rsup|\<mu\>>=2 <wide|x|^><rsup|\<mu\>>-<frac|1|2>.
-    </equation>
+      <item>In this case, we find, for <math|\<forall\>\<mu\>>,
 
-    (We shall check whether <math|\<sigma\><rsup|\<mu\>>\<in\><around*|(|0,1|)>>
-    or not.)
+      <\equation>
+        \<sigma\><rsup|\<mu\>>=2 <wide|x|^><rsup|\<mu\>>-<frac|1|2>.
+      </equation>
+
+      In addition, we shall check whether
+      <math|\<sigma\><rsup|\<mu\>>\<in\><around*|(|0,1|)>> or not.
+
+      <item>The perburbation is valid iff
+
+      <\enumerate-roman>
+        <item>for <math|\<forall\>\<mu\>>,
+        <math|\<exists\>\<delta\>\<gtr\>0>, s.t.
+        <math|<wide|x|^><rsup|\<mu\>>\<in\><around*|(|\<delta\>,1-\<delta\>|)>>;
+
+        <item>for <math|\<forall\>\<mu\>>,
+
+        <\equation>
+          <around*|\||<wide|x|^><rsup|\<mu\>>-<frac|1|2>|\|>\<ll\><wide|x|^><rsup|\<mu\>>;
+        </equation>
+
+        <item>and for <math|\<forall\>\<mu\>,\<nu\>> with
+        <math|\<mu\>\<neq\>\<nu\>>,
+
+        <\equation>
+          <around*|\||<wide|C|^><rsup|\<mu\>\<nu\>>|\|>\<ll\>??.
+        </equation>
+      </enumerate-roman>
+    </enumerate-numeric>
   </theorem>
 
   <\proof>
-    Directly,
+    Here we prove the declarations one by one.
 
-    <\align>
-      <tformat|<table|<row|<cell|W<rsub|\<mu\>\<mu\>>=>|<cell|<frac|1|<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>>>>|<row|<cell|<around*|{|<wide|C|^><rsup|\<mu\>\<nu\>>=<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>+<with|math-font|cal|O><around*|(|W<rsup|2>|)>|}>=>|<cell|<frac|<wide|C|^><rsup|\<mu\>\<mu\>>|<around*|[|<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>|]><rsup|2>>.>>>>
-    </align>
+    <\enumerate-numeric>
+      <item>Directly,
 
-    Together with <math|W<rsub|\<mu\>\<neq\>\<nu\>>>, we find, for
-    <math|\<forall\><around*|(|\<mu\>,\<nu\>|)>>,
+      <\align>
+        <tformat|<table|<row|<cell|W<rsub|\<mu\>\<mu\>>=>|<cell|<frac|1|<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>>>>|<row|<cell|<around*|{|<wide|C|^><rsup|\<mu\>\<nu\>>=<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>+<with|math-font|cal|O><around*|(|W<rsup|2>|)>|}>=>|<cell|<frac|<wide|C|^><rsup|\<mu\>\<mu\>>|<around*|[|<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>|]><rsup|2>>.>>>>
+      </align>
 
-    <\equation*>
-      W<rsub|\<mu\>\<nu\>>=<frac|Cov<around*|[|X<rsup|\<mu\>>,X<rsup|\<nu\>>|]>|Var<around*|[|X<rsup|\<mu\>>|]>
-      Var<around*|[|X<rsup|\<nu\>>|]>>,
-    </equation*>
+      Together with <math|W<rsub|\<mu\>\<neq\>\<nu\>>>, we find, for
+      <math|\<forall\><around*|(|\<mu\>,\<nu\>|)>>,
 
-    where we used <math|Var<around*|[|X<rsup|\<mu\>>|]>=<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>>.
-    This is positive semi-defined.
+      <\equation*>
+        W<rsub|\<mu\>\<nu\>>=<frac|Cov<around*|[|X<rsup|\<mu\>>,X<rsup|\<nu\>>|]>|Var<around*|[|X<rsup|\<mu\>>|]>
+        Var<around*|[|X<rsup|\<nu\>>|]>>,
+      </equation*>
 
-    In this case,
+      where we used <math|Var<around*|[|X<rsup|\<mu\>>|]>=<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>>.
+      This is positive semi-definite.
 
-    <\align>
-      <tformat|<table|<row|<cell|\<sigma\><rsup|\<mu\>>=>|<cell|<wide|x|^><rsup|\<mu\>>-W<rsub|\<mu\>\<mu\>><wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)><around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>>>|<row|<cell|<around*|{|W<rsub|\<mu\>\<mu\>>=\<cdots\>|}>=>|<cell|<wide|x|^><rsup|\<mu\>>-<frac|1|<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>><wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)><around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>>>|<row|<cell|=>|<cell|<wide|x|^><rsup|\<mu\>>-<around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>>>|<row|<cell|=>|<cell|2
-      <wide|x|^><rsup|\<mu\>>-<frac|1|2>.>>>>
-    </align>
+      <item>In this case,
+
+      <\align>
+        <tformat|<table|<row|<cell|\<sigma\><rsup|\<mu\>>=>|<cell|<wide|x|^><rsup|\<mu\>>-W<rsub|\<mu\>\<mu\>><wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)><around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>>>|<row|<cell|<around*|{|W<rsub|\<mu\>\<mu\>>=\<cdots\>|}>=>|<cell|<wide|x|^><rsup|\<mu\>>-<frac|1|<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>><wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)><around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>>>|<row|<cell|=>|<cell|<wide|x|^><rsup|\<mu\>>-<around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>>>|<row|<cell|=>|<cell|2
+        <wide|x|^><rsup|\<mu\>>-<frac|1|2>.>>>>
+      </align>
+
+      <item>Since perturbation demands
+
+      <\equation*>
+        <around*|\||\<sigma\><rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|\|>\<ll\><wide|x|^><rsup|\<mu\>>,
+      </equation*>
+
+      we get
+
+      <\equation*>
+        <around*|\||\<sigma\><rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|\|>=<around*|\||<wide|x|^><rsup|\<mu\>>-<frac|1|2>|\|>\<ll\><wide|x|^><rsup|\<mu\>>.
+      </equation*>
+    </enumerate-numeric>
   </proof>
 
   <subsection|Perturbation of Restricted Boltzmann Machine>
 
   <\theorem>
+    [Perturbation Solution of RBM]
+
     For <math|\<forall\>i>, let <math|<wide|h|^><rsup|i>\<equiv\>1/2> and
     <math|c<rsub|i>\<equiv\>0>, then we have
 
