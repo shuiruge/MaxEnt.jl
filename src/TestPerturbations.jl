@@ -1,4 +1,5 @@
 include("Perturbations.jl")
+include("data/Mnist.jl")
 
 using MLDatasets: MNIST
 using Statistics: cov, mean, std
@@ -8,14 +9,16 @@ using TSne
 
 # Data
 X₀, y₀ = MNIST.traindata()
-X = preprocess(X₀[:, :, 1:1000], (32, 32)) .|> x -> smooth(x, 0.35)
+# N = 5  # for checking denoiseness.
+N = 2000  # for showing latent encoding.
+# And we employ a *phenomenological* smooth trick
+X = preprocess(X₀[:, :, 1:N], (32, 32)) .|> x -> smooth(x, 0.35)
 
 # Model
 x̂ = expect(X)
 Ĉ = cov(X; dims=2, corrected=false)
-# σ = map(x -> one(x) / 2, x̂)
-σ = x̂
-m = getPBM(x̂, Ĉ, σ)
+# m = getPBM(x̂, Ĉ, x̂)  # thus setting the diagonal of W vanish.
+m = getPBM(x̂, Ĉ)  # thus enscure the positive semi-defineness of W.
 histogram(flatten(m.W); bins=100, title="W", legends=false)
 
 # Analyze kernel
@@ -25,9 +28,11 @@ Vᵢ = @. imag(V)
 λᵣ = @. real(λ)
 λᵢ = @. imag(λ)
 histogram(λᵣ; bins=100, title="Real part of λ", legends=false)
+min(λᵣ...)
+L∞(λᵢ)
 
 # Construct PRBM
-rm = getPRBM(m, 1.)
+rm = getPRBM(m, 4.8)  # δ needs careful fine-tuning.
 size(rm.U)
 histogram(flatten(rm.U); bins=100, title="U", legends=false)
 
@@ -38,7 +43,7 @@ histogram(flatten(m.W - m̃.W); bins=100, title="ΔW", legends=false)
 # Denoise
 i = 3
 x = X[:, i] .|> binarize
-x̃ = addnoise(x, 5)
+x̃ = addnoise(x, 20)
 original_error = sum(Int.(x̃ .!= x))
 y1, final_step = recur(100, x -> activate(m, x), x̃)
 y2, final_step = recur(100, x -> activate(m̃, x), x̃)
@@ -66,10 +71,49 @@ for step = 1:10
     end
 
     # Projection to 2D
-    Z2d = tsne(rescale(cat(Z...; dims=2))', 2)
+    Z2d = tsne(cat(Z...; dims=2)', 2)
 
     # Plots and save the plot
-    fig = scatter(Z2d[:, 1], Z2d[:, 2], color=Int.(y₂), title="t-SNE of latent", legends=false, alpha=0.65)
-    output_file = "../data/plots/tsne_at_step_$(step).png"
+    fig = scatter(Z2d[:, 1], Z2d[:, 2], color=Int.(y₂), title="t-SNE of latent", legends=false, alpha=0.3)
+    output_file = "../data/plots/tsne_at_step_$(step).pdf"
     savefig(fig, output_file)
 end
+
+
+# Check the encoding result.
+# TODO: add comments to the code below.
+
+function showinstance()
+    i = rand(1:length(Z))
+    j = rand(1:length(Z))
+    hamming = sum(Int.(Z[i] .!= Z[j]))
+    if hamming == 0
+        println("$(hamming)  |   $(y₂[i]) - $(y₂[j])   |   $i - $j")
+    end
+end
+
+for i = 1:5000
+    showinstance()
+end
+
+n₁, n₂ = 0, 0
+for i = 1:length(Z)
+    for j = 1:length(Z)
+        if i <= j
+            continue
+        end
+
+        if y₂[i] == y₂[j]
+            continue
+        end
+
+        n₁ += 1
+
+        hamming = sum(Int.(Z[i] .!= Z[j]))
+        if hamming == 0
+            println("$(hamming)  |   $(y₂[i]) - $(y₂[j])   |   $i - $j")
+            n₂ += 1
+        end
+    end
+end
+n₁, n₂, n₂ / n₁

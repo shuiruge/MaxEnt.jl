@@ -1,2 +1,2 @@
 # MaxEnt.jl
-MaxEnt model in Julia.
+MaxEnt models in Julia.

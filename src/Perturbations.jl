@@ -1,5 +1,4 @@
 include("Utils.jl")
-include("Data/Mnist.jl")
 
 using LinearAlgebra
 
@@ -40,7 +39,7 @@ function getPBM(x̂::AbstractVector{T},
             if i == j
                 W[i, j] = getdiag(x̂[i], σ[i])
             else
-                W[i, j] = Ĉ[i, j] / x̂[i] / ( 1 - x̂[i]) / x̂[j] / (1 - x̂[j])
+                W[i, j] = Ĉ[i, j] / x̂[i] / (1 - x̂[i]) / x̂[j] / (1 - x̂[j])
             end
         end
     end
@@ -49,7 +48,27 @@ function getPBM(x̂::AbstractVector{T},
 end
 
 
-function activate(m::PBM, x::Datum; deterministic=true)
+
+"""
+Creates PBM from real world data.
+"""
+function getPBM(x̂::AbstractVector{T},
+                Ĉ::AbstractMatrix{T},
+                ) where T<:Real
+    # Ensure positive semi-defineness, define σ as follow.
+    σ = 2 .* x̂ .- 1/2
+
+    for σᵢ ∈ σ
+        @assert 0 < σᵢ < 1
+    end
+
+    getPBM(x̂, Ĉ, σ)
+end
+
+
+
+
+function activate(m::PBM, x; deterministic=true)
     W_diag = diag(m.W)
     c = @. m.b + (1/2 - m.x̂) * W_diag
 
@@ -110,30 +129,6 @@ function getPRBM(m::PBM, δ)
 end
 
 
-function activate(m::PBM, x::Datum; deterministic=true)
-    W_diag = diag(m.W)
-    c = @. m.b + (1/2 - m.x̂) * W_diag
-
-    nodes = 1:size(m.b, 1)
-
-    # Order of node for activation
-    indices = (deterministic) ? nodes : shuffle(nodes)
-
-    # Activate
-    x = copy(x)
-    @inbounds for i = indices
-        a = c[i]
-        for j = nodes
-            if i != j
-                a += m.W[i, j] * (x[j] - m.x̂[j])
-            end
-        end
-        x[i] = hardσ(a)
-    end
-    x
-end
-
-
 """
 Creates PBM from PRBM.
 """
@@ -143,16 +138,16 @@ function getPBM(m::PRBM)
 end
 
 
-function getlatent(m::PRBM, x::Datum)
+function getlatent(m::PRBM, x)
     hardσ.(transpose(m.U) * (x .- m.x̂))
 end
 
 
-function getambient(m::PRBM, z::Datum)
+function getambient(m::PRBM, z)
     hardσ.(m.U * (z .- 1/2) .+ m.b)
 end
 
 
-function activate(m::PRBM, x::Datum)
+function activate(m::PRBM, x)
     getambient(m, getlatent(m, x))
 end
