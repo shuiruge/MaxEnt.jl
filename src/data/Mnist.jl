@@ -9,30 +9,12 @@ function binarize(x)
 end
 
 
-"""
-Auxillary function of `preprocess`.
-"""
-function smooth(x, δ)
-    if x < δ
-        δ
-    elseif x > 1 - δ
-        1 - δ
-    else
-        x
-    end
-end
-
-
-function preprocess(X, imgsize; δ=0., binary=true, dtype=Float64)
+function preprocess(X, imgsize; binary=true, dtype=Float64)
     X = imresize(X, imgsize)
     X = reshape(X, imgsize[1] * imgsize[2], size(X, 3))
 
     if binary
         X = map(binarize, X)
-    end
-
-    if δ > 0
-        X = map(x -> smooth(x, δ), X)
     end
 
     dtype.(X)

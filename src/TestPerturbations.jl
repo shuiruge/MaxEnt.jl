@@ -6,16 +6,22 @@ using Statistics: cov, mean, std
 using LinearAlgebra
 using Plots
 using TSne
+import Random
+
+Random.seed!(42)
 
 # Data
 X₀, y₀ = MNIST.traindata()
 # N = 5  # for checking denoiseness.
 N = 2000  # for showing latent encoding.
-# And we employ a *phenomenological* smooth trick
-X = preprocess(X₀[:, :, 1:N], (32, 32)) .|> x -> smooth(x, 0.35)
+IMAGE_SIZE = (16, 16)
+INFLATE_SIZE = 12
+X = preprocess(X₀[:, :, 1:N], IMAGE_SIZE)
+X = inflate(INFLATE_SIZE, 0.45, X)
 
 # Model
 x̂ = expect(X)
+min(x̂...)
 Ĉ = cov(X; dims=2, corrected=false)
 # m = getPBM(x̂, Ĉ, x̂)  # thus setting the diagonal of W vanish.
 m = getPBM(x̂, Ĉ)  # thus enscure the positive semi-defineness of W.
@@ -32,7 +38,7 @@ min(λᵣ...)
 L∞(λᵢ)
 
 # Construct PRBM
-rm = getPRBM(m, 4.8)  # δ needs careful fine-tuning.
+rm = getPRBM(m, 20.)  # δ needs careful fine-tuning.
 size(rm.U)
 histogram(flatten(rm.U); bins=100, title="U", legends=false)
 
@@ -59,11 +65,12 @@ end
 
 # For better quality of visualization, we prefer less labels
 X₂, y₂ = filter_by_labels(X₀, y₀[1:3000], [1, 5, 0])
-X₂ = preprocess(X₂, (32, 32))
+X₂ = preprocess(X₂, IMAGE_SIZE)
+X₂ = inflate(INFLATE_SIZE, 0., X₂)
 
 # Latent encoding
 Z = nothing
-for step = 1:10
+for step = 1:20
     if Z === nothing
         Z = [getlatent(rm, X₂[:, i]) for i = 1:size(X₂, 2)]
     else
@@ -82,20 +89,6 @@ end
 
 # Check the encoding result.
 # TODO: add comments to the code below.
-
-function showinstance()
-    i = rand(1:length(Z))
-    j = rand(1:length(Z))
-    hamming = sum(Int.(Z[i] .!= Z[j]))
-    if hamming == 0
-        println("$(hamming)  |   $(y₂[i]) - $(y₂[j])   |   $i - $j")
-    end
-end
-
-for i = 1:5000
-    showinstance()
-end
-
 n₁, n₂ = 0, 0
 for i = 1:length(Z)
     for j = 1:length(Z)
@@ -111,7 +104,7 @@ for i = 1:length(Z)
 
         hamming = sum(Int.(Z[i] .!= Z[j]))
         if hamming == 0
-            println("$(hamming)  |   $(y₂[i]) - $(y₂[j])   |   $i - $j")
+            # println("$(hamming)  |   $(y₂[i]) - $(y₂[j])   |   $i - $j")
             n₂ += 1
         end
     end
