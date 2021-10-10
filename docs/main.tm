@@ -957,6 +957,104 @@
       U<rsub|\<beta\>i>.
     </equation>
   </proof>
+
+  <subsection|Validation of Perturbations>
+
+  <\remark>
+    [Validation of Perturbations]
+
+    For making the perturbation valid, the dataset shall have the properties,
+    for <math|\<forall\>\<alpha\>>,
+
+    <\equation>
+      <wide|x|^><rsup|\<alpha\>>\<approx\>0.5
+    </equation>
+
+    and for <math|\<forall\>\<alpha\>,\<beta\>> with
+    <math|\<alpha\>\<neq\>\<beta\>>,
+
+    <\equation>
+      <wide|C|^><rsup|\<alpha\>\<beta\>>\<approx\>0.
+    </equation>
+
+    Given a dataset of <math|X<rsup|a>>, we construct a \Psoften version\Q of
+    it, <math|Y<rsup|a>>, s.t. this <math|Y<rsup|a>> satisfies these
+    properties.
+  </remark>
+
+  <\definition>
+    [Zoom-in Trick]
+
+    Given Bernoulli random variable <math|X>, and a parameter
+    <math|\<delta\>\<in\><around*|[|0,0.5|)>>, we duplicate it to i.i.d.
+    Bernoulli random variables <math|Y<rsub|1>,\<ldots\>,Y<rsub|m>>, s.t. for
+    <math|\<forall\>i>
+
+    <\equation>
+      p<around*|(|y<rsub|i>=1\|x=0|)>=\<delta\>,
+    </equation>
+
+    and
+
+    <\equation>
+      p<around*|(|y<rsub|i>=1\|x=1|)>=1-\<delta\>.
+    </equation>
+  </definition>
+
+  <\lemma>
+    We have, for <math|\<forall\>i>,
+
+    <\equation>
+      p<around*|(|y<rsub|i>=1|)>=0.5+<around*|(|2p-1|)><around*|(|0.5-\<delta\>|)>,
+    </equation>
+
+    where <math|p\<assign\>p<around*|(|x=1|)>>.
+  </lemma>
+
+  <\theorem>
+    [Zoom-in Trick]
+
+    Let <math|\<epsilon\>\<assign\>0.5-\<delta\>\<gtr\>0>. We have, for
+    <math|\<forall\><around*|(|\<alpha\>,i|)>>,
+
+    <\equation*>
+      lim<rsub|\<epsilon\>\<rightarrow\>0><wide|y|^><rsup|<around*|(|\<alpha\>,i|)>>=0,
+    </equation*>
+
+    and for <math|\<forall\><around*|(|\<alpha\>,i|)>,<around*|(|\<beta\>,j|)>>
+    with <math|<around*|(|\<alpha\>,i|)>\<neq\><around*|(|\<beta\>,j|)>>,
+
+    <\equation*>
+      lim<rsub|\<epsilon\>\<rightarrow\>0><wide|C|^><rsup|<around*|(|\<alpha\>,i|)><around*|(|\<beta\>,j|)>>=0.
+    </equation*>
+
+    Specifically for the first limit, we have
+    <math|<wide|y|^><rsup|<around*|(|\<alpha\>,i|)>>\<sim\><with|math-font|cal|N><around*|(|\<mu\>,\<sigma\>|)>>
+    where
+
+    <\equation>
+      \<mu\>\<assign\>0.5+<around*|(|2<wide|x|^><rsup|\<alpha\>>-1|)><around*|(|0.5-\<delta\>|)>,
+    </equation>
+
+    and
+
+    <\equation*>
+      \<sigma\>\<assign\><sqrt|<frac|0.25-<around*|[|<around*|(|2<wide|x|^><rsup|\<alpha\>>-1|)><around*|(|0.5-\<delta\>|)>|]><rsup|2>|N>>,
+    </equation*>
+
+    with <math|N> the data-size.
+  </theorem>
+
+  <\proof>
+    The first limit can be derived from the
+    <math|<wide|y|^><rsup|<around*|(|\<alpha\>,i|)>>\<sim\><with|math-font|cal|N><around*|(|\<mu\>,\<sigma\>|)>>.
+
+    The second limit can be proved by considering the limit case, where
+    <math|\<delta\>\<rightarrow\>0.5>. In this situation, for
+    <math|\<forall\><around*|(|\<alpha\>,i|)>>,
+    <math|y<rsup|<around*|(|\<alpha\>,i|)>>\<sim\>Bernoulli<around*|(|0.5|)>>.
+    Thus all independent, leading to <math|<wide|C|^><rsup|<around*|(|\<alpha\>,i|)><around*|(|\<beta\>,j|)>>=0>.
+  </proof>
 </body>
 
 <initial|<\collection>
@@ -966,6 +1064,7 @@
   <\collection>
     <associate|auto-1|<tuple|1|1>>
     <associate|auto-10|<tuple|4.2|11>>
+    <associate|auto-11|<tuple|4.3|?>>
     <associate|auto-2|<tuple|2|2>>
     <associate|auto-3|<tuple|3|2>>
     <associate|auto-4|<tuple|3.1|2>>

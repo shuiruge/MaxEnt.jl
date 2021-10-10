@@ -15,9 +15,8 @@ X₀, y₀ = MNIST.traindata()
 # N = 5  # for checking denoiseness.
 N = 2000  # for showing latent encoding.
 IMAGE_SIZE = (16, 16)
-INFLATE_SIZE = 12
-X = preprocess(X₀[:, :, 1:N], IMAGE_SIZE)
-X = inflate(INFLATE_SIZE, 0.45, X)
+ZOOMIN_RATIO = 8
+X = preprocess(X₀[:, :, 1:N], IMAGE_SIZE) |> zoomin(ZOOMIN_RATIO, 0.4)
 
 # Model
 x̂ = expect(X)
@@ -47,14 +46,14 @@ m̃ = getPBM(rm)
 histogram(flatten(m.W - m̃.W); bins=100, title="ΔW", legends=false)
 
 # Denoise
-i = 3
-x = X[:, i] .|> binarize
-x̃ = addnoise(x, 20)
-original_error = sum(Int.(x̃ .!= x))
-y1, final_step = recur(100, x -> activate(m, x), x̃)
-y2, final_step = recur(100, x -> activate(m̃, x), x̃)
-denoised_error_1 = sum(Int.(y1 .!= x))
-denoised_error_2 = sum(Int.(y2 .!= x))
+# i = 3
+# x = X[:, i] .|> binarize
+# x̃ = addnoise(x, 20)
+# original_error = sum(Int.(x̃ .!= x))
+# y1, final_step = recur(100, x -> activate(m, x), x̃)
+# y2, final_step = recur(100, x -> activate(m̃, x), x̃)
+# denoised_error_1 = sum(Int.(y1 .!= x))
+# denoised_error_2 = sum(Int.(y2 .!= x))
 
 """
 Auxillary function for t-SNE.
@@ -66,7 +65,7 @@ end
 # For better quality of visualization, we prefer less labels
 X₂, y₂ = filter_by_labels(X₀, y₀[1:3000], [1, 5, 0])
 X₂ = preprocess(X₂, IMAGE_SIZE)
-X₂ = inflate(INFLATE_SIZE, 0., X₂)
+X₂ = zoomin(ZOOMIN_RATIO, 0., X₂)
 
 # Latent encoding
 Z = nothing

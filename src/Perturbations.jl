@@ -140,7 +140,7 @@ end
 
 # TODO: T<:Float ?
 """
-Auxillary function of `inflate`.
+Auxillary function of `zoomin`.
 """
 function sample_bernoulli(p::T) where T<:Real
     if rand(typeof(p)) < p
@@ -151,48 +151,27 @@ function sample_bernoulli(p::T) where T<:Real
 end
 
 
-"""
-Auxillary function of `inflate`.
-"""
-function flip_onebit!(y, target)
-    for i = 1:size(y, 1)
-        if y[i] != target
-            y[i] = eltype(y)(target)
-            break
-        end
-    end
-end
-
-
-function inflate(n, δ::T, x::T) where T<:Real
+function zoomin(n, δ::T, x::T) where T<:Real
     @assert 0 <= δ <= 0.5
 
     if x < 0.5
-        y = [sample_bernoulli(δ) for i = 1:n]
-        if mean(y) > 0.5
-            y = 1 .- y
-        elseif mean(y) == 0.5
-            flip_onebit!(y, 0)
-        end
-
+        [sample_bernoulli(δ) for i = 1:n]
     else
-        y = [sample_bernoulli(1 - δ) for i = 1:n]
-        if mean(y) < 0.5
-            y = 1 .- y
-        elseif mean(y) == 0.5
-            flip_onebit!(y, 1)
-        end
+        [sample_bernoulli(1 - δ) for i = 1:n]
     end
-
-    y
 end
 
 
-function inflate(n, δ::T, x::AbstractVector{T}) where T<:Real
-    vcat(map(x -> inflate(n, δ, x), x)...)
+function zoomin(n, δ::T, x::AbstractVector{T}) where T<:Real
+    vcat([zoomin(n, δ, x[i]) for i = 1:size(x, 1)]...)
 end
 
 
-function inflate(n, δ::T, x::AbstractMatrix{T}) where T<:Real
-    hcat([inflate(n, δ, x[:, i]) for i = 1:size(x, 2)]...)
+function zoomin(n, δ::T, x::AbstractMatrix{T}) where T<:Real
+    hcat([zoomin(n, δ, x[:, i]) for i = 1:size(x, 2)]...)
+end
+
+
+function zoomin(n, δ)
+    x -> zoomin(n, δ, x)
 end
