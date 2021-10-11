@@ -1055,6 +1055,61 @@
     <math|y<rsup|<around*|(|\<alpha\>,i|)>>\<sim\>Bernoulli<around*|(|0.5|)>>.
     Thus all independent, leading to <math|<wide|C|^><rsup|<around*|(|\<alpha\>,i|)><around*|(|\<beta\>,j|)>>=0>.
   </proof>
+
+  <appendix|Perturbations by Temperature>
+
+  Let <math|\<beta\>\<assign\>1/T>. Then inserting temperature is
+  replacements <math|U\<rightarrow\>\<beta\>U>,
+  <math|b\<rightarrow\>\<beta\>b>, <math|c\<rightarrow\>\<beta\>c>, and
+  <math|E<rsub|eff><around*|(|v|)>\<rightarrow\>-\<beta\><rsup|-1>E<rsub|eff><around*|(|v|)>>.
+
+  Thus,
+
+  \;
+
+  <\align>
+    <tformat|<table|<row|<cell|E<rsub|eff><around*|(|v;\<beta\>|)>=>|<cell|<big|sum><rsub|\<alpha\>><around*|(|<big|sum><rsub|i>U<rsub|\<alpha\>i>
+    v<rsup|\<alpha\>><wide|h|^><rsup|i>-b<rsub|\<alpha\>>v<rsup|\<alpha\>>|)>-\<beta\><rsup|-1><big|sum><rsub|i>s<around*|(|\<beta\><big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>i>
+    <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>+\<beta\>c<rsub|i>|)>>>|<row|<cell|=>|<cell|<big|sum><rsub|\<alpha\>><around*|(|<big|sum><rsub|i>U<rsub|\<alpha\>i>
+    v<rsup|\<alpha\>><wide|h|^><rsup|i>-b<rsub|\<alpha\>>v<rsup|\<alpha\>>|)>>>|<row|<cell|<text|[Taylor
+    expand]>>|<cell|-<frac|1|2><big|sum><rsub|i><around*|[|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>i>
+    <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>+c<rsub|i>|]>-<frac|\<beta\>|8><big|sum><rsub|i><around*|[|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>i>
+    <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>+c<rsub|i>|]><rsup|2>+<with|math-font|cal|O><around*|(|\<beta\><rsup|2>|)>>>|<row|<cell|=>|<cell|<big|sum><rsub|\<alpha\>,i>U<rsub|\<alpha\>i>
+    v<rsup|\<alpha\>><wide|h|^><rsup|i>-<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>v<rsup|\<alpha\>>>>|<row|<cell|>|<cell|-<frac|1|2><big|sum><rsub|\<alpha\>,i>U<rsub|\<alpha\>i>
+    <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>>>|<row|<cell|>|<cell|-<frac|\<beta\>|8><big|sum><rsub|i><big|sum><rsub|\<alpha\>,\<beta\>>U<rsub|\<alpha\>i>
+    <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>U<rsub|\<beta\>i>
+    <around*|(|v<rsup|\<beta\>>-<wide|v|^><rsup|\<beta\>>|)>-<frac|\<beta\>|4><big|sum><rsub|\<alpha\>,i>U<rsub|\<alpha\>i>
+    <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>c<rsub|i>>>|<row|<cell|>|<cell|+Const>>|<row|<cell|>|<cell|+<with|math-font|cal|O><around*|(|\<beta\><rsup|2>|)>>>|<row|<cell|=>|<cell|<big|sum><rsub|\<alpha\>,i>U<rsub|\<alpha\>i>
+    \ <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|<wide|h|^><rsup|i>-<frac|\<beta\>|4>c<rsub|i>-<frac|1|2>|)>>>|<row|<cell|>|<cell|-<frac|\<beta\>|8><big|sum><rsub|i><big|sum><rsub|\<alpha\>,\<beta\>>U<rsub|\<alpha\>i>
+    <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>U<rsub|\<beta\>i>
+    <around*|(|v<rsup|\<beta\>>-<wide|v|^><rsup|\<beta\>>|)>-<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>v<rsup|\<alpha\>>>>|<row|<cell|>|<cell|+Const>>|<row|<cell|>|<cell|+<with|math-font|cal|O><around*|(|\<beta\><rsup|2>|)>.>>>>
+  </align>
+
+  Let <math|<wide|h|^><rsup|i>\<equiv\>1/2> and <math|c<rsub|i>\<equiv\>0>
+  for <math|\<forall\>i>, and omit the constant, then
+
+  <\equation>
+    E<rsub|eff><around*|(|v;\<beta\>|)>=-<big|sum><rsub|\<alpha\>,\<beta\>><around*|(|<frac|\<beta\>|8><big|sum><rsub|i>U<rsub|\<alpha\>i>
+    U<rsub|\<beta\>i>|)><around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>
+    <around*|(|v<rsup|\<beta\>>-<wide|v|^><rsup|\<beta\>>|)>-<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>v<rsup|\<alpha\>>+<with|math-font|cal|O><around*|(|\<beta\><rsup|2>|)>.
+  </equation>
+
+  Thus,
+
+  <\equation*>
+    W<rsup|eff><rsub|\<alpha\>\<beta\>>\<rightarrow\><frac|\<beta\>|8><big|sum><rsub|i>U<rsub|\<alpha\>i>
+    U<rsub|\<beta\>i>,
+  </equation*>
+
+  and
+
+  <\equation>
+    b<rsup|eff><rsub|\<alpha\>>\<rightarrow\>b<rsub|\<alpha\>>.
+  </equation>
+
+  <\equation*>
+    <with|color|red|<frac|p<rsub|1><around*|(|x|)>|p<rsub|0><around*|(|x|)>>=\<beta\>E<around*|(|x|)>-\<beta\><big|sum><rsub|\<alpha\>><around*|(|<frac|W<rsub|\<alpha\>\<alpha\>>|4>+<frac|b<rsub|\<alpha\>>|2>|)>+<with|math-font|cal|O><around*|(|\<beta\><rsup|2>|)>.>
+  </equation*>
 </body>
 
 <initial|<\collection>
@@ -1065,6 +1120,7 @@
     <associate|auto-1|<tuple|1|1>>
     <associate|auto-10|<tuple|4.2|11>>
     <associate|auto-11|<tuple|4.3|?>>
+    <associate|auto-12|<tuple|A|?>>
     <associate|auto-2|<tuple|2|2>>
     <associate|auto-3|<tuple|3|2>>
     <associate|auto-4|<tuple|3.1|2>>
@@ -1120,6 +1176,10 @@
       <with|par-left|<quote|1tab>|4.2<space|2spc>Perturbation of Restricted
       Boltzmann Machine <datoms|<macro|x|<repeat|<arg|x>|<with|font-series|medium|<with|font-size|1|<space|0.2fn>.<space|0.2fn>>>>>|<htab|5mm>>
       <no-break><pageref|auto-10>>
+
+      <with|par-left|<quote|1tab>|4.3<space|2spc>Validation of Perturbations
+      <datoms|<macro|x|<repeat|<arg|x>|<with|font-series|medium|<with|font-size|1|<space|0.2fn>.<space|0.2fn>>>>>|<htab|5mm>>
+      <no-break><pageref|auto-11>>
     </associate>
   </collection>
 </auxiliary>
