@@ -750,6 +750,28 @@
     \;
   </proof>
 
+  <\corollary>
+    [Solution without Self-interaction]<label|Corollary: Solution without
+    Self-interaction>
+
+    If set <math|\<forall\>\<mu\>,W<rsub|\<mu\>\<mu\>>\<equiv\>0>, then, up
+    to <math|<with|math-font|cal|O><around*|(|W|)>>, we have the perburbation
+    solution of Boltzmann machine as follow.
+
+    For <math|\<forall\>\<mu\>>,
+
+    <\equation>
+      \<sigma\><rsup|\<mu\>>=<wide|x|^><rsup|\<mu\>>,
+    </equation>
+
+    and for <math|\<forall\>\<mu\>,\<nu\>> with <math|\<mu\>\<neq\>\<nu\>>,
+
+    <\equation>
+      W<rsub|\<mu\>\<nu\>>=<frac|<wide|C|^><rsup|\<mu\>\<nu\>>|<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>
+      <wide|x|^><rsup|\<nu\>><around*|(|1-<wide|x|^><rsup|\<nu\>>|)>>.
+    </equation>
+  </corollary>
+
   <\lemma>
     Let <math|X<rsup|\<mu\>>>, <math|\<mu\>=1,\<ldots\>,N> random variables.
     Then we have matrix
@@ -778,8 +800,9 @@
     which, as a covariance matrix, is positive semi-definite.
   </proof>
 
-  <\theorem>
-    [Positive Semi-definiteness of <math|W>]
+  <\corollary>
+    [Solution with Positive Semi-definiteness]<label|Corollary: Solution with
+    Positive Semi-definiteness>
 
     <\enumerate-numeric>
       <item>If set, for <math|\<forall\>\<mu\>>,
@@ -809,18 +832,11 @@
         <item>for <math|\<forall\>\<mu\>>,
 
         <\equation>
-          <around*|\||<wide|x|^><rsup|\<mu\>>-<frac|1|2>|\|>\<ll\><wide|x|^><rsup|\<mu\>>;
-        </equation>
-
-        <item>and for <math|\<forall\>\<mu\>,\<nu\>> with
-        <math|\<mu\>\<neq\>\<nu\>>,
-
-        <\equation>
-          <around*|\||<wide|C|^><rsup|\<mu\>\<nu\>>|\|>\<ll\>??.
+          <around*|\||<wide|x|^><rsup|\<mu\>>-<frac|1|2>|\|>\<ll\><wide|x|^><rsup|\<mu\>>.
         </equation>
       </enumerate-roman>
     </enumerate-numeric>
-  </theorem>
+  </corollary>
 
   <\proof>
     Here we prove the declarations one by one.
@@ -958,13 +974,65 @@
     </equation>
   </proof>
 
+  <\remark>
+    [TODO]
+
+    Suppose that the dataset is classified by some \Pideals\Q
+    <math|<around*|{|\<xi\><rsub|i>\<in\><around*|{|0,1|}><rsup|n>\|i=1,\<ldots\>,m|}>>,
+    s.t.
+
+    <\equation>
+      <wide|\<xi\>|^><rsup|\<alpha\>>\<assign\><frac|1|m><big|sum><rsub|i=1><rsup|m>\<xi\><rsub|i><rsup|\<alpha\>>=<wide|x|^><rsup|\<alpha\>>.
+    </equation>
+
+    For instance, image data can be characterized by the class of its main
+    characterr, e.g. dog, cat, e.t.c. Let
+
+    <\equation>
+      U<rsub|\<alpha\>i>\<assign\><frac|2|<sqrt|m>><frac|\<xi\><rsub|i><rsup|\<alpha\>>-<wide|\<xi\>|^><rsup|\<alpha\>>|<wide|\<xi\>|^><rsup|\<alpha\>><around*|(|1-<wide|\<xi\>|^><rsup|\<alpha\>>|)>>.
+    </equation>
+
+    Then, we have
+
+    <\align>
+      <tformat|<table|<row|<cell|W<rsup|eff><rsub|\<alpha\>\<beta\>>=>|<cell|<frac|1|4><big|sum><rsub|i=1><rsup|m>U<rsub|\<alpha\>i>
+      U<rsub|\<beta\>i>>>|<row|<cell|=>|<cell|<frac|1|m><big|sum><rsub|i=1><rsup|m><frac|\<xi\><rsub|i><rsup|\<alpha\>>-<wide|\<xi\>|^><rsup|\<alpha\>>|<wide|\<xi\>|^><rsup|\<alpha\>><around*|(|1-<wide|\<xi\>|^><rsup|\<alpha\>>|)>><frac|\<xi\><rsub|i><rsup|\<beta\>>-<wide|\<xi\>|^><rsup|\<beta\>>|<wide|\<xi\>|^><rsup|\<beta\>><around*|(|1-<wide|\<xi\>|^><rsup|\<beta\>>|)>>>>|<row|<cell|=>|<cell|<frac|<wide|\<Xi\>|^><rsup|\<alpha\>\<beta\>>|<wide|\<xi\>|^><rsup|\<alpha\>><around*|(|1-<wide|\<xi\>|^><rsup|\<alpha\>>|)><wide|\<xi\>|^><rsup|\<beta\>><around*|(|1-<wide|\<xi\>|^><rsup|\<beta\>>|)>>,>>>>
+    </align>
+
+    where <math|<wide|\<Xi\>|^>> is the covariance matrix of <math|\<xi\>>.
+
+    That is, RBM is nothing but finding ideals s.t. with these ideals, the
+    constructed Boltzmann machine approximates Boltzmann machine constructed
+    from the real world data.
+  </remark>
+
   <subsection|Validation of Perturbations>
 
   <\remark>
-    [Validation of Perturbations]
+    [Validation of Perturbations 1]
 
-    For making the perturbation valid, the dataset shall have the properties,
-    for <math|\<forall\>\<alpha\>>,
+    Based on the dimension analysis, it's suspected that the condition of
+    validation of perturbation solution in the corollary
+    <reference|Corollary: Solution without Self-interaction> is
+
+    <\equation>
+      W<rsub|\<mu\>\<nu\>>=<frac|Cov<around*|(|X<rsup|\<mu\>>,X<rsup|\<nu\>>|)>|Var<around*|(|X<rsup|\<mu\>>|)>Var<around*|(|X<rsup|\<nu\>>|)>>\<ll\><frac|1|<sqrt|Var<around*|(|X<rsup|\<mu\>>|)>Var<around*|(|X<rsup|\<nu\>>|)>>>.
+    </equation>
+
+    That is, the Pearson coefficients is tiny: for
+    <math|\<forall\>\<mu\>,\<nu\>> with <math|\<mu\>\<neq\>\<nu\>>,
+
+    <\equation>
+      <frac|Cov<around*|(|X<rsup|\<mu\>>,X<rsup|\<nu\>>|)>|<sqrt|Var<around*|(|X<rsup|\<mu\>>|)>Var<around*|(|X<rsup|\<nu\>>|)>>>\<ll\>1
+    </equation>
+  </remark>
+
+  <\remark>
+    [Validation of Perturbations 2]
+
+    For making the perturbation stated in corollary <reference|Corollary:
+    Solution with Positive Semi-definiteness> valid, the dataset shall have
+    the properties, for <math|\<forall\>\<alpha\>>,
 
     <\equation>
       <wide|x|^><rsup|\<alpha\>>\<approx\>0.5
@@ -1117,6 +1185,9 @@
 
 <\references>
   <\collection>
+    <associate|Corollary: Solution with Positive
+    Semi-definiteness|<tuple|30|?>>
+    <associate|Corollary: Solution without Self-interaction|<tuple|28|?>>
     <associate|auto-1|<tuple|1|1>>
     <associate|auto-10|<tuple|4.2|11>>
     <associate|auto-11|<tuple|4.3|?>>
@@ -1180,6 +1251,11 @@
       <with|par-left|<quote|1tab>|4.3<space|2spc>Validation of Perturbations
       <datoms|<macro|x|<repeat|<arg|x>|<with|font-series|medium|<with|font-size|1|<space|0.2fn>.<space|0.2fn>>>>>|<htab|5mm>>
       <no-break><pageref|auto-11>>
+
+      <vspace*|1fn><with|font-series|<quote|bold>|math-font-series|<quote|bold>|Appendix
+      A<space|2spc>Perturbations by Temperature>
+      <datoms|<macro|x|<repeat|<arg|x>|<with|font-series|medium|<with|font-size|1|<space|0.2fn>.<space|0.2fn>>>>>|<htab|5mm>>
+      <no-break><pageref|auto-12><vspace|0.5fn>
     </associate>
   </collection>
 </auxiliary>
