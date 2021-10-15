@@ -631,10 +631,11 @@
   </proof>
 
   <\theorem>
-    [Perturbation Solution of BM]
+    [Perturbation Solutions of BM]
 
     <\enumerate-numeric>
-      <item>Define <math|<wide|C|^><rsup|\<mu\>\<nu\>>\<assign\><big|sum><rsub|x>p<rsub|D><around*|(|x|)><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-<wide|x|^><rsup|\<nu\>>|)>>.
+      <item>Define <math|<wide|c|^><rsup|\<mu\>>\<assign\>\<sigma\><rsup|-1><around*|(|<wide|x|^><rsup|\<mu\>>|)>>
+      and <math|<wide|C|^><rsup|\<mu\>\<nu\>>\<assign\><big|sum><rsub|x>p<rsub|D><around*|(|x|)><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-<wide|x|^><rsup|\<nu\>>|)>>.
       Let <math|W> symmetric. By loss gradient, we have
 
       <\equation>
@@ -655,7 +656,7 @@
       </equation>
 
       <\equation>
-        \<sigma\><rsup|\<mu\>>=<wide|x|^><rsup|\<mu\>>-W<rsub|\<mu\>\<mu\>><wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)><around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>;
+        b<rsup|\<mu\>>=<wide|c|^><rsup|\<mu\>>-W<rsub|\<mu\>\<mu\>><around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>;
       </equation>
 
       and for <math|\<forall\>\<mu\>,\<nu\>> with <math|\<mu\>\<neq\>\<nu\>>,
@@ -664,27 +665,6 @@
         W<rsub|\<mu\>\<nu\>>=<frac|<wide|C|^><rsup|\<mu\>\<nu\>>|<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>
         <wide|x|^><rsup|\<nu\>><around*|(|1-<wide|x|^><rsup|\<nu\>>|)>>.
       </equation>
-
-      <item>This perturbation is valid iff
-
-      <\enumerate-roman>
-        <item>for <math|\<forall\>\<mu\>>,
-        <math|\<exists\>\<delta\>\<gtr\>0>, s.t.
-        <math|<wide|x|^><rsup|\<mu\>>\<in\><around*|(|\<delta\>,1-\<delta\>|)>>;
-
-        <item>for <math|\<forall\>\<mu\>>,
-
-        <\equation>
-          <around*|\||W<rsub|\<mu\>\<mu\>><around*|(|<wide|x|^><rsup|\<mu\>>-<frac|1|2>|)>|\|>\<ll\><frac|1|1-<wide|x|^><rsup|\<mu\>>>\<less\>1;
-        </equation>
-
-        <item>and for <math|\<forall\>\<mu\>,\<nu\>> with
-        <math|\<mu\>\<neq\>\<nu\>>,
-
-        <\equation>
-          <around*|\||<wide|C|^><rsup|\<mu\>\<nu\>>|\|>\<ll\>??.
-        </equation>
-      </enumerate-roman>
     </enumerate-numeric>
   </theorem>
 
@@ -747,6 +727,21 @@
       \<sigma\><rsup|\<mu\>>=<wide|x|^><rsup|\<mu\>>-W<rsub|\<mu\>\<mu\>><wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)><around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>.
     </equation*>
 
+    Since <math|\<sigma\><rsup|\<mu\>>\<assign\>\<sigma\><around*|(|b<rsub|\<mu\>>|)>>
+    and <math|\<sigma\><rprime|'><around*|(|<wide|c|^><rsup|\<mu\>>|)>=\<sigma\><around*|(|<wide|c|^><rsup|\<mu\>>|)><around*|(|1-\<sigma\><around*|(|<wide|c|^><rsup|\<mu\>>|)>|)>=<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>>,
+    we have
+
+    <\align>
+      <tformat|<table|<row|<cell|\<sigma\><around*|(|b<rsub|\<mu\>>|)>=>|<cell|\<sigma\><around*|(|<wide|c|^><rsup|\<mu\>>|)>-\<sigma\><rprime|'><around*|(|<wide|c|^><rsup|\<mu\>>|)>
+      W<rsub|\<mu\>\<mu\>><around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>>>|<row|<cell|=>|<cell|\<sigma\><around*|(|<wide|c|^><rsup|\<mu\>>-W<rsub|\<mu\>\<mu\>><around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>|)>+<with|math-font|cal|O><around*|(|W<rsup|2>|)>.>>>>
+    </align>
+
+    Thus
+
+    <\equation*>
+      b<rsub|\<mu\>>=<wide|c|^><rsup|\<mu\>>-W<rsub|\<mu\>\<mu\>><around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>.
+    </equation*>
+
     \;
   </proof>
 
@@ -754,14 +749,14 @@
     [Solution without Self-interaction]<label|Corollary: Solution without
     Self-interaction>
 
-    If set <math|\<forall\>\<mu\>,W<rsub|\<mu\>\<mu\>>\<equiv\>0>, then, up
-    to <math|<with|math-font|cal|O><around*|(|W|)>>, we have the perburbation
+    If set, for <math|\<forall\>\<mu\>,W<rsub|\<mu\>\<mu\>>=0>, then, up to
+    <math|<with|math-font|cal|O><around*|(|W|)>>, we have the perburbation
     solution of Boltzmann machine as follow.
 
     For <math|\<forall\>\<mu\>>,
 
     <\equation>
-      \<sigma\><rsup|\<mu\>>=<wide|x|^><rsup|\<mu\>>,
+      b<rsub|\<mu\>>=<wide|c|^><rsup|\<mu\>>,
     </equation>
 
     and for <math|\<forall\>\<mu\>,\<nu\>> with <math|\<mu\>\<neq\>\<nu\>>,
@@ -821,20 +816,6 @@
 
       In addition, we shall check whether
       <math|\<sigma\><rsup|\<mu\>>\<in\><around*|(|0,1|)>> or not.
-
-      <item>The perburbation is valid iff
-
-      <\enumerate-roman>
-        <item>for <math|\<forall\>\<mu\>>,
-        <math|\<exists\>\<delta\>\<gtr\>0>, s.t.
-        <math|<wide|x|^><rsup|\<mu\>>\<in\><around*|(|\<delta\>,1-\<delta\>|)>>;
-
-        <item>for <math|\<forall\>\<mu\>>,
-
-        <\equation>
-          <around*|\||<wide|x|^><rsup|\<mu\>>-<frac|1|2>|\|>\<ll\><wide|x|^><rsup|\<mu\>>.
-        </equation>
-      </enumerate-roman>
     </enumerate-numeric>
   </corollary>
 
@@ -882,31 +863,31 @@
 
   <subsection|Perturbation of Restricted Boltzmann Machine>
 
-  <\theorem>
-    [Perturbation Solution of RBM]
+  <\lemma>
+    [Perturbation of RBM]
 
     For <math|\<forall\>i>, let <math|<wide|h|^><rsup|i>\<equiv\>1/2> and
     <math|c<rsub|i>\<equiv\>0>, then we have
 
     <\equation>
-      E<rsub|eff><around*|(|v;U,b,c|)>=-<frac|1|2>W<rsup|eff><rsub|\<alpha\>\<beta\>><around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|v<rsup|\<beta\>>-<wide|v|^><rsup|\<beta\>>|)>-b<rsup|eff><rsub|\<alpha\>>v<rsup|\<alpha\>>+<with|math-font|cal|O><around*|(|U<rsup|3>|)>,
+      E<rsub|eff><around*|(|v;U,b,c|)>=-<frac|1|2>W<rsup|eff><rsub|\<alpha\>\<beta\>><around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|v<rsup|\<beta\>>-<wide|v|^><rsup|\<beta\>>|)>-b<rsup|eff><rsub|\<alpha\>>v<rsup|\<alpha\>>+<with|math-font|cal|O><around*|(|U<rsup|3>+c<rsup|3>|)>,
     </equation>
 
     where
 
     <\equation>
-      b<rsup|eff><rsub|\<alpha\>>\<assign\>b<rsub|\<alpha\>>,
+      W<rsup|eff><rsub|\<alpha\>\<beta\>>\<assign\><frac|1|4><big|sum><rsub|i>U<rsub|\<alpha\>i>
+      U<rsub|\<beta\>i>,
     </equation>
 
     and
 
     <\equation>
-      W<rsup|eff><rsub|\<alpha\>\<beta\>>\<assign\><frac|1|4><big|sum><rsub|i>U<rsub|\<alpha\>i>
-      U<rsub|\<beta\>i>.
+      b<rsup|eff><rsub|\<alpha\>>\<assign\>b<rsub|\<alpha\>>-<big|sum><rsub|i>U<rsub|\<alpha\>i>v<rsup|\<alpha\>><around*|(|<wide|h|^><rsup|i>-<frac|1|2>-<frac|c<rsub|i>|4>|)>.
     </equation>
 
     That is, restricted Boltzmann machine reduces to a Boltzmann machine.
-  </theorem>
+  </lemma>
 
   <\proof>
     Recall that
@@ -943,18 +924,11 @@
       <around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>c<rsub|i>-<frac|1|8><big|sum><rsub|i>c<rsub|i><rsup|2>>>|<row|<cell|>|<cell|+<with|math-font|cal|O><around*|(|U<rsup|3>+c<rsup|3>|)>>>|<row|<cell|<around*|[|\<propto\><big|sum><rsub|\<alpha\>,i>U<rsub|\<alpha\>i>
       v<rsup|\<alpha\>>|]>=>|<cell|<big|sum><rsub|\<alpha\>,i>U<rsub|\<alpha\>i>v<rsup|\<alpha\>><around*|(|<wide|h|^><rsup|i>-<frac|1|2>-<frac|c<rsub|i>|4>|)>>>|<row|<cell|>|<cell|-<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>v<rsup|\<alpha\>>>>|<row|<cell|>|<cell|-<frac|1|8><big|sum><rsub|\<alpha\>,\<beta\>><around*|(|<big|sum><rsub|i>U<rsub|\<alpha\>i>
       U<rsub|\<beta\>i>|)><around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|v<rsup|\<beta\>>-<wide|v|^><rsup|\<beta\>>|)>>>|<row|<cell|<text|[Without
-      <math|v>]>>|<cell|+Const>>|<row|<cell|>|<cell|+<with|math-font|cal|O><around*|(|U<rsup|3>+c<rsup|3>|)>>>>>
+      <math|v>]>>|<cell|+Const>>|<row|<cell|>|<cell|+<with|math-font|cal|O><around*|(|U<rsup|3>+c<rsup|3>|)>>>|<row|<cell|=>|<cell|-<frac|1|2><big|sum><rsub|\<alpha\>,\<beta\>><around*|[|<frac|1|4><around*|(|<big|sum><rsub|i>U<rsub|\<alpha\>i>
+      U<rsub|\<beta\>i>|)>|]><around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|v<rsup|\<beta\>>-<wide|v|^><rsup|\<beta\>>|)>>>|<row|<cell|>|<cell|-<big|sum><rsub|\<alpha\>><around*|[|b<rsub|\<alpha\>>-<big|sum><rsub|i>U<rsub|\<alpha\>i>v<rsup|\<alpha\>><around*|(|<wide|h|^><rsup|i>-<frac|1|2>-<frac|c<rsub|i>|4>|)>|]>v<rsup|\<alpha\>>>>|<row|<cell|>|<cell|+Const>>|<row|<cell|>|<cell|+<with|math-font|cal|O><around*|(|U<rsup|3>+c<rsup|3>|)>.>>>>
     </align>
 
-    Let <math|<wide|h|^><rsup|i>\<equiv\>1/2> and <math|c<rsub|i>\<equiv\>0>,
-    we have
-
-    <\align>
-      <tformat|<table|<row|<cell|E<rsub|eff><around*|(|v|)>=>|<cell|-<big|sum><rsub|\<alpha\>>b<rsub|\<alpha\>>v<rsup|\<alpha\>>>>|<row|<cell|>|<cell|-<frac|1|8><big|sum><rsub|\<alpha\>,\<beta\>><around*|(|<big|sum><rsub|i>U<rsub|\<alpha\>i>
-      U<rsub|\<beta\>i>|)><around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|v<rsup|\<beta\>>-<wide|v|^><rsup|\<beta\>>|)>>>|<row|<cell|>|<cell|+Const>>|<row|<cell|>|<cell|+<with|math-font|cal|O><around*|(|U<rsup|3>|)>.>>>>
-    </align>
-
-    That is, omitting the constant, which will be eliminated by <math|Z>,
+    Omitting the constant, which will be eliminated by <math|Z>, we have
 
     <\equation>
       E<rsub|eff><around*|(|v|)>=-<frac|1|2>W<rsup|eff><rsub|\<alpha\>\<beta\>><around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|v<rsup|\<beta\>>-<wide|v|^><rsup|\<beta\>>|)>-b<rsup|eff><rsub|\<alpha\>>v<rsup|\<alpha\>>+<with|math-font|cal|O><around*|(|U<rsup|3>|)>,
@@ -963,7 +937,7 @@
     where
 
     <\equation*>
-      b<rsup|eff><rsub|\<alpha\>>\<assign\>b<rsub|\<alpha\>>,
+      b<rsup|eff><rsub|\<alpha\>>\<assign\>b<rsub|\<alpha\>>-<big|sum><rsub|i>U<rsub|\<alpha\>i>v<rsup|\<alpha\>><around*|(|<wide|h|^><rsup|i>-<frac|1|2>-<frac|c<rsub|i>|4>|)>,
     </equation*>
 
     and
@@ -974,36 +948,49 @@
     </equation>
   </proof>
 
+  <\theorem>
+    [Perturbation Equations of RBM]
+
+    Up to <math|<with|math-font|cal|O><around*|(|U<rsup|2>|)>>, we have, for
+    <math|\<forall\>\<mu\>>,
+
+    <\equation*>
+      b<rsub|\<mu\>>-<big|sum><rsub|i>U<rsub|\<mu\>i>v<rsup|\<mu\>><around*|(|<wide|h|^><rsup|i>-<frac|1|2>-<frac|c<rsub|i>|4>|)>=<wide|c|^><rsup|\<mu\>>-<frac|1|4><big|sum><rsub|i>U<rsub|\<mu\>i>
+      U<rsub|\<mu\>i><around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>,
+    </equation*>
+
+    and for <math|\<forall\>\<mu\>,\<nu\>> with <math|\<mu\>\<neq\>\<nu\>>,
+
+    <\equation*>
+      <frac|1|4><big|sum><rsub|i>U<rsub|\<mu\>i>
+      U<rsub|\<nu\>i>=<frac|<wide|C|^><rsup|\<mu\>\<nu\>>|<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>
+      <wide|x|^><rsup|\<nu\>><around*|(|1-<wide|x|^><rsup|\<nu\>>|)>>.
+    </equation*>
+  </theorem>
+
   <\remark>
-    [TODO]
+    [Perturbation Solution of RBM]
 
-    Suppose that the dataset is classified by some \Pideals\Q
-    <math|<around*|{|\<xi\><rsub|i>\<in\><around*|{|0,1|}><rsup|n>\|i=1,\<ldots\>,m|}>>,
-    s.t.
+    <\enumerate>
+      <item>This perturbation equations of RBM may not have a solution.
+      Indeed, if <math|i=1> only, then <math|U<rsub|\<alpha\>i>\<rightarrow\>U<rsub|\<alpha\>1>\<backassign\>u<rsub|\<alpha\>>>.
+      We have, for <math|\<forall\>\<mu\>,\<nu\>> with
+      <math|\<mu\>\<neq\>\<nu\>>,
 
-    <\equation>
-      <wide|\<xi\>|^><rsup|\<alpha\>>\<assign\><frac|1|m><big|sum><rsub|i=1><rsup|m>\<xi\><rsub|i><rsup|\<alpha\>>=<wide|x|^><rsup|\<alpha\>>.
-    </equation>
+      <\equation*>
+        <frac|1|4>u<rsub|\<mu\>> u<rsub|\<nu\>>=<frac|<wide|C|^><rsup|\<mu\>\<nu\>>|<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>
+        <wide|x|^><rsup|\<nu\>><around*|(|1-<wide|x|^><rsup|\<nu\>>|)>>.
+      </equation*>
 
-    For instance, image data can be characterized by the class of its main
-    characterr, e.g. dog, cat, e.t.c. Let
+      There are <math|n<around*|(|n-1|)>/2> equations but with <math|n>
+      d.o.f.s, thus cannot be solved.
 
-    <\equation>
-      U<rsub|\<alpha\>i>\<assign\><frac|2|<sqrt|m>><frac|\<xi\><rsub|i><rsup|\<alpha\>>-<wide|\<xi\>|^><rsup|\<alpha\>>|<wide|\<xi\>|^><rsup|\<alpha\>><around*|(|1-<wide|\<xi\>|^><rsup|\<alpha\>>|)>>.
-    </equation>
-
-    Then, we have
-
-    <\align>
-      <tformat|<table|<row|<cell|W<rsup|eff><rsub|\<alpha\>\<beta\>>=>|<cell|<frac|1|4><big|sum><rsub|i=1><rsup|m>U<rsub|\<alpha\>i>
-      U<rsub|\<beta\>i>>>|<row|<cell|=>|<cell|<frac|1|m><big|sum><rsub|i=1><rsup|m><frac|\<xi\><rsub|i><rsup|\<alpha\>>-<wide|\<xi\>|^><rsup|\<alpha\>>|<wide|\<xi\>|^><rsup|\<alpha\>><around*|(|1-<wide|\<xi\>|^><rsup|\<alpha\>>|)>><frac|\<xi\><rsub|i><rsup|\<beta\>>-<wide|\<xi\>|^><rsup|\<beta\>>|<wide|\<xi\>|^><rsup|\<beta\>><around*|(|1-<wide|\<xi\>|^><rsup|\<beta\>>|)>>>>|<row|<cell|=>|<cell|<frac|<wide|\<Xi\>|^><rsup|\<alpha\>\<beta\>>|<wide|\<xi\>|^><rsup|\<alpha\>><around*|(|1-<wide|\<xi\>|^><rsup|\<alpha\>>|)><wide|\<xi\>|^><rsup|\<beta\>><around*|(|1-<wide|\<xi\>|^><rsup|\<beta\>>|)>>,>>>>
-    </align>
-
-    where <math|<wide|\<Xi\>|^>> is the covariance matrix of <math|\<xi\>>.
-
-    That is, RBM is nothing but finding ideals s.t. with these ideals, the
-    constructed Boltzmann machine approximates Boltzmann machine constructed
-    from the real world data.
+      <item>There is inner (gauge) symmetry. Indeed, if let
+      <math|<wide|h|^><rsup|i>=1/2> and <math|c<rsub|i>=0> for
+      <math|\<forall\>i=1,\<ldots\>,m>, then for any orthogonal
+      <math|m\<times\>m> matrix <math|E>, <math|U\<rightarrow\>U E> leaves
+      the equations invariant.
+    </enumerate>
   </remark>
 
   <subsection|Validation of Perturbations>
