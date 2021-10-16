@@ -16,7 +16,7 @@ X₀, y₀ = MNIST.traindata()
 N = 2000  # for showing latent encoding.
 IMAGE_SIZE = (16, 16)
 ZOOMIN_RATIO = 8
-X = preprocess(X₀[:, :, 1:N], IMAGE_SIZE) |> zoomin(ZOOMIN_RATIO, 0.4)
+X = preprocess(X₀[:, :, 1:N], IMAGE_SIZE) |> zoomin(ZOOMIN_RATIO, 0.45)
 
 # Model
 x̂ = expect(X)
@@ -25,6 +25,33 @@ Ĉ = cov(X; dims=2, corrected=false)
 # m = getPBM(x̂, Ĉ, x̂)  # thus setting the diagonal of W vanish.
 m = getPBM(x̂, Ĉ)  # thus enscure the positive semi-defineness of W.
 histogram(flatten(m.W); bins=100, title="W", legends=false)
+
+
+# XXX: test!
+function quantize(x, ϵ)
+    floor(abs(x / ϵ)) * sign(x) * ϵ
+end
+
+quantize(ϵ) = x -> quantize(x, ϵ)
+
+vanish_diag(m::AbstractMatrix) = m .- Diagonal(diag(m))
+Ĉ₀ = vanish_diag(Ĉ)
+
+add_diag(m::AbstractMatrix, v::AbstractVector) = m .+ Diagonal(v)
+C_diag = sum(abs.(Ĉ₀); dims=1) |> squeeze
+λ, V = eigen(add_diag(Ĉ₀, C_diag))
+λ = @. real(λ)
+
+C_diag = C_diag .- λ
+λ, V = eigen(add_diag(Ĉ₀, C_diag))
+λ = @. real(λ)
+
+λ, V = eigen(Ĉ)
+bb = -λ .* [sum(V'[i, :].^2) for i = 1:size(V, 1)]
+γ = bb' * inv(V.^2 ) |> squeeze
+λ, V = eigen(add_diag(Ĉ, γ))
+λ = @. real(λ)
+
 
 # Analyze kernel
 λ, V = eigen(m.W)

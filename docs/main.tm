@@ -178,7 +178,7 @@
     [Boltzmann Machine]
 
     Let <math|<with|math-font|cal|M>=<around*|{|0,1|}><rsup|n>>,
-    <math|W\<in\>\<bbb-R\><rsup|<around*|(|n\<times\>n|)>>>,
+    <math|W\<in\>\<bbb-R\><rsup|<around*|(|n\<times\>n|)>>> being symmetric,
     <math|b\<in\>\<bbb-R\><rsup|n>>, <math|\<theta\>\<assign\><around*|(|W,b|)>>.
     Given dataset <math|D\<assign\><around*|{|x<rsub|i>\|x<rsub|i>\<in\><with|math-font|cal|M>,i=1,\<ldots\>,N|}>>,
     denote expectation as <math|<wide|x|^>>. Then a Boltzmann machine is
@@ -215,11 +215,10 @@
     For <math|\<forall\>\<alpha\>>,
 
     <\equation>
-      p<rsub|E><around*|(|x<rsub|\<alpha\>>=1\|x<rsub|\\\<alpha\>>|)>=\<sigma\><around*|(|<big|sum><rsub|\<alpha\>\<neq\>\<beta\>>W<rsub|<around*|(|\<alpha\>\<beta\>|)>><around*|(|x<rsup|\<beta\>>-<wide|x|^><rsup|\<beta\>>|)>+c<rsub|\<alpha\>>|)>,
+      p<rsub|E><around*|(|x<rsub|\<alpha\>>=1\|x<rsub|\\\<alpha\>>|)>=\<sigma\><around*|(|<big|sum><rsub|\<alpha\>\<neq\>\<beta\>>W<rsub|\<alpha\>\<beta\>><around*|(|x<rsup|\<beta\>>-<wide|x|^><rsup|\<beta\>>|)>+c<rsub|\<alpha\>>|)>,
     </equation>
 
-    where <math|W<rsub|<around*|(|\<alpha\>\<beta\>|)>>\<assign\><around*|(|W<rsub|\<alpha\>\<beta\>>+W<rsub|\<beta\>\<alpha\>>|)>/2>
-    and <math|c<rsub|\<alpha\>>\<assign\>b<rsub|\<alpha\>>+<around*|(|1/2
+    where <math|c<rsub|\<alpha\>>\<assign\>b<rsub|\<alpha\>>+<around*|(|1/2
     -<wide|x|^><rsup|\<alpha\>>|)>W<rsub|\<alpha\>\<alpha\>>>. The sigmoid
     function <math|\<sigma\>\<assign\>1/<around*|(|1+\<mathe\><rsup|-x>|)>>.
     This relation is held for arbitrary replacement of the vector
@@ -246,6 +245,20 @@
       -<wide|x|^><rsup|\<gamma\>>|)>W<rsub|\<gamma\>\<gamma\>>|)>|]>.
     </equation*>
   </proof>
+
+  <\theorem>
+    [Learning Rule of BM]
+
+    <\equation>
+      <big|sum><rsub|x>p<rsub|D><around*|(|x|)>x<rsup|\<mu\>>=<big|sum><rsub|x>p<rsub|E><around*|(|x|)>x<rsup|\<mu\>>,
+    </equation>
+
+    and
+
+    <\equation*>
+      <big|sum><rsub|x>p<rsub|D><around*|(|x|)><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-<wide|x|^><rsup|\<nu\>>|)>=<big|sum><rsub|x>p<rsub|E><around*|(|x|)><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-<wide|x|^><rsup|\<nu\>>|)>.
+    </equation*>
+  </theorem>
 
   <subsection|Restricted Boltzmann Machine>
 
@@ -297,13 +310,13 @@
     We have
 
     <\equation>
-      p<around*|(|v<rsub|\<alpha\>>=1\|v<rsub|\\\<alpha\>>,h<rsub|i>|)>=\<sigma\><around*|(|<big|sum><rsub|i>U<rsub|\<alpha\>i><around*|(|h<rsup|i>-<wide|h|^><rsup|i>|)>+b<rsub|\<alpha\>>|)>,
+      p<around*|(|h<rsub|i>=1\|v<rsub|\<alpha\>>,h<rsub|\\i>|)>=\<sigma\><around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>i><around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>+c<rsub|i>|)>,
     </equation>
 
     and
 
     <\equation>
-      p<around*|(|h<rsub|i>=1\|v<rsub|\<alpha\>>,h<rsub|\\i>|)>=\<sigma\><around*|(|<big|sum><rsub|\<alpha\>>U<rsub|\<alpha\>i><around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)>+c<rsub|i>|)>.
+      p<around*|(|v<rsub|\<alpha\>>=1\|v<rsub|\\\<alpha\>>,h<rsub|i>|)>=\<sigma\><around*|(|<big|sum><rsub|i>U<rsub|\<alpha\>i><around*|(|h<rsup|i>-<wide|h|^><rsup|i>|)>+b<rsub|\<alpha\>>|)>.
     </equation>
   </theorem>
 
@@ -633,39 +646,27 @@
   <\theorem>
     [Perturbation Solutions of BM]
 
-    <\enumerate-numeric>
-      <item>Define <math|<wide|c|^><rsup|\<mu\>>\<assign\>\<sigma\><rsup|-1><around*|(|<wide|x|^><rsup|\<mu\>>|)>>
-      and <math|<wide|C|^><rsup|\<mu\>\<nu\>>\<assign\><big|sum><rsub|x>p<rsub|D><around*|(|x|)><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-<wide|x|^><rsup|\<nu\>>|)>>.
-      Let <math|W> symmetric. By loss gradient, we have
+    Define <math|<wide|c|^><rsup|\<mu\>>\<assign\>\<sigma\><rsup|-1><around*|(|<wide|x|^><rsup|\<mu\>>|)>>
+    and <math|<wide|C|^><rsup|\<mu\>\<nu\>>\<assign\><big|sum><rsub|x>p<rsub|D><around*|(|x|)><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-<wide|x|^><rsup|\<nu\>>|)>>.
+    Then, up to <math|<with|math-font|cal|O><around*|(|W<rsup|2>|)>>, for
+    <math|\<forall\>\<mu\>>,
 
-      <\equation>
-        <wide|x|^><rsup|\<alpha\>>=<big|sum><rsub|x>p<rsub|E><around*|(|x|)>x<rsup|\<alpha\>>;
-      </equation>
+    \;
 
-      <\equation>
-        <wide|C|^><rsup|\<mu\>\<nu\>>=<big|sum><rsub|x>p<rsub|E><around*|(|x|)><around*|(|x<rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|)><around*|(|x<rsup|\<nu\>>-<wide|x|^><rsup|\<nu\>>|)>.
-      </equation>
+    <\equation>
+      <wide|C|^><rsup|\<mu\>\<mu\>>=<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>,
+    </equation>
 
-      <item>From these, we get, up to <math|<with|math-font|cal|O><around*|(|W|)>>,
-      for <math|\<forall\>\<mu\>>,
+    <\equation>
+      b<rsub|\<mu\>>=<wide|c|^><rsup|\<mu\>>-W<rsub|\<mu\>\<mu\>><around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>;
+    </equation>
 
-      \;
+    and for <math|\<forall\>\<mu\>,\<nu\>> with <math|\<mu\>\<neq\>\<nu\>>,
 
-      <\equation>
-        <wide|C|^><rsup|\<mu\>\<mu\>>=<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>+<with|math-font|cal|O><around*|(|W<rsup|2>|)>,
-      </equation>
-
-      <\equation>
-        b<rsup|\<mu\>>=<wide|c|^><rsup|\<mu\>>-W<rsub|\<mu\>\<mu\>><around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>;
-      </equation>
-
-      and for <math|\<forall\>\<mu\>,\<nu\>> with <math|\<mu\>\<neq\>\<nu\>>,
-
-      <\equation>
-        W<rsub|\<mu\>\<nu\>>=<frac|<wide|C|^><rsup|\<mu\>\<nu\>>|<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>
-        <wide|x|^><rsup|\<nu\>><around*|(|1-<wide|x|^><rsup|\<nu\>>|)>>.
-      </equation>
-    </enumerate-numeric>
+    <\equation>
+      W<rsub|\<mu\>\<nu\>>=<frac|<wide|C|^><rsup|\<mu\>\<nu\>>|<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>
+      <wide|x|^><rsup|\<nu\>><around*|(|1-<wide|x|^><rsup|\<nu\>>|)>>.
+    </equation>
   </theorem>
 
   <\proof>
@@ -795,6 +796,54 @@
     which, as a covariance matrix, is positive semi-definite.
   </proof>
 
+  <\lemma>
+    [Eigenvalues of Covariance]<\footnote>
+      C.f. <hlink|this question|https://stats.stackexchange.com/questions/366558/sufficient-and-necessary-conditions-for-zero-eigenvalue-of-a-correlation-matrix?newreg=84d4fa69ffd442b3ad038c06931098f8>
+      on stackexchange.com.
+    </footnote>
+
+    Let <math|<around*|{|X<rsup|\<mu\>>\|\<mu\>=1,\<ldots\>,N|}>> random
+    variables. Let the <math|\<lambda\><rsub|1>,\<ldots\>,\<lambda\><rsub|N>>
+    the eigenvalues of <math|Cov<around*|(|X<rsup|\<mu\>>,X<rsup|\<nu\>>|)>>,
+    with eigenvectors <math|u<rsub|1>,\<ldots\>,u<rsub|N>>. Let orthogonal
+    matrix <math|Q\<assign\><around*|(|u<rsub|1>,\<ldots\>,u<rsub|N>|)>>, and
+    <math|Y:=Q X>. Then we have, for <math|\<forall\>\<mu\>>,
+
+    <\equation*>
+      Var<around*|(|Y<rsub|\<mu\>>|)>=\<lambda\><rsub|\<mu\>>,
+    </equation*>
+
+    and for <math|\<forall\>\<mu\>,\<nu\>> with <math|\<mu\>\<neq\>\<nu\>>,
+
+    <\equation*>
+      Cov<around*|(|Y<rsub|\<mu\>>,Y<rsub|\<nu\>>|)>=0.
+    </equation*>
+  </lemma>
+
+  <\proof>
+    Denote <math|C<rsup|\<mu\>\<nu\>>\<assign\>Cov<around*|(|X<rsup|\<mu\>>,X<rsup|\<nu\>>|)>>.
+    From <math|Q<rsup|T> \<Lambda\> Q=C>, we get <math|\<Lambda\>=Q C
+    Q<rsup|T>>. On the other hand,
+
+    <\align>
+      <tformat|<table|<row|<cell|Cov<around*|(|Y<rsub|\<mu\>>,Y<rsub|\<nu\>>|)>=>|<cell|\<bbb-E\><around*|[|<around*|(|Y<rsub|\<mu\>>-\<bbb-E\><around*|[|Y<rsub|\<mu\>>|]>|)><around*|(|Y<rsub|\<nu\>>-\<bbb-E\><around*|[|Y<rsub|\<nu\>>|]>|)>|]>>>|<row|<cell|=>|<cell|\<bbb-E\><around*|[|<around*|(|Q<rsub|\<mu\>\<alpha\>>X<rsup|\<alpha\>>-\<bbb-E\><around*|[|Q<rsub|\<mu\>\<alpha\>>X<rsup|\<alpha\>>|]>|)><around*|(|Q<rsub|\<nu\>\<beta\>>X<rsup|\<beta\>>-\<bbb-E\><around*|[|Q<rsub|\<nu\>\<beta\>>X<rsup|\<beta\>>|]>|)>|]>>>|<row|<cell|=>|<cell|Q<rsub|\<mu\>\<alpha\>>\<bbb-E\><around*|[|<around*|(|X<rsup|\<alpha\>>-\<bbb-E\><around*|[|X<rsup|\<alpha\>>|]>|)><around*|(|X<rsup|\<beta\>>-\<bbb-E\><around*|[|X<rsup|\<beta\>>|]>|)>|]>Q<rsub|\<nu\>\<beta\>>>>|<row|<cell|=>|<cell|Q<rsub|\<mu\>\<alpha\>>C<rsub|\<alpha\>\<beta\>>Q<rsub|\<nu\>\<beta\>>>>|<row|<cell|=>|<cell|Q
+      C Q<rsup|T>.>>>>
+    </align>
+
+    Thus, we get <math|\<Lambda\>=Cov<around*|(|Y<rsub|\<mu\>>,Y<rsub|\<nu\>>|)>>.
+    We conclude that, for <math|\<forall\>\<mu\>>,
+
+    <\equation*>
+      \<lambda\><rsub|\<mu\>>=Cov<around*|(|Y<rsub|\<mu\>>,Y<rsub|\<mu\>>|)>=Var<around*|(|Y<rsub|\<mu\>>|)>,
+    </equation*>
+
+    and for <math|\<forall\>\<mu\>,\<nu\>> with <math|\<mu\>\<neq\>\<nu\>>,
+
+    <\equation*>
+      Cov<around*|(|Y<rsub|\<mu\>>,Y<rsub|\<nu\>>|)>=0.
+    </equation*>
+  </proof>
+
   <\corollary>
     [Solution with Positive Semi-definiteness]<label|Corollary: Solution with
     Positive Semi-definiteness>
@@ -816,6 +865,12 @@
 
       In addition, we shall check whether
       <math|\<sigma\><rsup|\<mu\>>\<in\><around*|(|0,1|)>> or not.
+
+      <item>Perturbation demands
+
+      <\equation*>
+        <around*|\||<wide|x|^><rsup|\<mu\>>-<frac|1|2>|\|>\<ll\><wide|x|^><rsup|\<mu\>>.
+      </equation*>
     </enumerate-numeric>
   </corollary>
 
@@ -856,7 +911,7 @@
       we get
 
       <\equation*>
-        <around*|\||\<sigma\><rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|\|>=<around*|\||<wide|x|^><rsup|\<mu\>>-<frac|1|2>|\|>\<ll\><wide|x|^><rsup|\<mu\>>.
+        <around*|\||<wide|x|^><rsup|\<mu\>>-<frac|1|2>|\|>\<ll\><wide|x|^><rsup|\<mu\>>.
       </equation*>
     </enumerate-numeric>
   </proof>
@@ -931,7 +986,7 @@
     Omitting the constant, which will be eliminated by <math|Z>, we have
 
     <\equation>
-      E<rsub|eff><around*|(|v|)>=-<frac|1|2>W<rsup|eff><rsub|\<alpha\>\<beta\>><around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|v<rsup|\<beta\>>-<wide|v|^><rsup|\<beta\>>|)>-b<rsup|eff><rsub|\<alpha\>>v<rsup|\<alpha\>>+<with|math-font|cal|O><around*|(|U<rsup|3>|)>,
+      E<rsub|eff><around*|(|v|)>=-<frac|1|2>W<rsup|eff><rsub|\<alpha\>\<beta\>><around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|v<rsup|\<beta\>>-<wide|v|^><rsup|\<beta\>>|)>-b<rsup|eff><rsub|\<alpha\>>v<rsup|\<alpha\>>+<with|math-font|cal|O><around*|(|U<rsup|3>+c<rsup|3>|)>,
     </equation>
 
     where
@@ -951,22 +1006,50 @@
   <\theorem>
     [Perturbation Equations of RBM]
 
-    Up to <math|<with|math-font|cal|O><around*|(|U<rsup|2>|)>>, we have, for
-    <math|\<forall\>\<mu\>>,
+    Up to <math|<with|math-font|cal|O><around*|(|U<rsup|3>+c<rsup|3>|)>>, we
+    have, for <math|\<forall\>\<mu\>>,
 
-    <\equation*>
+    <\equation>
       b<rsub|\<mu\>>-<big|sum><rsub|i>U<rsub|\<mu\>i>v<rsup|\<mu\>><around*|(|<wide|h|^><rsup|i>-<frac|1|2>-<frac|c<rsub|i>|4>|)>=<wide|c|^><rsup|\<mu\>>-<frac|1|4><big|sum><rsub|i>U<rsub|\<mu\>i>
       U<rsub|\<mu\>i><around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>,
-    </equation*>
+    </equation>
 
     and for <math|\<forall\>\<mu\>,\<nu\>> with <math|\<mu\>\<neq\>\<nu\>>,
 
-    <\equation*>
+    <\equation>
       <frac|1|4><big|sum><rsub|i>U<rsub|\<mu\>i>
       U<rsub|\<nu\>i>=<frac|<wide|C|^><rsup|\<mu\>\<nu\>>|<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>
       <wide|x|^><rsup|\<nu\>><around*|(|1-<wide|x|^><rsup|\<nu\>>|)>>.
-    </equation*>
+    </equation>
+
+    The <math|<wide|h|^><rsup|i>> and <math|c<rsub|i>> are free parameters,
+    and the general setting is <math|<wide|h|^><rsup|i>=1/2> and
+    <math|c<rsub|i>=0> for <math|\<forall\>i=1,\<ldots\>,m>. Then the first
+    equation reduce to, for <math|\<forall\>\<mu\>>,
+
+    <\equation>
+      b<rsub|\<mu\>>=<wide|c|^><rsup|\<mu\>>-<frac|1|4><big|sum><rsub|i>U<rsub|\<mu\>i>
+      U<rsub|\<mu\>i><around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>.
+    </equation>
   </theorem>
+
+  <\proof>
+    By the perturbation solution of BM, for <math|\<forall\>\<mu\>>,
+
+    <\align>
+      <tformat|<table|<row|<cell|b<rsup|eff><rsub|\<alpha\>>=>|<cell|<wide|c|^><rsup|\<mu\>>-W<rsup|eff><rsub|\<mu\>\<mu\>><around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>>>|<row|<cell|<around*|{|W<rsup|eff><rsub|\<alpha\>\<beta\>>\<assign\><frac|1|4><big|sum><rsub|i>U<rsub|\<alpha\>i>
+      U<rsub|\<beta\>i>|}>=>|<cell|<wide|c|^><rsup|\<mu\>>-<frac|1|4><big|sum><rsub|i>U<rsub|\<mu\>i>
+      U<rsub|\<mu\>i><around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>,>>>>
+    </align>
+
+    and for <math|\<forall\>\<mu\>,\<nu\>> with <math|\<mu\>\<neq\>\<nu\>>,
+
+    <\align>
+      <tformat|<table|<row|<cell|W<rsup|eff><rsub|\<mu\>\<nu\>>=>|<cell|<frac|<wide|C|^><rsup|\<mu\>\<nu\>>|<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>
+      <wide|x|^><rsup|\<nu\>><around*|(|1-<wide|x|^><rsup|\<nu\>>|)>>>>|<row|<cell|<around*|{|Definition|}>=>|<cell|<frac|1|4><big|sum><rsub|i>U<rsub|\<mu\>i>
+      U<rsub|\<nu\>i>.>>>>
+    </align>
+  </proof>
 
   <\remark>
     [Perturbation Solution of RBM]
@@ -1173,12 +1256,12 @@
 <\references>
   <\collection>
     <associate|Corollary: Solution with Positive
-    Semi-definiteness|<tuple|30|?>>
-    <associate|Corollary: Solution without Self-interaction|<tuple|28|?>>
+    Semi-definiteness|<tuple|32|11>>
+    <associate|Corollary: Solution without Self-interaction|<tuple|29|11>>
     <associate|auto-1|<tuple|1|1>>
-    <associate|auto-10|<tuple|4.2|11>>
-    <associate|auto-11|<tuple|4.3|?>>
-    <associate|auto-12|<tuple|A|?>>
+    <associate|auto-10|<tuple|4.2|12>>
+    <associate|auto-11|<tuple|4.3|14>>
+    <associate|auto-12|<tuple|A|15>>
     <associate|auto-2|<tuple|2|2>>
     <associate|auto-3|<tuple|3|2>>
     <associate|auto-4|<tuple|3.1|2>>
@@ -1188,7 +1271,9 @@
     <associate|auto-8|<tuple|4.1.1|5>>
     <associate|auto-9|<tuple|4.1.2|7>>
     <associate|footnote-1|<tuple|1|3>>
+    <associate|footnote-2|<tuple|2|?>>
     <associate|footnr-1|<tuple|1|3>>
+    <associate|footnr-2|<tuple|2|?>>
   </collection>
 </references>
 
