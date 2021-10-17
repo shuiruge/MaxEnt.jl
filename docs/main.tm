@@ -3,6 +3,24 @@
 <style|article>
 
 <\body>
+  <\hide-preamble>
+    \;
+
+    <assign|proof-text|<macro|<localize|Proof>>>
+
+    <assign|proof|<\macro|body>
+      <render-proof|<proof-text>|<arg|body>>
+    </macro>>
+
+    <assign|render-proof|<\macro|which|body>
+      <\surround||<if|<occurs-inside|<quote|<qed>>|body>||<htab|0.5fn|0><qed>>>
+        <\render-remark|<arg|which>>
+          <with|font-size|0.6|<arg|body>>
+        </render-remark>
+      </surround>
+    </macro>>
+  </hide-preamble>
+
   <section|Energy-based Model>
 
   <\definition>
@@ -768,154 +786,6 @@
     </equation>
   </corollary>
 
-  <\lemma>
-    Let <math|X<rsup|\<mu\>>>, <math|\<mu\>=1,\<ldots\>,N> random variables.
-    Then we have matrix
-
-    <\equation*>
-      <frac|Cov<around*|(|X<rsup|\<mu\>>,X<rsup|\<nu\>>|)>|Var<around*|(|X<rsup|\<mu\>>|)>Var<around*|(|X<rsup|\<nu\>>|)>>
-    </equation*>
-
-    positive semi-definite.
-  </lemma>
-
-  <\proof>
-    Directly, define <math|Z<rsup|\<mu\>>\<assign\>X<rsup|\<mu\>>/Var<around*|[|X<rsup|\<mu\>>|]>>.
-    Then, we have
-
-    <\equation*>
-      \<bbb-E\><around*|[|Z<rsup|\<mu\>>|]>=<frac|\<bbb-E\><around*|[|X<rsup|\<mu\>>|]>|Var<around*|[|X<rsup|\<mu\>>|]>>.
-    </equation*>
-
-    Then,
-
-    <\align>
-      <tformat|<table|<row|<cell|<frac|Cov<around*|(|X<rsup|\<mu\>>,X<rsup|\<nu\>>|)>|Var<around*|(|X<rsup|\<mu\>>|)>Var<around*|(|X<rsup|\<nu\>>|)>>>|<cell|=<frac|\<bbb-E\><around*|[|<around*|(|X<rsup|\<mu\>>-\<bbb-E\><around*|[|X<rsup|\<mu\>>|]>|)><around*|(|X<rsup|\<nu\>>-\<bbb-E\><around*|[|X<rsup|\<nu\>>|]>|)>|]>|Var<around*|(|X<rsup|\<mu\>>|)>Var<around*|(|X<rsup|\<nu\>>|)>>>>|<row|<cell|>|<cell|=\<bbb-E\><around*|[|<frac|<around*|(|X<rsup|\<mu\>>-\<bbb-E\><around*|[|X<rsup|\<mu\>>|]>|)>|Var<around*|(|X<rsup|\<mu\>>|)>><frac|<around*|(|X<rsup|\<nu\>>-\<bbb-E\><around*|[|X<rsup|\<nu\>>|]>|)>|Var<around*|(|X<rsup|\<nu\>>|)>>|]>>>|<row|<cell|>|<cell|=\<bbb-E\><around*|[|<around*|(|Z<rsup|\<mu\>>-\<bbb-E\><around*|[|Z<rsup|\<mu\>>|]>|)><around*|(|Z<rsup|\<nu\>>-\<bbb-E\><around*|[|Z<rsup|\<nu\>>|]>|)>|]>>>|<row|<cell|>|<cell|=Cov<around*|(|Z<rsup|\<mu\>>,Z<rsup|\<nu\>>|)>,>>>>
-    </align>
-
-    which, as a covariance matrix, is positive semi-definite.
-  </proof>
-
-  <\lemma>
-    [Eigenvalues of Covariance]<\footnote>
-      C.f. <hlink|this question|https://stats.stackexchange.com/questions/366558/sufficient-and-necessary-conditions-for-zero-eigenvalue-of-a-correlation-matrix?newreg=84d4fa69ffd442b3ad038c06931098f8>
-      on stackexchange.com.
-    </footnote>
-
-    Let <math|<around*|{|X<rsup|\<mu\>>\|\<mu\>=1,\<ldots\>,N|}>> random
-    variables. Let the <math|\<lambda\><rsub|1>,\<ldots\>,\<lambda\><rsub|N>>
-    the eigenvalues of <math|Cov<around*|(|X<rsup|\<mu\>>,X<rsup|\<nu\>>|)>>,
-    with eigenvectors <math|u<rsub|1>,\<ldots\>,u<rsub|N>>. Let orthogonal
-    matrix <math|Q\<assign\><around*|(|u<rsub|1>,\<ldots\>,u<rsub|N>|)>>, and
-    <math|Y:=Q X>. Then we have, for <math|\<forall\>\<mu\>>,
-
-    <\equation*>
-      Var<around*|(|Y<rsub|\<mu\>>|)>=\<lambda\><rsub|\<mu\>>,
-    </equation*>
-
-    and for <math|\<forall\>\<mu\>,\<nu\>> with <math|\<mu\>\<neq\>\<nu\>>,
-
-    <\equation*>
-      Cov<around*|(|Y<rsub|\<mu\>>,Y<rsub|\<nu\>>|)>=0.
-    </equation*>
-  </lemma>
-
-  <\proof>
-    Denote <math|C<rsup|\<mu\>\<nu\>>\<assign\>Cov<around*|(|X<rsup|\<mu\>>,X<rsup|\<nu\>>|)>>.
-    From <math|Q<rsup|T> \<Lambda\> Q=C>, we get <math|\<Lambda\>=Q C
-    Q<rsup|T>>. On the other hand,
-
-    <\align>
-      <tformat|<table|<row|<cell|Cov<around*|(|Y<rsub|\<mu\>>,Y<rsub|\<nu\>>|)>=>|<cell|\<bbb-E\><around*|[|<around*|(|Y<rsub|\<mu\>>-\<bbb-E\><around*|[|Y<rsub|\<mu\>>|]>|)><around*|(|Y<rsub|\<nu\>>-\<bbb-E\><around*|[|Y<rsub|\<nu\>>|]>|)>|]>>>|<row|<cell|=>|<cell|\<bbb-E\><around*|[|<around*|(|Q<rsub|\<mu\>\<alpha\>>X<rsup|\<alpha\>>-\<bbb-E\><around*|[|Q<rsub|\<mu\>\<alpha\>>X<rsup|\<alpha\>>|]>|)><around*|(|Q<rsub|\<nu\>\<beta\>>X<rsup|\<beta\>>-\<bbb-E\><around*|[|Q<rsub|\<nu\>\<beta\>>X<rsup|\<beta\>>|]>|)>|]>>>|<row|<cell|=>|<cell|Q<rsub|\<mu\>\<alpha\>>\<bbb-E\><around*|[|<around*|(|X<rsup|\<alpha\>>-\<bbb-E\><around*|[|X<rsup|\<alpha\>>|]>|)><around*|(|X<rsup|\<beta\>>-\<bbb-E\><around*|[|X<rsup|\<beta\>>|]>|)>|]>Q<rsub|\<nu\>\<beta\>>>>|<row|<cell|=>|<cell|Q<rsub|\<mu\>\<alpha\>>C<rsub|\<alpha\>\<beta\>>Q<rsub|\<nu\>\<beta\>>>>|<row|<cell|=>|<cell|Q
-      C Q<rsup|T>.>>>>
-    </align>
-
-    Thus, we get <math|\<Lambda\>=Cov<around*|(|Y<rsub|\<mu\>>,Y<rsub|\<nu\>>|)>>.
-    We conclude that, for <math|\<forall\>\<mu\>>,
-
-    <\equation*>
-      \<lambda\><rsub|\<mu\>>=Cov<around*|(|Y<rsub|\<mu\>>,Y<rsub|\<mu\>>|)>=Var<around*|(|Y<rsub|\<mu\>>|)>,
-    </equation*>
-
-    and for <math|\<forall\>\<mu\>,\<nu\>> with <math|\<mu\>\<neq\>\<nu\>>,
-
-    <\equation*>
-      Cov<around*|(|Y<rsub|\<mu\>>,Y<rsub|\<nu\>>|)>=0.
-    </equation*>
-  </proof>
-
-  <\corollary>
-    [Solution with Positive Semi-definiteness]<label|Corollary: Solution with
-    Positive Semi-definiteness>
-
-    <\enumerate-numeric>
-      <item>If set, for <math|\<forall\>\<mu\>>,
-
-      <\equation>
-        W<rsub|\<mu\>\<mu\>>=<frac|1|<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>>,
-      </equation>
-
-      then <math|W<rsub|\<mu\>\<nu\>>> is positive semi-defined.
-
-      <item>In this case, we find, for <math|\<forall\>\<mu\>>,
-
-      <\equation>
-        \<sigma\><rsup|\<mu\>>=2 <wide|x|^><rsup|\<mu\>>-<frac|1|2>.
-      </equation>
-
-      In addition, we shall check whether
-      <math|\<sigma\><rsup|\<mu\>>\<in\><around*|(|0,1|)>> or not.
-
-      <item>Perturbation demands
-
-      <\equation*>
-        <around*|\||<wide|x|^><rsup|\<mu\>>-<frac|1|2>|\|>\<ll\><wide|x|^><rsup|\<mu\>>.
-      </equation*>
-    </enumerate-numeric>
-  </corollary>
-
-  <\proof>
-    Here we prove the declarations one by one.
-
-    <\enumerate-numeric>
-      <item>Directly,
-
-      <\align>
-        <tformat|<table|<row|<cell|W<rsub|\<mu\>\<mu\>>=>|<cell|<frac|1|<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>>>>|<row|<cell|<around*|{|<wide|C|^><rsup|\<mu\>\<nu\>>=<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>+<with|math-font|cal|O><around*|(|W<rsup|2>|)>|}>=>|<cell|<frac|<wide|C|^><rsup|\<mu\>\<mu\>>|<around*|[|<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>|]><rsup|2>>.>>>>
-      </align>
-
-      Together with <math|W<rsub|\<mu\>\<neq\>\<nu\>>>, we find, for
-      <math|\<forall\><around*|(|\<mu\>,\<nu\>|)>>,
-
-      <\equation*>
-        W<rsub|\<mu\>\<nu\>>=<frac|Cov<around*|[|X<rsup|\<mu\>>,X<rsup|\<nu\>>|]>|Var<around*|[|X<rsup|\<mu\>>|]>
-        Var<around*|[|X<rsup|\<nu\>>|]>>,
-      </equation*>
-
-      where we used <math|Var<around*|[|X<rsup|\<mu\>>|]>=<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>>.
-      This is positive semi-definite.
-
-      <item>In this case,
-
-      <\align>
-        <tformat|<table|<row|<cell|\<sigma\><rsup|\<mu\>>=>|<cell|<wide|x|^><rsup|\<mu\>>-W<rsub|\<mu\>\<mu\>><wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)><around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>>>|<row|<cell|<around*|{|W<rsub|\<mu\>\<mu\>>=\<cdots\>|}>=>|<cell|<wide|x|^><rsup|\<mu\>>-<frac|1|<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>><wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)><around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>>>|<row|<cell|=>|<cell|<wide|x|^><rsup|\<mu\>>-<around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>>>|<row|<cell|=>|<cell|2
-        <wide|x|^><rsup|\<mu\>>-<frac|1|2>.>>>>
-      </align>
-
-      <item>Since perturbation demands
-
-      <\equation*>
-        <around*|\||\<sigma\><rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>>|\|>\<ll\><wide|x|^><rsup|\<mu\>>,
-      </equation*>
-
-      we get
-
-      <\equation*>
-        <around*|\||<wide|x|^><rsup|\<mu\>>-<frac|1|2>|\|>\<ll\><wide|x|^><rsup|\<mu\>>.
-      </equation*>
-    </enumerate-numeric>
-  </proof>
-
   <subsection|Perturbation of Restricted Boltzmann Machine>
 
   <\lemma>
@@ -1051,30 +921,182 @@
     </align>
   </proof>
 
-  <\remark>
-    [Perturbation Solution of RBM]
+  <\lemma>
+    [Positive Semi-definiteness of Covariance]<label|Lemma: Positive
+    Semi-definiteness of Covariance>
+
+    Let <math|X<rsup|\<mu\>>>, <math|\<mu\>=1,\<ldots\>,N> random variables.
+    Then we have matrix
+
+    <\equation*>
+      <frac|Cov<around*|(|X<rsup|\<mu\>>,X<rsup|\<nu\>>|)>|Var<around*|(|X<rsup|\<mu\>>|)>Var<around*|(|X<rsup|\<nu\>>|)>>
+    </equation*>
+
+    positive semi-definite.
+  </lemma>
+
+  <\proof>
+    Directly, define <math|Z<rsup|\<mu\>>\<assign\>X<rsup|\<mu\>>/Var<around*|[|X<rsup|\<mu\>>|]>>.
+    Then, we have
+
+    <\equation*>
+      \<bbb-E\><around*|[|Z<rsup|\<mu\>>|]>=<frac|\<bbb-E\><around*|[|X<rsup|\<mu\>>|]>|Var<around*|[|X<rsup|\<mu\>>|]>>.
+    </equation*>
+
+    Then,
+
+    <\align>
+      <tformat|<table|<row|<cell|<frac|Cov<around*|(|X<rsup|\<mu\>>,X<rsup|\<nu\>>|)>|Var<around*|(|X<rsup|\<mu\>>|)>Var<around*|(|X<rsup|\<nu\>>|)>>>|<cell|=<frac|\<bbb-E\><around*|[|<around*|(|X<rsup|\<mu\>>-\<bbb-E\><around*|[|X<rsup|\<mu\>>|]>|)><around*|(|X<rsup|\<nu\>>-\<bbb-E\><around*|[|X<rsup|\<nu\>>|]>|)>|]>|Var<around*|(|X<rsup|\<mu\>>|)>Var<around*|(|X<rsup|\<nu\>>|)>>>>|<row|<cell|>|<cell|=\<bbb-E\><around*|[|<frac|<around*|(|X<rsup|\<mu\>>-\<bbb-E\><around*|[|X<rsup|\<mu\>>|]>|)>|Var<around*|(|X<rsup|\<mu\>>|)>><frac|<around*|(|X<rsup|\<nu\>>-\<bbb-E\><around*|[|X<rsup|\<nu\>>|]>|)>|Var<around*|(|X<rsup|\<nu\>>|)>>|]>>>|<row|<cell|>|<cell|=\<bbb-E\><around*|[|<around*|(|Z<rsup|\<mu\>>-\<bbb-E\><around*|[|Z<rsup|\<mu\>>|]>|)><around*|(|Z<rsup|\<nu\>>-\<bbb-E\><around*|[|Z<rsup|\<nu\>>|]>|)>|]>>>|<row|<cell|>|<cell|=Cov<around*|(|Z<rsup|\<mu\>>,Z<rsup|\<nu\>>|)>,>>>>
+    </align>
+
+    which, as a covariance matrix, is positive semi-definite.
+  </proof>
+
+  <\lemma>
+    [Eigenvalues of Covariance]<label|Lemma: Eigenvalues of
+    Covariance><\footnote>
+      C.f. <hlink|this question|https://stats.stackexchange.com/questions/366558/sufficient-and-necessary-conditions-for-zero-eigenvalue-of-a-correlation-matrix?newreg=84d4fa69ffd442b3ad038c06931098f8>
+      on stackexchange.com.
+    </footnote>
+
+    Let <math|<around*|{|X<rsup|\<mu\>>\|\<mu\>=1,\<ldots\>,n|}>> random
+    variables. Then we have:
+
+    <math|\<exists\><around*|{|a<rsub|i\<mu\>>\<in\>\<bbb-R\>,b<rsub|i>\<in\>\<bbb-R\>\|i=1,\<ldots\>,m,\<mu\>=1,\<ldots\>,n|}>>
+    s.t. for <math|\<forall\>i>, <math|<big|sum><rsub|\<nu\>>a<rsub|i\<nu\>>
+    X<rsup|\<nu\>>=b<rsub|i>>, iff there exists <math|m> vanished eigenvalues
+    in the covariance matrix of <math|<around*|{|X<rsup|\<mu\>>\|\<mu\>=1,\<ldots\>,n|}>>.
+  </lemma>
+
+  <\proof>
+    Let <math|C<rsup|\<mu\>\<nu\>>\<assign\>Cov<around*|(|X<rsup|\<mu\>>,X<rsup|\<nu\>>|)>>.
 
     <\enumerate>
-      <item>This perturbation equations of RBM may not have a solution.
-      Indeed, if <math|i=1> only, then <math|U<rsub|\<alpha\>i>\<rightarrow\>U<rsub|\<alpha\>1>\<backassign\>u<rsub|\<alpha\>>>.
-      We have, for <math|\<forall\>\<mu\>,\<nu\>> with
-      <math|\<mu\>\<neq\>\<nu\>>,
+      <item>Proof of <math|\<Rightarrow\>>
+
+      Directly,
+
+      <\align>
+        <tformat|<table|<row|<cell|<big|sum><rsub|\<mu\>>a<rsub|i\<mu\>>
+        C<rsup|\<mu\>\<nu\>>=>|<cell|<big|sum><rsub|\<mu\>>a<rsub|i\<mu\>>Cov<around*|(|X<rsup|\<mu\>>,X<rsup|\<nu\>>|)>>>|<row|<cell|=>|<cell|<big|sum><rsub|\<mu\>>a<rsub|i\<mu\>>\<bbb-E\><around*|[|<around*|(|X<rsup|\<mu\>>-\<bbb-E\><around*|[|X<rsup|\<mu\>>|]>|)><around*|(|X<rsup|\<nu\>>-\<bbb-E\><around*|[|X<rsup|\<nu\>>|]>|)>|]>>>|<row|<cell|=>|<cell|\<bbb-E\><around*|[|<around*|(|<big|sum><rsub|\<mu\>>a<rsub|i\<mu\>>X<rsup|\<mu\>>-\<bbb-E\><around*|[|<big|sum><rsub|\<mu\>>a<rsub|i\<mu\>>X<rsup|\<mu\>>|]>|)><around*|(|X<rsup|\<nu\>>-\<bbb-E\><around*|[|X<rsup|\<nu\>>|]>|)>|]>>>|<row|<cell|=>|<cell|\<bbb-E\><around*|[|<around*|(|b<rsub|i>-b<rsub|i>|)><around*|(|X<rsup|\<nu\>>-\<bbb-E\><around*|[|X<rsup|\<nu\>>|]>|)>|]>>>|<row|<cell|=>|<cell|0.>>>>
+      </align>
+
+      That is, <math|a<rsub|i>> is an eigenvector of <math|C> with vanished
+      eigenvalue.
+
+      <item>Proof of <math|\<Leftarrow\>>
+
+      From diagonalization <math|Q<rsup|T> \<Lambda\> Q=C>, where <math|Q> is
+      orthogonal, we get <math|\<Lambda\>=Q C Q<rsup|T>>. On the other hand,
+      let <math|Y:=Q X>, we have
+
+      <\align>
+        <tformat|<table|<row|<cell|Cov<around*|(|Y<rsub|\<mu\>>,Y<rsub|\<nu\>>|)>=>|<cell|\<bbb-E\><around*|[|<around*|(|Y<rsub|\<mu\>>-\<bbb-E\><around*|[|Y<rsub|\<mu\>>|]>|)><around*|(|Y<rsub|\<nu\>>-\<bbb-E\><around*|[|Y<rsub|\<nu\>>|]>|)>|]>>>|<row|<cell|=>|<cell|\<bbb-E\><around*|[|<around*|(|Q<rsub|\<mu\>\<alpha\>>X<rsup|\<alpha\>>-\<bbb-E\><around*|[|Q<rsub|\<mu\>\<alpha\>>X<rsup|\<alpha\>>|]>|)><around*|(|Q<rsub|\<nu\>\<beta\>>X<rsup|\<beta\>>-\<bbb-E\><around*|[|Q<rsub|\<nu\>\<beta\>>X<rsup|\<beta\>>|]>|)>|]>>>|<row|<cell|=>|<cell|Q<rsub|\<mu\>\<alpha\>>\<bbb-E\><around*|[|<around*|(|X<rsup|\<alpha\>>-\<bbb-E\><around*|[|X<rsup|\<alpha\>>|]>|)><around*|(|X<rsup|\<beta\>>-\<bbb-E\><around*|[|X<rsup|\<beta\>>|]>|)>|]>Q<rsub|\<nu\>\<beta\>>>>|<row|<cell|=>|<cell|Q<rsub|\<mu\>\<alpha\>>C<rsub|\<alpha\>\<beta\>>Q<rsub|\<nu\>\<beta\>>>>|<row|<cell|=>|<cell|Q
+        C Q<rsup|T>.>>>>
+      </align>
+
+      Thus, we get <math|\<Lambda\>=Cov<around*|(|Y<rsub|\<mu\>>,Y<rsub|\<nu\>>|)>>.
+      We conclude that, for <math|\<forall\>\<mu\>>,
 
       <\equation*>
-        <frac|1|4>u<rsub|\<mu\>> u<rsub|\<nu\>>=<frac|<wide|C|^><rsup|\<mu\>\<nu\>>|<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>
-        <wide|x|^><rsup|\<nu\>><around*|(|1-<wide|x|^><rsup|\<nu\>>|)>>.
+        \<lambda\><rsub|\<mu\>>=Cov<around*|(|Y<rsub|\<mu\>>,Y<rsub|\<mu\>>|)>=Var<around*|(|Y<rsub|\<mu\>>|)>,
       </equation*>
 
-      There are <math|n<around*|(|n-1|)>/2> equations but with <math|n>
-      d.o.f.s, thus cannot be solved.
+      and for <math|\<forall\>\<mu\>,\<nu\>> with <math|\<mu\>\<neq\>\<nu\>>,
 
-      <item>There is inner (gauge) symmetry. Indeed, if let
-      <math|<wide|h|^><rsup|i>=1/2> and <math|c<rsub|i>=0> for
-      <math|\<forall\>i=1,\<ldots\>,m>, then for any orthogonal
-      <math|m\<times\>m> matrix <math|E>, <math|U\<rightarrow\>U E> leaves
-      the equations invariant.
+      <\equation*>
+        Cov<around*|(|Y<rsub|\<mu\>>,Y<rsub|\<nu\>>|)>=0.
+      </equation*>
+
+      Then, if <math|\<exists\>\<lambda\><rsub|i>=0>, then
+      <math|Var<around*|(|Y<rsub|i>|)>=0>, implying
+      <math|Y<rsub|i>=Const\<backassign\>b<rsub|i>>. Denote
+      <math|a<rsub|i\<mu\>>\<assign\>Q<rsub|i\<mu\>>>, then we find
+      <math|a<rsub|i\<mu\>>X<rsup|\<mu\>>=b<rsub|i>>.
     </enumerate>
-  </remark>
+  </proof>
+
+  <\theorem>
+    [Perturbation Solution of RBM]<label|Theorem: Perturbation Solution of
+    RBM>
+
+    Let <math|m> is the number of independent variables in
+    <math|<around*|{|X<rsup|\<mu\>>\|\<mu\>=1,\<ldots\>,n|}>>, then we have a
+    solution
+
+    <\enumerate>
+      <item><math|W<rsub|\<mu\>\<nu\>>> has <math|m> positive eigenvalues and
+      <math|n-m> vanised ones. Let them be
+      <math|\<lambda\><rsub|1>,\<ldots\>,\<lambda\><rsub|m>>, with
+      eigenvectors <math|u<rsub|1>,\<ldots\>,u<rsub|m>>, Then, for
+      <math|\<forall\>\<mu\>,i>,
+
+      <\equation>
+        U<rsub|\<mu\>i>=2<sqrt|\<lambda\><rsub|i>>u<rsub|i><rsup|\<mu\>>.
+      </equation>
+
+      <item>And, for <math|\<forall\>\<mu\>>,
+
+      <\equation>
+        b<rsup|\<mu\>>=\<sigma\><rsup|-1><around*|(|2
+        <wide|x|^><rsup|\<mu\>>-<frac|1|2>|)>.
+      </equation>
+
+      <item>Perturbation demands
+
+      <\equation*>
+        <around*|\||<wide|x|^><rsup|\<mu\>>-<frac|1|2>|\|>\<ll\><wide|x|^><rsup|\<mu\>>.
+      </equation*>
+    </enumerate>
+  </theorem>
+
+  <\proof>
+    Set
+
+    <\equation*>
+      W<rsup|eff><rsub|\<mu\>\<mu\>>=<frac|1|<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>>.
+    </equation*>
+
+    <\enumerate>
+      <item>Recalling <math|Var<around*|(|X<rsup|\<mu\>>|)>=<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>>,
+      we have, for <math|\<forall\>\<mu\>,\<nu\>>,
+
+      <\equation*>
+        W<rsub|\<mu\>\<nu\>><rsup|eff>=<frac|Cov<around*|(|X<rsup|\<mu\>>,X<rsup|\<nu\>>|)>|Var<around*|(|X<rsup|\<mu\>>|)>Var<around*|(|X<rsup|\<nu\>>|)>>.
+      </equation*>
+
+      Then, by the lemma <reference|Lemma: Positive Semi-definiteness of
+      Covariance> and the lemma <reference|Lemma: Eigenvalues of Covariance>,
+      we find that <math|W<rsub|\<mu\>\<nu\>>> is positive semi-definite,
+      having <math|m> positive eigenvalues and <math|n-m> vanised ones. Let
+      <math|U<rsub|\<mu\>i>=2<sqrt|\<lambda\><rsub|i>>u<rsub|i><rsup|\<mu\>>>,
+      we find
+
+      <\align>
+        <tformat|<table|<row|<cell|<frac|1|4><big|sum><rsub|i>U<rsub|\<mu\>i>U<rsub|\<nu\>i>=>|<cell|<big|sum><rsub|i>\<lambda\><rsub|i>u<rsub|i><rsup|\<mu\>>u<rsub|i><rsup|\<nu\>>>>|<row|<cell|=>|<cell|W<rsub|\<mu\>\<nu\>><rsup|eff>.>>>>
+      </align>
+
+      Thus, the equations of <math|U> are satisfied.
+
+      <item>From the equations of <math|b>,
+
+      <\align>
+        <tformat|<table|<row|<cell|\<sigma\><around*|(|b<rsub|\<mu\>>|)>>|<cell|=\<sigma\><around*|(|<wide|c|^><rsup|\<mu\>>-<frac|1|4><big|sum><rsub|i>U<rsub|\<mu\>i>
+        U<rsub|\<mu\>i><around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>|)>>>|<row|<cell|>|<cell|=\<sigma\><around*|(|<wide|c|^><rsup|\<mu\>>|)>-\<sigma\><rprime|'><around*|(|<wide|c|^><rsup|\<mu\>>|)><frac|1|4><big|sum><rsub|i>U<rsub|\<mu\>i>
+        U<rsub|\<mu\>i><around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>>>|<row|<cell|<around*|{|\<sigma\><rprime|'><around*|(|<wide|c|^><rsup|\<mu\>>|)>=<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>|}>>|<cell|=\<sigma\><around*|(|<wide|c|^><rsup|\<mu\>>|)>-<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)><frac|1|4><big|sum><rsub|i>U<rsub|\<mu\>i>
+        U<rsub|\<mu\>i><around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>>>|<row|<cell|<around*|{|W<rsup|eff><rsub|\<mu\>\<mu\>>=<frac|1|4><big|sum><rsub|i>U<rsub|\<mu\>i>
+        U<rsub|\<mu\>i>|}>>|<cell|=<wide|x|^><rsup|\<mu\>>-<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>W<rsup|eff><rsub|\<mu\>\<mu\>><around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>>>|<row|<cell|<around*|{|W<rsup|eff><rsub|\<mu\>\<mu\>>=<frac|1|<wide|x|^><rsup|\<mu\>><around*|(|1-<wide|x|^><rsup|\<mu\>>|)>>|}>>|<cell|=<wide|x|^><rsup|\<mu\>>-<around*|(|<frac|1|2>-<wide|x|^><rsup|\<mu\>>|)>>>|<row|<cell|>|<cell|=2
+        <wide|x|^><rsup|\<mu\>>-<frac|1|2>.>>>>
+      </align>
+
+      Thus
+
+      <\equation*>
+        b<rsup|\<mu\>>=\<sigma\><rsup|-1><around*|(|2
+        <wide|x|^><rsup|\<mu\>>-<frac|1|2>|)>.
+      </equation*>
+    </enumerate>
+  </proof>
 
   <subsection|Validation of Perturbations>
 
@@ -1100,9 +1122,9 @@
   <\remark>
     [Validation of Perturbations 2]
 
-    For making the perturbation stated in corollary <reference|Corollary:
-    Solution with Positive Semi-definiteness> valid, the dataset shall have
-    the properties, for <math|\<forall\>\<alpha\>>,
+    For making the perturbation stated in theorem <reference|Theorem:
+    Perturbation Solution of RBM> valid, the dataset shall have the
+    properties, for <math|\<forall\>\<alpha\>>,
 
     <\equation>
       <wide|x|^><rsup|\<alpha\>>\<approx\>0.5
@@ -1250,29 +1272,36 @@
   </equation*>
 </body>
 
-<initial|<\collection>
-</collection>>
+<\initial>
+  <\collection>
+    <associate|font-base-size|10>
+    <associate|preamble|false>
+  </collection>
+</initial>
 
 <\references>
   <\collection>
     <associate|Corollary: Solution with Positive
-    Semi-definiteness|<tuple|32|11>>
-    <associate|Corollary: Solution without Self-interaction|<tuple|29|11>>
-    <associate|auto-1|<tuple|1|1>>
-    <associate|auto-10|<tuple|4.2|12>>
-    <associate|auto-11|<tuple|4.3|14>>
-    <associate|auto-12|<tuple|A|15>>
-    <associate|auto-2|<tuple|2|2>>
-    <associate|auto-3|<tuple|3|2>>
-    <associate|auto-4|<tuple|3.1|2>>
-    <associate|auto-5|<tuple|3.2|3>>
-    <associate|auto-6|<tuple|4|5>>
-    <associate|auto-7|<tuple|4.1|5>>
-    <associate|auto-8|<tuple|4.1.1|5>>
-    <associate|auto-9|<tuple|4.1.2|7>>
-    <associate|footnote-1|<tuple|1|3>>
+    Semi-definiteness|<tuple|31|?>>
+    <associate|Corollary: Solution without Self-interaction|<tuple|29|?>>
+    <associate|Lemma: Eigenvalues of Covariance|<tuple|33|?>>
+    <associate|Lemma: Positive Semi-definiteness of Covariance|<tuple|32|?>>
+    <associate|Theorem: Perturbation Solution of RBM|<tuple|34|?>>
+    <associate|auto-1|<tuple|1|?>>
+    <associate|auto-10|<tuple|4.2|?>>
+    <associate|auto-11|<tuple|4.3|?>>
+    <associate|auto-12|<tuple|A|?>>
+    <associate|auto-2|<tuple|2|?>>
+    <associate|auto-3|<tuple|3|?>>
+    <associate|auto-4|<tuple|3.1|?>>
+    <associate|auto-5|<tuple|3.2|?>>
+    <associate|auto-6|<tuple|4|?>>
+    <associate|auto-7|<tuple|4.1|?>>
+    <associate|auto-8|<tuple|4.1.1|?>>
+    <associate|auto-9|<tuple|4.1.2|?>>
+    <associate|footnote-1|<tuple|1|?>>
     <associate|footnote-2|<tuple|2|?>>
-    <associate|footnr-1|<tuple|1|3>>
+    <associate|footnr-1|<tuple|1|?>>
     <associate|footnr-2|<tuple|2|?>>
   </collection>
 </references>
