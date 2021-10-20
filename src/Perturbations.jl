@@ -11,54 +11,45 @@ end
 
 
 """
-Creates PBM from real world data.
+Implements the theorem "Perturbation Solutions of BM".
+
+- x̂: mean value.
+- Ĉ: covariance
+- w: diagonal of W matrix.
 """
 function getPBM(x̂::AbstractVector{T},
                 Ĉ::AbstractMatrix{T},
-                σ::AbstractVector{T}
+                w::AbstractVector{T}
                 ) where T<:Real
-
-    # Computes W[i, i]
-    function getdiag(x̂, σ)
-        if (x̂ == 0.5) && (σ == 0.5)
-            one(σ)
-        else
-            (x̂ - σ) / x̂ / (1 - x̂) / (1/2 - x̂)
-        end
-    end
-
     W = zeros(eltype(Ĉ), size(Ĉ))
     for i = 1:size(Ĉ, 1)
         for j = 1:size(Ĉ, 2)
             if i == j
-                W[i, j] = getdiag(x̂[i], σ[i])
+                W[i, j] = w[i]
             else
                 W[i, j] = Ĉ[i, j] / x̂[i] / (1 - x̂[i]) / x̂[j] / (1 - x̂[j])
             end
         end
     end
 
-    PerturbedBoltzmannMachine(x̂, invσ.(σ), W)
+    b = @. invσ(x̂) - w * (x̂ - 1/2)
+    PerturbedBoltzmannMachine(x̂, b, W)
+end
+
+
+function energy(m::PerturbedBoltzmannMachine{T}, x::AbstractVector{T}) where T<:Real
+    -1/2 * (x .- m.x̂)' * m.W * (x .- m.x̂) - m.b' * x
+end
+
+
+function energy(m::PerturbedBoltzmannMachine{T}, x::AbstractMatrix{T}) where T<:Real
+    [energy(m, x[:, i]) for i = 1:size(x, 2)]
 end
 
 
 """
-Creates PBM from real world data.
+Implements the theorem "Activity Rule of BM".
 """
-function getPBM(x̂::AbstractVector{T},
-                Ĉ::AbstractMatrix{T},
-                ) where T<:Real
-    # Ensure positive semi-defineness, define σ as follow.
-    σ = 2 .* x̂ .- 1/2
-
-    for σᵢ ∈ σ
-        @assert 0 < σᵢ < 1
-    end
-
-    getPBM(x̂, Ĉ, σ)
-end
-
-
 function activate(m::PerturbedBoltzmannMachine{T}, x::AbstractVector{T}; deterministic=true) where T<:Real
     W_diag = diag(m.W)
     c = @. m.b + (1/2 - m.x̂) * W_diag
@@ -84,29 +75,29 @@ end
 
 
 struct PerturbedRestrictedBoltzmannMachine{T<:Real}
-    x̂::AbstractVector{T}
+    v̂::AbstractVector{T}
     b::AbstractVector{T}
     U::AbstractMatrix{T}
 end
 
 
 """
-Creates PRBM from PBM. The δ is for clipping the eigen-values.
+Implements the lemma "Perturbation of RBM", where we have set ĥⁱ ≡ 1/2 and cᵢ ≡ 0.
 """
-function getPRBM(m::PerturbedBoltzmannMachine{T}, δ::T) where T<:Real
+function getPRBM(m::PerturbedBoltzmannMachine{T}, ϵ::T) where T<:Real
     λ, V = eigen(m.W)
-    λᵣ = @. real(λ)
-    Vᵣ = @. real(V)
+    λ = @. real(λ)
+    V = @. real(V)
 
-    indices = filter(i -> λᵣ[i] > δ, 1:size(λᵣ, 1))
+    indices = filter(i -> λ[i] > ϵ, 1:size(λ, 1))
     n = length(indices)
-    N = size(Vᵣ, 1)
+    N = size(V, 1)
 
-    U = zeros(eltype(Vᵣ), N, n)
-    for i = 1:N
-        for j = 1:n
-            k = indices[j]
-            U[i, j] = Vᵣ[i, k] * (2 * √λᵣ[k])
+    U = zeros(eltype(V), N, n)
+    for α = 1:N
+        for i = 1:n
+            j = indices[i]
+            U[α, i] = V[α, j] * (2 * √λ[j])
         end
     end
 
@@ -115,26 +106,35 @@ end
 
 
 """
-Creates PBM from PRBM.
+Implements the lemma "Perturbation of RBM", inversely, where we have set ĥⁱ ≡ 1/2 and cᵢ ≡ 0.
 """
 function getPBM(m::PerturbedRestrictedBoltzmannMachine)
     W = m.U * transpose(m.U) ./ 4
-    PerturbedBoltzmannMachine(m.x̂, m.b, W)
+    PerturbedBoltzmannMachine(m.v̂, m.b, W)
 end
 
 
-function getlatent(m::PerturbedRestrictedBoltzmannMachine{T}, x::AbstractVector{T}) where T<:Real
-    hardσ.(transpose(m.U) * (x .- m.x̂))
+"""
+Auxillary function of `activate`.
+"""
+function getlatent(m::PerturbedRestrictedBoltzmannMachine{T}, v::AbstractVector{T}) where T<:Real
+    hardσ.(transpose(m.U) * (v .- m.v̂))
 end
 
 
-function getambient(m::PerturbedRestrictedBoltzmannMachine{T}, z::AbstractVector{T}) where T<:Real
-    hardσ.(m.U * (z .- 1/2) .+ m.b)
+"""
+Auxillary function of `activate`.
+"""
+function getambient(m::PerturbedRestrictedBoltzmannMachine{T}, h::AbstractVector{T}) where T<:Real
+    hardσ.(m.U * (h .- 1/2) .+ m.b)
 end
 
 
-function activate(m::PerturbedRestrictedBoltzmannMachine, x::AbstractVector{T}) where T<:Real
-    getambient(m, getlatent(m, x))
+"""
+Implements the theorem "Activity Rule of BM".
+"""
+function activate(m::PerturbedRestrictedBoltzmannMachine, v::AbstractVector{T}) where T<:Real
+    getambient(m, getlatent(m, v))
 end
 
 
@@ -151,6 +151,9 @@ function sample_bernoulli(p::T) where T<:Real
 end
 
 
+"""
+Implements the "Zoom-in Trick".
+"""
 function zoomin(n, δ::T, x::T) where T<:Real
     @assert 0 <= δ <= 0.5
 
@@ -162,11 +165,17 @@ function zoomin(n, δ::T, x::T) where T<:Real
 end
 
 
+"""
+Implements the "Zoom-in Trick".
+"""
 function zoomin(n, δ::T, x::AbstractVector{T}) where T<:Real
     vcat([zoomin(n, δ, x[i]) for i = 1:size(x, 1)]...)
 end
 
 
+"""
+Implements the "Zoom-in Trick".
+"""
 function zoomin(n, δ::T, x::AbstractMatrix{T}) where T<:Real
     hcat([zoomin(n, δ, x[:, i]) for i = 1:size(x, 2)]...)
 end

@@ -791,8 +791,7 @@
   <\lemma>
     [Perturbation of RBM]
 
-    For <math|\<forall\>i>, let <math|<wide|h|^><rsup|i>\<equiv\>1/2> and
-    <math|c<rsub|i>\<equiv\>0>, then we have
+    We have
 
     <\equation>
       E<rsub|eff><around*|(|v;U,b,c|)>=-<frac|1|2>W<rsup|eff><rsub|\<alpha\>\<beta\>><around*|(|v<rsup|\<alpha\>>-<wide|v|^><rsup|\<alpha\>>|)><around*|(|v<rsup|\<beta\>>-<wide|v|^><rsup|\<beta\>>|)>-b<rsup|eff><rsub|\<alpha\>>v<rsup|\<alpha\>>+<with|math-font|cal|O><around*|(|U<rsup|3>+c<rsup|3>|)>,
@@ -1281,8 +1280,6 @@
 
 <\references>
   <\collection>
-    <associate|Corollary: Solution with Positive
-    Semi-definiteness|<tuple|31|?>>
     <associate|Corollary: Solution without Self-interaction|<tuple|29|?>>
     <associate|Lemma: Eigenvalues of Covariance|<tuple|33|?>>
     <associate|Lemma: Positive Semi-definiteness of Covariance|<tuple|32|?>>

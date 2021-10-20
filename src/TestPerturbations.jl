@@ -22,39 +22,39 @@ X = preprocess(X₀[:, :, 1:N], IMAGE_SIZE) |> zoomin(ZOOMIN_RATIO, 0.45)
 x̂ = expect(X)
 min(x̂...)
 Ĉ = cov(X; dims=2, corrected=false)
-# m = getPBM(x̂, Ĉ, x̂)  # thus setting the diagonal of W vanish.
-m = getPBM(x̂, Ĉ)  # thus enscure the positive semi-defineness of W.
-histogram(flatten(m.W); bins=100, title="W", legends=false)
+w = @. 1 / x̂ / (1 - x̂)
+bm = getPBM(x̂, Ĉ, w)
+histogram(flatten(bm.W); bins=100, title="W", legends=false)
 
 
 # XXX: test!
-function quantize(x, ϵ)
-    floor(abs(x / ϵ)) * sign(x) * ϵ
-end
-
-quantize(ϵ) = x -> quantize(x, ϵ)
-
-vanish_diag(m::AbstractMatrix) = m .- Diagonal(diag(m))
-Ĉ₀ = vanish_diag(Ĉ)
-
-add_diag(m::AbstractMatrix, v::AbstractVector) = m .+ Diagonal(v)
-C_diag = sum(abs.(Ĉ₀); dims=1) |> squeeze
-λ, V = eigen(add_diag(Ĉ₀, C_diag))
-λ = @. real(λ)
-
-C_diag = C_diag .- λ
-λ, V = eigen(add_diag(Ĉ₀, C_diag))
-λ = @. real(λ)
-
-λ, V = eigen(Ĉ)
-bb = -λ .* [sum(V'[i, :].^2) for i = 1:size(V, 1)]
-γ = bb' * inv(V.^2 ) |> squeeze
-λ, V = eigen(add_diag(Ĉ, γ))
-λ = @. real(λ)
+# function quantize(x, ϵ)
+#     floor(abs(x / ϵ)) * sign(x) * ϵ
+# end
+#
+# quantize(ϵ) = x -> quantize(x, ϵ)
+#
+# vanish_diag(m::AbstractMatrix) = m .- Diagonal(diag(m))
+# Ĉ₀ = vanish_diag(Ĉ)
+#
+# add_diag(m::AbstractMatrix, v::AbstractVector) = m .+ Diagonal(v)
+# C_diag = sum(abs.(Ĉ₀); dims=1) |> squeeze
+# λ, V = eigen(add_diag(Ĉ₀, C_diag))
+# λ = @. real(λ)
+#
+# C_diag = C_diag .- λ
+# λ, V = eigen(add_diag(Ĉ₀, C_diag))
+# λ = @. real(λ)
+#
+# λ, V = eigen(Ĉ)
+# bb = -λ .* [sum(V'[i, :].^2) for i = 1:size(V, 1)]
+# γ = bb' * inv(V.^2 ) |> squeeze
+# λ, V = eigen(add_diag(Ĉ, γ))
+# λ = @. real(λ)
 
 
 # Analyze kernel
-λ, V = eigen(m.W)
+λ, V = eigen(bm.W)
 Vᵣ = @. real(V)
 Vᵢ = @. imag(V)
 λᵣ = @. real(λ)
@@ -64,13 +64,13 @@ min(λᵣ...)
 L∞(λᵢ)
 
 # Construct PRBM
-rm = getPRBM(m, 20.)  # δ needs careful fine-tuning.
-size(rm.U)
-histogram(flatten(rm.U); bins=100, title="U", legends=false)
+rbm = getPRBM(bm, 1E-0)
+size(rbm.U)
+histogram(flatten(rbm.U); bins=100, title="U", legends=false)
 
 # Re-construct PBM from PRBM
-m̃ = getPBM(rm)
-histogram(flatten(m.W - m̃.W); bins=100, title="ΔW", legends=false)
+bm2 = getPBM(rbm)
+histogram([flatten(bm.W - bm2.W), flatten(bm.W)]; bins=100, title="ΔW/W")
 
 # Denoise
 # i = 3
@@ -91,8 +91,7 @@ end
 
 # For better quality of visualization, we prefer less labels
 X₂, y₂ = filter_by_labels(X₀, y₀[1:3000], [1, 5, 0])
-X₂ = preprocess(X₂, IMAGE_SIZE)
-X₂ = zoomin(ZOOMIN_RATIO, 0., X₂)
+X₂ = preprocess(X₂, IMAGE_SIZE) |> zoomin(ZOOMIN_RATIO, 0.)
 
 # Latent encoding
 Z = nothing
